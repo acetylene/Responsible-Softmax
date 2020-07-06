@@ -23,6 +23,9 @@
 *.log
 *.bbl
 *.aux
+*.blg
+*.lof
+*.lot
 #folders to ignore
 *kmeans_MacKay/
 *kmeansoft/
