@@ -26,6 +26,7 @@
 *.blg
 *.lof
 *.lot
+*.synctex*
 #folders to ignore
 *kmeans_MacKay/
 *kmeansoft/
