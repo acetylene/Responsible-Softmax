@@ -1,0 +1,3 @@
+# Large MATLAB files to ignore
+*.fig
+*.mat
