@@ -1,3 +1,7 @@
 # Large MATLAB files to ignore
 *.fig
 *.mat
+# other large files to ignore
+*.png
+*.eps
+*.pdf
