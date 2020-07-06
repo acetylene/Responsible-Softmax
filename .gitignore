@@ -13,6 +13,16 @@
 *.html
 #MNIST files
 *.idx?-ubyte
+#LaTeX compilation files
+*.nav
+*.out
+*.toc
+*.run.xml
+*.snm
+*.vrb
+*.log
+*.bbl
+*.aux
 #folders to ignore
 *kmeans_MacKay/
 *kmeansoft/
