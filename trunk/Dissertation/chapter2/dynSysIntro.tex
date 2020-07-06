@@ -1,0 +1,72 @@
+%\Ryan{A \textit{short} section needs to be added here.  Mostly to cover definitions of: stable points, stable sets/manifolds, Lyapunov functions, bifurcations and any other terms unique to dynamical systems and not inference/ML. Marek suggest doing a literature `review', in the sense of citing important theorems.  Maybe a few definitions. }
+
+This section presents some definitions from the field of dynamical systems that are relevant to the dissertation.  Many of these definitions can be found in an undergraduate text like \cite{devaney1989introduction}. The definitions in this section are mostly adapted from the review paper by Mei and Bullo \cite{mei2017lasalle}. Their paper in turn is a summarized version of the contents of a book by LaSalle \cite{lasalle1976dynsys}.
+
+To begin, let \( \N \) represent the natural numbers, and \( \R \) the real numbers. Then \( \R^m \) is \( m \) dimensional euclidean space, and the vectors \( \mathbbm 1_m,\;\bm 0 \) denote the vectors composed entirely of 1's and 0's respectively. The notation \( \bm e_i\;1\leq i\leq m \) will denote the standard basis vectors for \( \R^m \).
+
+For any sequence of points \( \{x_k\}_{k\in\N} \in\R^m\) use \( {x_k}\rightarrow y \) to mean that \( \norm{x_k-y}\rightarrow 0 \) as \( k\rightarrow\oo\). For a set \( S\subset\R^m \), let \( \op{Int}S \) denote the interior of \( S \). If \( S \) is a bounded set, let \( \partial S \) denote the boundary of \( S\), and \( \overbar S = \op{Int}S\cup \partial S\) be the closure of \( S \). The symbol \( \varnothing \) will denote the empty set.  
+
+Given a map \( T:\R^m\rightarrow\R^m \), for \( n\in \N \), define \( T^n=T\circ T\circ\ldots\circ T \) to be the \( n \)-fold composition of \( T \) with itself. The study of \textit{discrete dynamical systems} is, broadly speaking, the study of such continuous maps and their compositions. 
+
+\begin{defn}[Discrete Dynamical System]\label{defn:discDynSys}
+	For \( M\subset\R^m \) the map \( \bm\tau:\ZZ\times M\rightarrow M \) describes a discrete dynamical system on \( M \) if for all \( n,k\in\ZZ \) and any \( x\in M \),
+	\begin{enumerate}
+		\item \(\bm\tau(0,x) = x;\)
+		\item \(\bm\tau(n,\bm\tau(k,x)) = \bm\tau(n+k,x)\);\label{eqn:groupProperty}
+		\item \( \bm\tau \) is continuous.
+	\end{enumerate}
+	If requirement \ref{eqn:groupProperty} holds for only \( n,k\geq 0 \), then \( \bm\tau \) describes a discrete \textit{semi-dynamical} system on \( M \). Thus this definition of a discrete dynamical system requires \( \bm\tau(1,x) \) to be a continuous bijection with continuous inverse (\textit{i.e.} a homeomorphism).
+\end{defn}
+
+Given a continuous map \( T:M\rightarrow M \) and some initial point \( x_0\in M \), one of the important goals of studying discrete dynamical systems is deciding whether sequences \( \{x_n\}\defined {T^n(x_0)} \) have any limit points.
+\begin{defn}[Orbits]
+	 Sequences of the form \( x_n = T^n(x_0) \) for some \( x_0 \in M \) are called \textit{orbits} of \(T\).(also motions or trajectories).%\Ryan{Note that motions, trajectories and orbits are actually slightly different things. A motion is a function. Trajectories and orbits are sets. it doesn't hurt to conflate the things for this paper.}
+\end{defn} 
+Property \ref{eqn:groupProperty} guarantees that for any \( x\in M \), there is exactly one orbit of \(T \) such that \( x_0=x \). By abuse of notation this will be called the orbit of \( x \).
+
+\begin{defn}[Limit points]\label{defn:limitpoints}
+	Given a specific point \( x\in M \) the set \( \Omega(x)\subset\R^m \) is the set of all limit points of \( x \). The point \( y\in \R^m \) is a limit point of \( x \) if there is a subsequence \( x_{n_k} \)  with \( |n_k|\rightarrow\oo \) of the orbit \( T^n(x) \) such that \( x_{n_k}\rightarrow y \).  This is the case for both dynamical and semi-dynamical systems. 
+\end{defn} 
+For some set \( H\subset M \), the set \( \Omega(H) \) is the set of all limit points of for \( x\in H \), \textit{i.e.} \( \Omega(H)=\bigcup_{x\in H}\Omega(x) \). 
+\begin{defn}[Invariant Sets]
+	The set \( H \) is called \textit{positively invariant} if \( T^n(H)\subset H\;\forall n\in\N \). A set \( H \) is called \textit{negatively invariant} if \( T^n(H)\supset H\;\forall n\in\N \). If \( T(H)=H \) then \( H \) is called \textit{invariant}.
+\end{defn} 
+A compact invariant set satisfies \( \Omega(H)\subset H \). For discrete semi-dynamical systems, the set \( H \) needs only to be positively invariant and compact.
+
+Property \ref{eqn:groupProperty} is also required to guarantee uniqueness of \textit{periodic points}. \begin{defn}[Periodic points, Fixed points]
+	Periodic points are those \( x\in M \) which satisfy \( T^n(x)= x \) for some \( n \).  For a periodic point \(x\), the smallest \( k\in\N \) such that \( T^k(x)=x \) is called the period of \( x \).  \textit{Fixed points} are periodic points of period 1, \textit{i.e.} \( x\in M \) such that \( T(x) = x \).
+\end{defn} 
+All periodic points of period \( k \) are fixed points of the map \( T^k \). If they exist, periodic points are limit points of a discrete dynamical system.
+
+\begin{defn}[Stable set]
+	For a given periodic point \( p\in M \) of period \( k \), the \textit{stable set} of \( p \) is the set of all points \( x\in M \) that eventually arrive at \( p \), \textit{i.e.} \( W^s(T,p)\defined \{x\in M| T^{k+n}(x)\rightarrow p \text{ as } n\rightarrow\oo\}. \)The stable set of a fixed periodic point is always non-empty as it contains \( p \).
+\end{defn}  
+\begin{defn}[Asymptotically Stable]
+	A periodic point \( p \) is called \textit{asymptotically stable} if \( p\in\op{Int}W^s(T,p). \)  In other words, \( p \) is asymptotically stable if there is some \( \gd>0 \) such that \( \norm{x-p}<\gd \) implies that \( T^{k+n}(x)\rightarrow p \), where \( k \) is the period of \( p \).  
+\end{defn}
+
+\begin{defn}[Lyapunov stable]
+	A point \( x\in M \) is \textit{Lyapunov stable} if points that start sufficiently near \( x \) have orbits close to \( x \). More precisely, \( x \) is Lyapunov stable if for any \( \ge>0\) there is some \(\gd>0\)  such that \( \norm{x-y}<\gd \) implies \( \norm{T^n(x)-T^n(y)}<\ge\) for all \(n\in\N \).
+\end{defn}
+%\Marek{I don't like the use of quantifiers as if they were verbs in sentences. This is undergraduate-like and quantifiers should be used properly, e.g. they define a variable and its range, and are before the statement that uses the variable. Alternatively, write out ``for all'' and ``there exists''. I find it easier to read, anyway.}\Ryan{agreed, thanks for the comment!}
+
+The last definition of this section is briefly covered in the review paper \cite{mei2017lasalle}, but a more thorough treatment is given by LaSalle in chapter 1 section 6 of \cite{lasalle1976dynsys}. The definition that follows is adapted from LaSalle's work.
+
+\begin{defn}[Lyapunov Function]
+	Given a discrete (semi-)dynamical system described by iterating the continuous map \( T:M \rightarrow M\) Let \( G\subset\R^m\), \( G\cap M\neq \varnothing\) then a continuous map \( V:G\rightarrow\R \) is a \textit{Lyapunov function} for \( T \) on \( G \) if \( V(T(x))-V(x)\leq 0 \) for all \( x\in T(M)\cap G \).
+\end{defn}
+
+Generally speaking, the map \( V \) is difficult to find for a given discrete dynamical system.  However, as the following theorem shows, very powerful results come from finding a Lyapunov function.
+
+\begin{thm}[Invariance Principle]\label{thm:invariance}\ \\%*[-.2\baselineskip]	
+	If \( V \) is a Lyapunov function for \( T \)  on \( G \), define \( E\defined\{\left.x\in\overbar G\right|V(T(x))-V(x)=0\} \) and let \( H \) denote the largest invariant set in \( E \). Then if \( T^n(x)\subset G \) is a bounded orbit of \( x\in G \), there exists a number \( c\in\R \) such that \( T^n(x)\rightarrow H\cap V^{-1}(c) \).
+\end{thm}
+
+\begin{proof}
+	This is theorem 6.3 of LaSalle chapter 1, section 6 \cite{lasalle1976dynsys}. The same idea is explored in a more general setting in chapter 4 of the same book, and is what allows passage to \( M\subset\R^m \). An accessible, self contained version of the proof can be found in the review paper by Mei and Bullo \cite{mei2017lasalle}.
+\end{proof}
+\Ryan{Write this as thm 3.1 of chapter 4 in \cite{lasalle1976dynsys}, then cite it in theorem \ref{thm:convergence}.  Maybe put this in an appendix!}
+%\Ryan{Maybe a theorem about using lyapunov functions on manifolds with boundary? need lie derivative with the vector field to have constant sign. is there some small set of points where \( -\ell \) is not a lyapunov function? (nope!) Lasalle reference in lyapunov function wikipedia article may be a good book to cite. maybe also lasalle's invariance principle.}
+%
+%\Ryan{Kantorovich is a better argument, according to Marek. see comments in \ref{sect:expConvRate} for more.}
+%		

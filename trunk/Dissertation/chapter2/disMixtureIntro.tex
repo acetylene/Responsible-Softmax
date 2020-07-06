@@ -1,0 +1,136 @@
+%!TEX root = DissertationDraft.tex
+\label{section:lagrange}
+%While humans can quickly pick out patterns for data that can be easily visualized, the problems of evaluating high dimensional data, teaching computers to do what humans do easily (e.g.: character recognition), or even of finding new and unknown patterns are interesting from a mathematical perspective.  We will discuss some of the known clustering algorithms available and include some examples of interest.  Examples of interest may include data sets where a given algorithm does especially well, and will include ones where the algorithms work very poorly.
+ 
+%In some sense, Clustering may be considered an example of distribution inference given data.  If we have several samples, and a good idea that each sample comes form a different distribution, we can ask two different, but related questions.  First, what are the distributions that were sampled from?  Second, how can we infer which data points came from which distribution? In general, the first question may be called clustering, and the second question classification. For now we will focus mostly on clustering and return to classification later.
+
+%\Ryan{(CHANGE BELOW, a large portion WAS MOVED)}
+%To make the question more precise, consider the problem of sampling from $K<\oo$ probability distributions with pdfs \(f_k(x,\gt),\; 1\leq k\leq K\). Each distribution $f_k(x,\gt)$ is chosen at random with proportion $\pi_k^\ast$, $\sum_k \pi_k^\ast=1$.  This is a situation that is mimicked easily enough in Monte Carlo simulations, and is common in applications.  As a two stage experiment, we work as follows to select a point in $x_n\in\R^I$:
+%\begin{enumerate}
+%\item Stage 1: From the $K$ possible distributions, select a label $k_n$ with probability $P(k_n=k)=\pi_{k}^\ast$.
+%\item Stage 2: Sample $x_n$ from $f_{k_n}(x)$
+%\end{enumerate}
+%
+%Given $N$ such data points, $D=\{x_n\}_{n=1}^{N}$, clustering then is the problem of estimating the parameters $\gt=\{\bm\pi^\ast,\ldots\}$, where $\bm\pi^\ast\defined\{\pi_k^\ast\}_{k=1}^{K}$. This essentially assigns each of the data points $\bm x_n$ as a sample from a particular pdf in \(f_k(x,\gt),\; 1\leq k\leq K\).  We have in this case 
+%\[P(x_n|\gt)=\sum_k P(x_n|k_n=k,\gt) P(k_n=k, \gt)=\sum_k \pi_k^\ast f_k(x_n,\gt).\]
+%
+%One reason that we choose to estimate the parameters $\{\pi_k^\ast\}$ first is that often our other estimates for the remaining parameters $\gt$ are not independent of our choices for the labels.
+
+Recalling the discussion in section \ref{classvCluster}, this section will consider one way to recover the mixing components given a reasonable approximation of the underlying cluster distributions. While such approximations are frequently incalculable, it is instructive to explore situations where calculation is possible. Consider the following situation inspired by \textit{Information Theory, Inference, and Learning Algorithms}\citep{MacKay2002}, and covered in notes from a course taken in 2016 \cite{rychlikCourse}.
+
+Using Bayes' rule, this section proposes an optimization strategy for recovering the parameters $\{\pi_k^{\ast}\}_{k=1}^{K}$. Much of the information in this section is derived form Given some data $D$, this strategy considers the likelihood that the labels chosen were $\{k_n\}_{n=1}^{N}$, given some prior distribution of the labels as $\{\pi_k\}_{k=1}^{K}$. In other words, the prior is given by $P(k_n=k, \bm \gt_k) = \pi_k$, with or without considering the data. A potentially good uninformative prior would be that $\pi_k=\frac 1K\;\forall k$.
+
+Bayes rule gives:
+\begin{align}\label{Bayes1}
+P(k_n=k|\{x_n\},\{\pi_k\})&=\frac{P(x_n|k_n=k)P(k_n=k)}{\sum_{k'}P(x_n|k_n=k')P(k_n=k')} \nonumber \\
+						  &=\frac{\pi_k f_k(x_n)}{\sum_{k'}\pi_{k'} f_{k'}(x_n)}.
+\end{align}
+
+%For a more visual example, consider the ``stacked" functions $f_k$:
+%\begin{center}
+%%TODO fix the grapics here, probably through a relevant MATLAB example.
+%%\includegraphics[scale=.2]{piecewise4.png} 
+%	\begin{tikzpicture}[scale=1.75]
+%		\draw[->] (-1,0) -- (5,0) node[right] {$x_n$};
+%		\draw[->] (0,-.5) -- (0,2.5) node[right] {$P(x_n|\gt)$};
+%		\draw[thick,red] plot[samples=100, smooth, domain=-1:5,id=exp1] (\x,{5*exp(-(\x-1)^2/1)/(2*1*sqrt(2*3.14159))});                 % mean 1 sd 1
+%		\draw[thick,blue] plot[samples=100, smooth, domain=-1:5,id=exp2] (\x,{5*(exp(-(\x-1)^2/1)/(2*1*sqrt(2*3.14159))+exp(-(\x-2)^2/4)/(4*2*sqrt(2*3.14159)))});
+%		\draw[thick,green] plot[samples=100, smooth, domain=-1:5,id=exp3] (\x,{5*(exp(-(\x-1)^2/1)/(2*1*sqrt(2*3.14159))+exp(-(\x-2)^2/4)/(4*2*sqrt(2*3.14159))+exp(-(\x-3)^2/9)/(3*sqrt(2*3.14159)))});
+%		\draw[thick] plot[samples=100, smooth, domain=-1:5,id=exp4] (\x,{5*(exp(-(\x-1)^2/1)/(2*1*sqrt(2*3.14159))+exp(-(\x-2)^2/4)/(4*2*sqrt(2*3.14159))+exp(-(\x-3)^2/9)/(3*sqrt(2*3.14159))+exp(-4*(\x-2.5)^2)/(2*1*sqrt(2*3.14159)))});
+%		\foreach \x in {-1}
+%			\draw[xshift=\x cm] (0pt,2pt) -- (0pt,-2pt) node[below]{$\x$};
+%		\foreach \x in {1,...,5}
+%			\draw[xshift=\x cm] (0pt,2pt) -- (0pt,-2pt) node[below]{$\x$};
+%			
+%%		\node [below=1cm, align=flush center,text width=8cm] at (2,-.25)
+%%        {
+%%           % TODO create graphics here, probably through a relevant MATLAB example.
+%%        };
+%	\end{tikzpicture}
+%\end{center}
+%
+%In this example, $K=4$, and priors are $\{\pi_k\}_{k=1}^{4}$.  This graphic visualizes the density 
+%\[P(x_n|\gt)=\sum \pi_k f_k(x_n)\]
+%where the vertical stripe is divided into regions of about $\pi_k f_k(x)$.
+%Note here that we have joint distribution which is the mixed discrete-continuous distribution of $(x_n,k_n)$:
+%\[P\left(x-\Delta x<x_n<x,k_n=k\right)=\pi_k\cdot\int_{x-\Delta x}^{x}f_k(x_n)\;dx.\]
+
+%We have a notion of conditional density
+%\begin{align*}
+%\frac{P\left(x-\Delta x<x_n<x,k_n=k\right)}{P\left(x-\Delta x < x_n <x+\Delta x\right)}&\approx\\ \frac{\pi_kf_k(x)\Delta x}{\sum_{k'} \pi_{k'}f_{k'}(x) \Delta x}&=P(x_n|k_n=k)
+%\end{align*}
+
+Assuming independence of the samples in \( D = \{x_n\} \), the joint distribution of $\bm x = \{x_n\}$ and possible labels $\bm k = \{k_n\}$ is 
+\[P(\bm x, \bm k |\{\pi_k\})=\prod_{n=1}^{N} P(k=k_n)P(x_n|k_n=k) \sim\prod_{n=1}^{N} \pi_{k_n}f_{k_n}(x_n).\]
+Since practical methods of knowing the true labels of points $x_n$ are difficult to obtain, perform marginalization to get
+\begin{align*}
+P(\{x_n\}|\{\pi_k\})&=\sum_{(k_1,k_2,\ldots,k_N)}\prod_n \pi_{k}f_{k_n}(x_n)\\
+&= \prod_n \left(\sum_{k}\pi_kf_k(x_n)\right)\\
+&= \prod_n P(x_n|\{\pi_k\})
+\end{align*}
+where $\displaystyle{P(x_n|\{\pi_k\}) =\sum_{k}\pi_kf_k(x_n)}$.  It is informative to compare equation \eqref{Bayes1} with the formula \eqref{emResp} for responsibility in section \ref{emAlg}.
+
+The goal of this strategy is to find the most likely values of $\{\pi_k\}$, given data $\{x_n\}$. This strategy assumes complete lack of knowledge, \textit{i.e.} the prior distribution of $\{\pi_k\}$ is uniform on the standard probability simplex 
+\begin{equation}\label{simplexDef}
+	S_K:=\left\{\{\pi_k\}_{k=1}^{K}:0\leq \pi_k\leq 1; \sum_{k=1}^{K}\pi_k =1\right\}.
+\end{equation}
+Another way of stating this idea is to say that the prior is the Dirichlet distribution with parameters \( \ga_i = 1 \) for \( i=1,\ldots,K \), \textit{i.e.} the flat Dirichlet distribution.
+
+In this situation Bayes' rule gives
+\[P(\{\pi_k\}|\{x_n\})=\frac{P(\{x_n\}|\{\pi_k\})P(\{\pi_k\})}{\int\int_{\ldots}\int P(\{x_n\}|\{\pi_k\})P(\{\pi_k\})\; d\bm\pi}.\]
+Since the prior $P(\{\pi_k\})$ is uniform and does not depend on \( \bm \pi \), it cancels out to get
+\begin{equation}\label{eg:posterior}
+ P(\{\pi_k\}|\{x_n\})=\frac{P(\{x_n\}|\{\pi_k\})}{\int\int_{\ldots}\int_{S_K} P(\{x_n\}|\{\pi_k\})\; d\bm\pi}.
+\end{equation}
+Note here that if performing a maximum \textit{a posteriori} (MAP) estimate of \( \bm\pi^{\ast} \) at this point, it would be equivalent to finding a maximum likelihood estimator for $\bm\pi^\ast$.
+
+While the marginal probability in the denominator of \ref{eg:posterior} is difficult to compute, looking at the log likelihood creates numerous opportunities.  The strategy is to define
+\begin{align}\label{eqn:ObjFunc}
+\ell&:= \ln P(\{x_n\}|\{\pi_k\}) = \sum_n \ln P(x_n|\{\pi_k\})
+\end{align}
+and then maximize the likelihood \(\ell \) on the simplex $S_K$.
+In other words, define an estimator \( \hat{\bm \pi} \) of \( \bm\pi^{\ast} \) by
+\[\{\hat{\pi}_k\}=\argmax_{S_K} \ell.\]
+The problem of finding the `correct' discrete probability distribution $P(\{\pi_k\})$ then may be viewed as equivalent to the problem of finding the maximum likelihood estimator of $\ell$ on \( S_K \).  
+
+On way to optimize a function subject to constraints is to use the method of Lagrange multipliers. The objective function 
+\[\mathcal{L}=\ell-\gl G\]
+where $G(\{\pi_k\})=\sum_k \pi_k -1$, gives the system of equations:
+\begin{align*}
+&\pder1{\mathcal{L}}{\pi_k}=\pder1{\ell}{\pi_k}-\gl \pder1{G}{\pi_k}=0\qquad \; k=1,\ldots, K\\
+&\pder1{\mathcal{L}}{\gl}=-G(\{\pi_k\})=0.
+\end{align*}
+Taking partial derivatives with respect to \( \pi_k,\;k=1,\ldots,K \) and \( \gl \) gives
+\begin{align*}
+\pder1{\ell}{\pi_k}&=\sum_n \pder1{}{\pi_k}\ln P(x_n|\{\pi_k\})\\
+&=\sum_n \frac{f_k(x_n)}{P(x_n|\{\pi_k\})}.
+\end{align*}
+The above equations become the system of algebraic equations
+\begin{align}\label{lageq}
+\sum_n\frac{f_k(x_n)}{\sum_{k'}\pi_{k'}f_{k'}(x_n)}&=\gl&k=1,2,\ldots, K\\
+\sum_k\pi_k=1.\label{lageq2}
+\end{align}
+
+This problem, namely of finding the posterior estimates $\{\hat{\pi}_k\}$ with Lagrangian multipliers is well-posed.  The formation of this problem hides some conditions of the simplex $S_K$.  Namely, some of the $\hat{\pi}_k$ that act as a joint solution to \eqref{lageq} and \eqref{lageq2} could be negative. In practicality this means any strategy must check the boundary conditions \( \{\pi_k\geq 0\; |k=1,\ldots,K \}   \).
+
+To help understand the complexity of solving equations \eqref{lageq} and \eqref{lageq2}, consider the following CAS generated set of solutions for \( K=N=2 \).
+\begin{align}
+ \pi_{1}=& \frac{\left(2f_{2}(x_{1})-f_{1}(x_{1})
+				 \right)f_{2}(x_{2})-f_{2}(x_{1})f_{1}(x_{2})}
+			    {\left(2f_{2}(x_{1})-2f_{1}(x_{1})\right)f_{2}(x_{2})+
+			     \left(2f_{1}(x_{1})-2f_{2}(x_{1})\right)f_{1}(x_{2})} \label{eqn:CASpi1}\\ 
+\pi_{2}=&-\frac{f_{1}(x_{1})f_{2}(x_{2})+\left(f_{2}(x_{1})-2f_{1}(x_{1})\right)f_{1}(x_{2})}
+			   {\left(2f_{2}(x_{1})-2f_{1}(x_{1})\right)f_{2}(x_{2})+
+		        \left(2f_{1}(x_{1})-2f_{2}(x_{1})\right)f_{1}(x_{2})}\label{eqn:CASpi2}\\
+\gl=&2\label{eqn:CASlambda}
+\end{align}
+These solutions suppose that the values \( f_k(x_n) \) are known. As the number of parameters increases, and especially as the number of samples \( N \) increases, such exact solutions quickly become intractable.  Part of the difficulty is that any exact solution requires finding solutions to a polynomial of degree \( N \) in \( K+1 \) variables.  Clearly, other methods are required to compute a good point estimate of \( \bm\pi^{\ast} \).
+%
+%\Ryan{How many boundary conditions are there? HINT: There are \( 2^K \) facets!}
+%
+%\Ryan{Add discussion about using entropy and free energy to make the system have a unique solution on interior of \( S_K \). Add discussion about KKT? for KKT you can add the conditions \( \hat{\pi}_k\geq 0 \)}
+%
+%\Ryan{Note also that Lagrange and KKT solutions of the constrained optimization of \ref{eqn:ObjFunc} occur at saddle points of the unconstrained optimization function, so gradient descent like algorithms might have a problem.  Wikipedia mentions one solution (optimize magnitude of gradient), but how does that compare here?}
+%Below is a CAS generated exact solution for $N=2$ data points and $K=2$ clusters.
+
+%\Ryan{TODO generate and insert an example of a CAS generated solution}

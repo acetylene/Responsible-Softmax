@@ -1,0 +1,34 @@
+There are several reasons to perform clustering.  While clustering and classification are different problems, clustering can be a good first blush at a classification problem. In several cases clustering has produced new insights in several fields. One good example is that of AutoClass software \citep{AutoClass1}, which is similar to the soft $K$-means algorithms found in chapter 22 of \cite{MacKay2002}.  The goal of AutoClass was to use Bayesian methods to cluster and classify astronomical data.  \\
+
+The goal of classification in general, is closely related to the problem of determining latent variables discussed previously. In \citep{MacKay2002,BishopBook} the latent variables $\{\bm\pi\}$ are used as priors for \textit{responsibilities}
+\begin{align}\label{responsible}
+r_{kn}\defined p(c_n=k|\bm x_n)&=\dfrac{p(c_n=k)p(\bm x_n|c_n=k)}{\sum_{j=1}^{K}p(c_n=j)p(x_n|c_n=j)} \nonumber \\
+ 							   &=\dfrac{\pi_k f_k(x_n)}{\sum_{j=1}^{K}\pi_j f_j(x_n)}
+\end{align}
+Here, $c_n$ is the class assignment of $x_n$, and $p(c_n=k)$ is the probability that $x_n$ is assigned to the class denoted by $k$. Also, $f_k(x_n)$ describes the distribution or model for the $k$-th class as in the discussion around equation \ref{Bayes1}. The idea here is that $r_{nk}$ is a measure of how much the distribution $f_k(x)$ explains the data point $x_n$.\\
+
+ We might then classify the data point $x_n$ to the class with the greatest responsibility.  This of course, would depend on our goals in classification.
+There are other methods of classification, though we mention responsibility first due to it's connection to the map given in equation \ref{map}.  The function
+\[r(\pi_k)=\frac 1N\sum_n \frac{\pi_k f_k(x_n)}{\sum_{k'}\pi_{k'}f_{k'}(x_n)}\]
+is the arithmetic mean of the responsibilities $\{r_{kn}\}_{n=1}^{N}$.
+
+One might question the necessity of using responsibility when the densities, $f_k(x_n)$ are available.  In fact, it is easier computationally to simply classify the datum $x_n$ to the class that assigns it the greatest likelihood.  However, there are several good reasons to use responsibility or something like it.  Two that we will discuss are what happens when $\pi_k$ is small, and whether or not we should consider other data when classifying a singe data point $x_n$.  These two are related, and we will discuss them in the order given. \textcolor{red}{(add discussion about EM and $K$-means assigning this way)}\\
+
+When considering the datum $x_n$, let us suppose that $y_i\defined f_i(x_n)$ represents the greatest density at $x_n$.   In other words, $y_i\geq f_j(x_n)\;\forall j$.  Then if $\pi_i$ is large (much greater than $\frac{1}{K}$), we could be justified in classifying $x_n$ into class $i$.   If $\pi_i$ is not large, or even very small, then using responsibility is the better option.  The following lemma makes this more precise.
+
+\begin{lemm}
+For $1\leq k\leq K$, let $y_k\defined f_k(x_n)$.  Further, let $r_{kn}$ be defines as in \ref{responsible}.  Further, suppose that $y_i\geq y_k \;\forall k$. Then $r_{jn}>r_{in}$ precisely when 
+\[\dfrac{\pi_j}{\pi_i}>\dfrac{y_i}{y_j}\]
+\end{lemm}
+\begin{proof}
+If $r_{jn}>r_{in}$, then we have 
+\begin{align*}
+\dfrac{\pi_j f_j(x_n)}{\sum_{k}\pi_k f_k(x_n)}&>\dfrac{\pi_i f_i(x_n)}{\sum_{k}\pi_k f_k(x_n)}\\
+\dfrac{\pi_j f_j(x_n)}{\pi_i f_i(x_n)}&>1\\
+\dfrac{\pi_j}{\pi_i}&>\dfrac{f_i(x_n)}{f_j(x_n)}\\
+\dfrac{\pi_j}{\pi_i}&>\dfrac{y_i}{y_j}.
+\end{align*}
+\end{proof}
+
+The calculations in the proof give a suggestion of how to use responsibility in classification.  First, for each data point $x_n$, and each class $k$, compute the product $\pi_k f_k(x_n)$.  Then set $c_n=\argmax_k\left(\pi_k f_k(x_n)\right)$.
+If we expect no order or structure to our data sampling, then this discussion would end here.  However, if we need to take the whole data set into account, we need some other algorithm to help out.  To this end  we will discuss some algorithms from channel coding.

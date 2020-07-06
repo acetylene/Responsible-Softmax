@@ -1,0 +1,36 @@
+
+R version 3.3.2 (2016-10-31) -- "Sincere Pumpkin Patch"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #!/usr/bin/env Rscript
+> library(ggb)
+Loading required package: hsm
+Warning message:
+package 'hsm' was built under R version 3.3.3 
+> args = commandArgs(trailingOnly=TRUE)
+> 
+> # test if there is at least one argument: if not, return an error
+> if (length(args)==0) {
++   stop("At least one argument must be supplied (input file).csv", call.=FALSE)
++ } else if (length(args)==1) {
++   # default output file
++   args[2] = "out.csv"
++   args[3] = .Machine$double.eps
++ }
+Error: At least one argument must be supplied (input file).csv
+Execution halted

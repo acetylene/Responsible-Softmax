@@ -1,0 +1,40 @@
+ %TODO discussion below relevant?
+Exact solutions to the Lagrangian example \ref{lageq} can be difficult and costly numerically.  The general case of the Lagrangian requires solving a system of $K+1$ polynomials in $K$ variables of degree at most $N$, with $K\cdot N$ parameters.  If one uses a Gr\"obner basis to solve such a problem, it can take doubly exponential time in $K$ and $N$.  In most cases a quicker approach is preferred. \\
+
+We consider an iterative approach by looking at the rational map
+\begin{align*}
+r_k(\bm\pi)=\frac 1N\sum_n \frac{\pi_k f_k(x_n)}{\sum_{k'}\pi_{k'}f_{k'}(x_n)}
+\end{align*}
+and defining a map 
+\begin{align}\label{map}
+R:S_K\rightarrow S_K: R(\pi_1,\pi_2,\ldots,\pi_K)=(r_1(\bm\pi),r_2(\bm\pi),\ldots,r_K(\bm\pi)).
+\end{align}
+
+We note briefly that this map relies on the parameters $f_k(x_n)$, which we may view as the entries of a $K\times N$ matrix $F$. We like to think of the matrix $F$ as a set of parameters for the map $R(\bm\pi)$, and will emphasize this relationship by writing the map as $R_F(\bm\pi)$ as necessary. We also note that $R(\bm\pi)$ is homogeneous of degree zero.  An implementation of this map is in the file \url{simplex_map.m}
+
+We introduce an alternative algorithm (see algorithm \ref{ratioAlg}) to the Lagrange multipliers method shown above.  It is based on the idea of iterating the map $R(\bm\pi)$. We expect this to be a good idea because $R(\bm\pi)$ is derived from Baye's rule, so that each iteration should be thought of as updating the probabilities defined by $\bm\pi\in S_K$.  
+
+\begin{table}
+
+\begin{algorithm}[H]
+\caption{Iterative Algorithm}\label{ratioAlg}
+\begin{algorithmic}
+\Require $F$ a $K\times N$ matrix
+\Require $\bm\pi_0$, $\ge$
+\Procedure{Iteration}{$F,\bm\pi_0,\ge$}\Comment{}
+	\State $n \gets 1$
+	\State $\bm\pi_n \gets R(\bm\pi_0)$
+	\State $orbits \gets {\bm\pi_0,\bm\pi_1}$
+	\While{$|\bm\pi_n-\bm\pi_{n-1}|>\ge|\bm\pi_n|$}
+		\State $\bm\pi_{n+1} \gets R(\bm\pi_n)$
+		\State $orbits \gets {\bm\pi_0,\ldots,\bm\pi_{n+1}}$
+		\State $n\gets n+1$
+	\EndWhile
+	\State \textbf{return} $orbits$ \Comment{at this point $\bm\pi_{n-1}$ is approximately $\hat{\bm\pi}$}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+\caption{The main algorithm: Iteration of the\Rpi F map.}
+\end{table}
+
+While it is not known \textit{a priori} that algorithm \ref{ratioAlg} is correct, we will show below that it does converge to a fixed point under reasonable constraints.  Later we will show that under the correct hypotheses, that the fixed point $\hat{\bm\pi}$ satisfying $R(\hat{\bm\pi})=\hat{\bm\pi}$ satisfies a central limit type theorem.  A version of this algorithm is implemented in appendix A. \textcolor{red}{(CHANGE LATER)} file \url{..\\MATLAB\\stablepoint.m}.

@@ -1,0 +1,94 @@
+%!TEX root = ../Dissertation_RC.tex
+
+\subsection{$K$-means algorithm}\label{kmeans}
+The $K$-means algorithm has been in use for several decades.  Though the first 
+mention of the algorithm by name was given by MacQueen in 1967 \cite{
+macqueen1967kmeans} the idea had been around for some time(insert steinhaus ref).  The standard  
+algorithm was used at Bell Labs in 1957 \cite{Lloyd82} for pulse code 
+modulation.  Pollard \cite{pollard1981,pollard1982} showed that the $K$-means 
+algorithm is consistent in a very precise sense.  Today the algorithm is used 
+in many applications \cite{AutoClass1,AutoClass2}, and can be found in many 
+good books on machine learning.
+\cite{Bishop1995,MacKay2002,BishopBook,hastie09esl,MML_2019}
+
+The outline below is primarily compiled from chapters 20 and 22 of MacKay
+\cite{MacKay2002}, though the Bishop and Deisenroth books 
+\cite{BishopBook,MML_2019} are also a good reference.  
+
+The \(K\)-means algorithm is used for vector quantization and for data 
+clustering.  It is so named because it separates data points into $K$ distinct 
+groups, each characterized by a `mean' \(\bm m_k,\, k= 1,\ldots,K\).  In the 
+case that the \(K\)-means algorithm is being used for clustering, these means 
+are the cluster centers and each data point is assigned to the closest mean.
+In this situation it is the case that 
+\[\bm m_k = \frac{\sum_{n=1}^{N} r_k^n \bm x^{(n)}}{N_k}\]
+where 
+\begin{equation*}
+r^n_k = \begin{cases}
+			1 & \text{if } \bm x^{(n)} \text{ is closest to } \bm m_k\\
+			0 & \text{otherwise}
+		\end{cases}
+\end{equation*}
+and \(N_k = \sum_{n=1}^{N} r^n_k\).  In other words, the means \(\bm m_k\) are 
+literally the means of the assignment clusters.
+
+Of course we cannot understand `closest' without first defining a distance 
+function  on the underlying data space.  For the original \(K\)-means 
+algorithm, the distance was the manhattan distance, though we will use a 
+scaled square of the euclidean distance:
+\[d(\bm x, \bm y) = \frac 12 \sum_i (x_i-y_i)^2.\]
+It is worth noting that the choice of distance in this sense is somewhat 
+arbitrary. In most descriptions of the algorithm, euclidean distance is used 
+to aid visualization.
+
+To implement the \(K\)-means algorithm, start with \(K\) distinct means.  
+A common practice is to use randomly sampled data points 
+\(\{\bm m_1 = \bm x^{(n_1)},\ldots,\bm m_K = \bm x^{(n_K)}\}\). Then iteratively 
+do the following:
+\begin{enumerate}
+	\item For each data point, \(\bm x^{(n)}\), set 
+	\(\hat{k}_n = \argmin_k d(\bm x^{(n)},\bm m_k)\).
+	\item Set \(r_{\hat{k}_n}^{n} = 1\), for each \(n\). Set all other 
+	\(r_k^n = 0\)
+	\item Calculate \(N_k = \sum_{n=1}^{N} r^n_k\) and 
+	\[\bm m_k^{new} = \frac{\sum_{n=1}^{N} r_k^n \bm x^{(n)}}{N_k}.\]
+	If \(N_k = 0\), \(\bm m_k^{new} = \bm m_k\).
+	\item If \(d(\bm m_k ,\bm m_k^{new})\) is within a predefined tolerance for every \( k \), 
+	stop.  Otherwise set \(\bm m_k = \bm m_k^{new}\) and repeat at step 1.
+\end{enumerate}
+%algorithm? soft k means? generalized k means? ADD algorithm block?
+In the literature, it is common to see steps one and two listed as the 
+assignment step, and steps three and four as the update step.  
+
+The easiest way to see that this algorithm terminates is to recognize that the 
+function \[L := \sum_{n=1}^{N} d(\bm x^{(n)},\bm m_{\hat{k}_n})\]
+either stays the same or decreases at each update step.  In this sense, \(L\) 
+acts as a Lyapunov function for the \(K\)-means algorithm.
+
+One problem with k-means clustering that is particularly relevant to this 
+paper comes when the clusters do not have equal representation in the data.
+As an example, \cite{xiong2009kmeansvalid} give examples of data sets where kmeans produces equal sized clusters, even though their true sizes relative to the number of data points is different. %\Ryan{Still working on examples, have a few good references though.}
+
+%In this case, the cluster means are often slightly off center and some data points are be inappropriately labeled. %voronoi diagrams? 
+One way to address the problem is with \textit{soft responsibility} 
+\begin{equation}\label{softResp}
+r_k^{(n)} = \frac{\exp(-\gb d(\bm x^{(n)},\bm m_k))}
+{\sum_i \exp(-\gb d(\bm x^{(n)},\bm m_i))}.
+\end{equation}
+The idea behind soft responsibility is that each cluster center is partially 
+responsible for each data point.  The amount of responsibility \(r_k^{(n)}\) 
+of \(\bm m_k\) for the data point \(\bm x^{(n)}\) ought to be inversly 
+proportional to \(d(\bm x^{(n)},\bm m_k)\). That is, cluster centers closer to 
+data points have greater responsibility for those data points.  
+
+The factor \(\gb\) included here is an inverse temperature, or stiffness 
+algorithm, and it can be set at the beginning or iteratively.  In futher 
+refinements of the soft $K$-means algorithm, each cluster center has its own
+\(\gb_k\), and at each iteration \(\gb_k = \dfrac{1}{\gs_k^2}\) where 
+\(\gs_k^{2}\) is the weighted sample variance of the data points assigned to 
+cluster $k$.
+\begin{equation}\label{isoSigma}
+\gs_k^{2} = \frac{\sum_n r_k^{(n)}d(\bm x^{(n)},\bm m_k)^2}{N_k}.
+\end{equation}
+Further refinements to this algorithm can be found in MacKay's book, and were 
+also developed in the software \textit{AutoClass}. \cite{MacKay2002,AutoClass1,AutoClass2}

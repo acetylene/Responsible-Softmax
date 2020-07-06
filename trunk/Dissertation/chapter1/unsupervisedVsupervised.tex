@@ -1,0 +1,137 @@
+%!TEX root = ../Dissertation_RC.tex
+
+Within the realm of machine learning there are two broad collections of 
+algorithms known as supervised and unsupervised learning. While each set of 
+algorithms has their own uses and drawbacks, they are often compared as if 
+they were the two extremes of a spectrum. The practice of employing algorithms 
+in these two categories is often more nuanced.
+
+\label{supLearning}
+Supervised machine learning requires large amounts of labeled data 
+$\mathcal{D}=\{\mathcal{X},\mathcal{T}\}$.  Here the data has an extra feature 
+$\mathcal{T}$, that we think of as labels for individual data points.  The 
+labels may be categorical, as when we are trying to classify data points.  
+$\mathcal{T}$ may also be output of some unknown function on which we wish to 
+perform regression. For the remainder of this paper, we will consider the 
+classification problem but the regression problem will be a good source of 
+inspiration.
+
+In either case, the goal of supervised learning is to develop a program that
+will correctly output a new label $t'$ when given a new data point $x'$. 
+In the case of classification problems, the algorithm gives a set of 
+probabilities $P(t'=\ell|x')$ as $\ell$ ranges over the finite set of 
+classification categories which we will call $\mathcal{C}$. A reasonable 
+constraint in this situation is to require that 
+\[\sum_{\ell\in\mathcal{C}}P(t'=\ell|x') = 1.\]
+
+In light of the above discussion it is effective when considering supervised 
+learning to view the problem as an estimation of the conditional probability 
+$P(\mathcal{X}|\mathcal{T})$. We may then use Bayes' Rule to find 
+\[P(T|X)\propto P(X|T)\cdot P(X).\]
+
+As part of this process, it is typical to choose a loss (or cost) function 
+$L:\mathcal{X}\times\mathcal{T}\rightarrow \R$.  The probability 
+$P(\mathcal{X}|\mathcal{T})$ is then determined by the minimization of the 
+cost function. Common supervised learning algorithms are support vector 
+machines, neural networks such as the multilayer perceptron, naive Bayes and 
+logistic regression.
+
+The basic ideas behind supervised learning can be more fully explored through 
+the example of the multilayer perceptron.  We follow the explanation given in 
+Bishop \cite{BishopBook}. This model is discussed in chapter 5 of Bishop, 
+and there is is also called the feed-forward neural network. It is closely 
+related to, and simpler than, the `deep' learning in commmon use today.
+
+For a more specific example, let us suppose that 
+\(\mathcal{X}=\{\bm x^{(n)}\}\), with \(\bm x^{(n)}\in \R^d\) for 
+\(n=1\ldots N\). Recall that the goal of supervised classification is to make 
+an appropriate approximation of the distribution 
+\(P(\mathcal{T}|\mathcal{X})\). 
+
+The way a multilayer perceptron does this is through composing two or more
+layers to perform inference.  Each layer can be viewed as the composition of a 
+linear function with a non-linear function to pass appropriate information on 
+to the next layer.  Thus \[F_l(Y^{(n)}_{l-1}) = Y^{(n)}_{l}\] represents the 
+\(l\)-th layer and its output, where by default \(F_1(x^{(n)}=Y_1\).
+The final layer is called the loss layer, and it passes the otput of the 
+neural network into the given loss function.
+
+\label{unsupLearning}
+Unsupervised learning, on the other hand, seeks to find patterns in the data
+without the requirement of labels.  One set of unsupervised learning 
+algorithms are clustering algorithms.  These algorithms seek to find patterns 
+among the data and group the data points according to these patterns. 
+
+Among clustering algorithms, we wish to pay most attention to mixture modeling.
+While mixture modeling is useful for more than just clustering, it is 
+worthwhile to think of them as a clustering algorithms to begin with.  Two 
+mixture models on which we will focus are the $K$-means algorithm and the 
+Expectation Maximization (EM) algorithm.  While we will focus on each of these 
+algorithms in detail in sections \ref{kmeans} and \ref{emAlg}, at this point 
+we will discuss some of the common details.
+
+First, all mixture models suppose that the data is sampled from $K<\oo$ 
+different distributions modeled by the distributions 
+$f_k(\bm x,\bm \theta_k)$, $k=1\ldots K$. Here the $\bm\theta_k$ are 
+distribution specific parameters. We then form a model $p(\bm x)$ by taking a 
+convex combination of the given distributions,
+\[p(\bm x;\bm\pi,\bm\Theta)=\sum_{k=1}^{K}\pi_kf_k(\bm x,\bm\theta_k).\]
+Where we require that $\sum_k \pi_k =1$ and 
+$\bm\Theta = \{\bm\gt_1\ldots\bm\gt_K\}$. The goal then of mixture models is 
+to determine $\{\bm\pi,\bm\Theta\}$ from the given data.
+
+We note at this point that clustering and classification are two closely 
+related but different problems. Clustering seeks to infer a distribution for 
+the various clusters in the data. Classification looks to label the data 
+points according to membership in various clusters. Both the $K$-means and EM 
+algorithms have a semi-classification step which we will refer to as 
+responsibility assignment. \cite{BishopBook,MML_2019,MacKay2002}
+
+In the EM algorithm, these responsibility assignments are often referred to as 
+latent variables. The mixing constants $\bm\pi$, may also be considered latent 
+variables, but as will be seen, responsibility is closely related to the 
+mixing constants.
+
+%how is responsibility used? $N=|D|$, $N_k=\#\{x\in D|\text{ class of } x=k\} 
+%= \sum_n r_k^{(n)}$, $\lim_{N\rightarrow\oo}\frac{N_k}{N} = \pi_k$
+We first give a definition of responsibility.  In its simplest form, 
+responsibility is the cluster assignment for a point in one iteration of the 
+$K$-means or EM algorithm. If $N = |\mathcal{D}|$ is the number of data 
+points, and  $K$ is the number of clusters,then 
+$r^{(n)}_k,\ 1\leq n\leq N,\ 1\leq k\leq K$ is the responsibility of the 
+$K$-th cluster for the data point $\bm x^{(n)}$.  
+
+In the most basic implementation, $r^{(n)}_k \in \{0,1\}$. Explicitly, we have 
+$r^{(n)}_k=1$ if $x^{(n)}$ is assigned to cluster $k$ and $r^{(n)}_k = 0$ 
+otherwise. We will call this \textit{hard responsibility}. As a slight 
+modification, we may also consider the case where $r^{(n)}_k \in [0,1]$. In 
+this case we require that $\sum_k r^{(n)}_k = 1$. We will call this 
+\textit{soft responsibility}.
+ 
+The total responsibility for the cluster $k$ is the value 
+$N_k = \sum_n r^{(n)}_k$.
+Whether we are working with hard or soft responsibility, the relative 
+responsibility of cluster $k$ is $\frac{N_k}{N}$.  The mixing probability is 
+approximated by the relative responsibility as will be discussed further in 
+subsections \ref{kmeans} and \ref{emAlg}.
+
+%Input monte carlo discussion here? If I can generate samples, then 
+As a brief discussion of the connection between responsibility and mixing 
+constants, consider the following informal two stage experiment.  We select a 
+point in $\bm x^{(n)}\in\R^d$ via the following process:
+\begin{enumerate}
+\item Stage 1: From the $K$ possible distributions, select a label $k_n$ with 
+probability $P(k_n=k)=\pi_{k}$.
+\item Stage 2: Sample $x_n$ from $f_{k_n}(x)$
+\end{enumerate}
+Then we would expect that as the number of samples grows, the following would
+hold. \[\lim_{N\rightarrow\oo}\frac{R_k}{N} = \pi_k.\] 
+In the Monte Carlo simulation we have set up above, this is the case.
+
+In brief summary, machine learning can broadly be groups into supervised and 
+unsupervised learning algorithms.  Supervised algorithms require a target to 
+model, and unsupervised algorithms look for patterns in the data without 
+targets.  One common method of supervised learning is neural networks, where 
+we may seek to do regression, classification, or many other tasks.  One common 
+form of unsupervised learning is clustering, of which the \(K\)-means and 
+expectation maximization algorithms are important examples.

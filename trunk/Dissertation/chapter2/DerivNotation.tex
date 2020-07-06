@@ -1,0 +1,62 @@
+\subsection{Derivative Notation}\label{subsect:derivNotation}
+
+Before backpropagation resurfaces in chapter \ref{respLayer}, this section establishes important notation standards.  In the literature \cite{abraham1967transversal, manton2012differential, magnus1985matrix, matGradChain} there are several different notations used for differentiation of functions \( f:\R^n\rightarrow \R^m \). Each author seems to prefer their own notation, and while these notations often overlap, reading various papers quickly becomes confusing without precise communication. This section seeks to establish a reference for derivative notation to be used through the remainder of chapter \ref{respLayer}.
+
+In \citep{patternnet}, care is taken to distinguish the Frech\'et (or contravariant) derivative of a function from the gradient (or covariant derivative) of the same function. Given a vector valued function \( f:\R^n\rightarrow\R^m \), the Frech\'et derivative of \( f \) at \(x\) is the linear map \( A_{ f(x)}:\R^n\rightarrow\R^m \) defined by
+\begin{equation}\label{eqn:frechetDefn}
+	\lim_{\norm{\bm h}\rightarrow 0} \frac{\norm{f(\bm x+\bm h)-f(\bm x)-A_{f(x)}(\bm h)}}{\norm{\bm h}}=0.
+\end{equation}
+Provided such a map exists, it is unique.  In particular if \( n,m<\oo \), and \( \pdv{f}{\bm x} = \left(\pdv{f_i}{x_j}\right)_i^j \) is the matrix of partial derivatives (or Jacobian matrix) of \( f \), then \( A_{f(x_0)}(h) = \eval{\pdv{f}{\bm x}}{x_0}\cdot h \).  It is worth noting that the existence of a continuous Jacobian matrix for \( f \) guarantees \( f \) has a Frech\'et derivative.  The reverse implication is not true, \( f \) can have a Frech\'et derivative but not have continuous partials everywhere.
+
+The Frech\'et derivative of \( f \) at the point \( \bm x\in \R^n \) is often denoted by \( Df(\bm x) \), a convention which this dissertation will follow.  The notation \( Df(\bm x)[\bm h] \) works when necessary to discuss both the point \( \bm x \) at which the derivative is being taken, and the direction \( \bm h \) on which it is acting. In this sense it may be said that \( Df \) is a map \( Df:\R^n\rightarrow L(\R^n,\R^m)\). Here, \( L(V,W) \) is the collection of all linear maps from one real vector space \( V \) to another real vector space \( W \).  
+
+Given this notation for the Frech\'et derivative, denote by \( \nabla f(\bm x) \) the gradient of \( f \). A function \( f:\R^n\rightarrow \R^m \) only has a gradient if \( m = 1 \). In this case the gradient is a map \( \nabla f:\R^n\rightarrow\R^n \)such that for all \( \bm x, \bm h \in \R^n \)
+\begin{equation}\label{eqn:gradDef}
+ Df(\bm x)[\bm h] = \<\bm h, \nabla f(\bm x)\>.
+\end{equation} 
+Here the angle brackets denote the standard euclidean inner product on \( \R^n \).  Because the gradient of a scalar valued function is a vector valued map, it is possible for \( \nabla f \) to be differentiable. In this case the resulting derivative is called the \textit{Hessian} of \( f \) and will be denoted by \( \nabla^2 f. \) 
+
+An analog of the gradient for functions \( f:\R^n\rightarrow\R^m \) with \( m\geq 1 \) is the adjoint operator of \( Df \). The adjoint operator of any linear map \( A\in L(\R^n,\R^m) \) is the map \( A^{\ast}\in L(\R^m,\R^n) \) such that \( \forall\; x\in\R^n,\) \(y\in\R^m, \) 
+\[ \<A(x),y\>_{\R^m} = \<x,A^{\ast}(y)\>_{\R^n}. \]
+Since \( Df:\R^n\rightarrow L(\R^n,\R^m) \), the definition of an adjoint operator \( D^{\ast}f:\R^n\rightarrow L(\R^m,R^n)\) depends on the point \( x\in\R^n \) at which it is evaluated.  Thus \( D^{\ast}f \) is defined by 
+\begin{equation*}
+\<Df(x)[h],u\>_{\R^m} = \<h,D^{\ast}f(x)[u]\>_{\R^n}
+\end{equation*}
+holding \( \forall\; x,h\in\R^n,\) \(y\in\R^m.\) Aside from the reliance of the definition on the inner product, the adjoint derivative 
+
+When dealing with linear maps between \( \R^n \) and \( \R^m \), all the maps can be recognized as matrix maps; in this case the adjoint is the transpose of the matrix, \textit{i.e.} \( A^\ast = A^{\intercal} \). This is not true for general vector spaces \( V,W \) over \( \R \) as there may be linear maps which cannot be recognized as matrices. An important example is when \( V,W \) are matrix algebras over \( \R \).
+
+Thus it will not be assumed \textit{a priori} that the derivative maps \( Df,\;D^{\ast}f \) are matrix maps.  In fact, for some of the functions used in chapter \ref{respLayer}, \( Df,\;D^{\ast}f \) will not just be linear maps, but multilinear maps, or tensors.  In this case there are still analogs of adjoint operators but more care must be taken in describing them. Discussion of such details will come when necessary.
+
+Since backpropagation does gradient descent, it must calculate the gradient of the loss $L$ with respect to weights $W$. In figure \ref{fig:backprop}, this is shown to be done via the chain rule, but in the general case more care must be applied. The following lemma makes this much easier.
+\begin{lemm}\label{gradChain}
+	Let $U,V$ be real Riemannian Manifolds and $f:V\rightarrow \R$ and $g:U\rightarrow V$ be smooth maps.  Then if $h=f\circ g$, we have that 
+	\[\nabla h=D^{\ast}g[\nabla f\circ g]\]
+	where $\nabla h,\nabla f$ are the gradients of $h$ and $f$ respectively, and $D^{\ast}g$ represents the adjoint linear operator of $Dg$ with respect to the metrics on $TV$ and $TU$.
+\end{lemm}
+\begin{proof}
+	This is lemma 4.1 of Theis \citep{matGradChain}. This proof adapts it for use in this dissertation. 
+	
+	First, let $u \in U$ and $x\in T_uU$ be arbitrary. Because $f,g$ are smooth, they induce maps $Dg(u):T_uU\rightarrow T_{g(u)}V$ and $Df(g(u)):T_{g(u)}V\rightarrow \R$.
+	It is given (by definition) that $Dh(u)[x]=\langle \nabla h(u),x\rangle_{T_uU}$. Further, it is clear that $Dh(u):T_uU\rightarrow\R$ is given by $Dh(u)[x]=D(f\circ g)(u)[x]=Df(g(u))[Dg(u)[x]]$. 
+	
+	Now $Df(g(u))[Dg(u)[x]]=\langle\nabla f(g(u)),Dg(u)[x]\rangle_{T_{g(u)}V}$.  Then for the linear operator $Dg(u):T_uU\rightarrow T_{g(u)}V$, the adjoint linear operator $D^{\ast}g$ is defined by the equation $\langle y,Dg(u)[x]\rangle_{T_{g(u)}V}=\langle D^{\ast}g(u)[y],x\rangle_{T_uU}$ for $x\in T_uU$ and $y\in T_{g(u)}U$.  This gives  
+	\[Df(g(u))[Dg(u)[x]]=\langle\nabla f(g(u)),Dg(u)[x]\rangle_{T_{g(u)}V}=\langle D^{\ast}g(u)[\nabla f(g(u))],x\rangle_{T_uU}.\]
+	So that $\langle \nabla h(u),x\rangle_{T_uU}=\langle D^{\ast}g(u)[\nabla f(g(u))],x\rangle_{T_uU}$, and as $u,x$ were arbitrary, the theorem is proved.
+\end{proof}
+
+A key aspect of the proof above is the use of the metric on $U$ and $V$. This allows identification of tangent spaces to their duals, $TU\cong TU^{*}$ and  $TV\cong TV^{*}$, to define $Dg^{*}$ appropriately. this is not surprising as the definition for the gradient of \( f \) in equation \ref{eqn:gradDef} is closely tied to the inner product on the domain of \( f \).  It follows that wherever derivatives will be used in this dissertation, the appropriate choice of metric (and thus inner product) on the tangent space will be essential. 
+
+%  It may be worth mentioning information geometry and natural gradient descent here. \textcolor{red}{(Fix Later)}. NOPE! 5/11/2020 this is something for a future paper.
+Because all the spaces involved can be embedded in \( \R^n \) for some \( n \), many calculations in chapters \ref{Algorithm} and \ref{respLayer} use the inner product on $\bm M=L(\R^N,\R^K)$, defined by the Frobenius inner product $\langle A,B\rangle=\op{tr}(A^{\intercal}\cdot B)$. The map $\op{vec}:\bm M\rightarrow \R^{KN}$ given by stacking the columns of $M$ is a diffeomorphism, and the Frobenius inner product on $\bm M$ is equivalent to the standard euclidean inner product on $\R^{KN}$.  In short, the following diagram commutes.
+
+\begin{equation}\label{eqn:vecfrobcommute}
+\begin{tikzcd}
+\bm M\times \bm M \arrow[dr, "\op{Frob}" left] \arrow[r, "\op{vec}" above] & \R^{KN}\times \R^{KN} \arrow[d, "\op{euc}" right]\\
+[1em] & \R
+\end{tikzcd}
+\end{equation}
+Here $\op{Frob}$ and $\op{euc}$ represent the inner product (metric) on each of the spaces.  
+
+Finally, it is worth mentioning that when necessary, such as in the proof of lemma \ref{gradChain}, discussions reference the tangent space \( TU \) of a Riemannian manifold \( U \).  Since all the spaces here are generally euclidean, such notational references help distinguish the space \( U \) from \( T_uU \), vectors tangent to some point \( u\in U \). The full strength of considering these spaces as manifolds will not be used.
+%\Ryan{Talk about what each of these are and their relation to the set of partials.  Mention that for maps from Rm to Rn these are pretty straightforward for the first derivative.  For higher order derivatives it gets messy (tensors). This is also true for maps from matrix spaces to matrix space, but the vec map can turn it into the other situation.  Ultimate goal of chapter: find a vectorized algorithm for computing \( \pdv{L}{F} = \pdv{L}{Y}\pdv{Y}{F} \). If these are both tensors, order matters!}

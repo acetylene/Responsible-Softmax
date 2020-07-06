@@ -1,0 +1,106 @@
+\label{intro}
+%A good introduction answers some of these questions:
+%\begin{enumerate}
+%	\item What does this paper talk about?
+%	\item What makes it interesting?
+%	\item Why is it important?
+%	\item What is the context for the problem?
+%	\item How will will measure the progress (at least here?)
+%	\item Where did the inspiration come from?
+%	\item What is(are) original contribution(s)?
+%\end{enumerate}
+%
+%
+%The introduction describes the area in which you are working, gives the basic definition
+%and terminology, and sets out the fundamental results. If your dissertation contains a proof
+%of a result, which may be yours or someone else’s, then you should give the statement of the
+%result in the introduction and explain its significance.
+%
+%As a good rule for structuring any argument, in particular the introduction, it is useful
+%to answer the sequence of questions what – why – how. Always state what you are talking
+%about first before justifying it or diving into details.
+%
+%The “what” part of the introduction summarises the contents of your dissertation. Ideally,
+%you should be as informative as possible. Obviously you cannot say everything at once, so
+%you may have to simplify. You may choose to tell a “white lie”, but you should try not to
+%make statements that are wrong; for instance, you may by add a qualifier like “under certain
+%reasonable assumptions”.
+%
+%The introduction should always cite and, if possible, summarise relevant work done by
+%others. This puts the work of the dissertation in context and allows the reader to judge the
+%dissertation’s contribution. If you can do so briefly, you may give a history of your subject
+%first in order to explain what the current work is about. In that way, you simultaneously take
+%care of the “what” and the “why” part.
+%
+%Usually, the “what” part comes first, the “why” at a suitable time later. The “how” part
+%should summarise the methods used in the dissertation, and possibly give further details.
+%If you present original research, it is good to explain the main ideas in the introduction,
+%and make them sound as un-mysterious as possible. If this is done well in the introduction,
+%the reader will be curious to read more about them. You should make it clear that you to
+%are the first person to have found something (if that is correct), but be careful and modest
+%about it.
+%
+%At any rate, make it clear in the introduction what your own contributions are, which may
+%be original research or in terms of exposition. Do not be shy to state contributions that are
+%small, for example “in Section 5 we illustrate Theorem X of [Y] with an example”.
+%The final paragraph of the introduction is typically a brief list of the sections of the
+%dissertation and their contents.
+%
+%The following is a list of common mistakes in an introduction and how to avoid them.
+%\begin{enumerate}
+%	\item Exaggerated claims, for example “differential games are one of the most important tools
+%	of economics”. This may be your impression after studying differential games, but it
+%	sounds naive. Adopt a neutral tone, and remain careful and factual. The subject of the
+%	dissertation does not have to be declared as very important.
+%	\item Assuming too much knowledge from your reader. You have immersed yourself in the
+%	topic for several months, but your reader has not. Be aware of that, and explain and
+%	introduce your topic in a comprehensible way.
+%	\item An introduction that is an unclear medley of exposition, history of the subject, and a
+%	repetition of what others have done. A good way out of this is to deal with these aspects
+%	separately, in particular, to postpone the exposition to a main section. State early what
+%	you do in the dissertation. Suppose that the dissertation is mostly on a topic covered in
+%	paper X. You may choose similar opening sentences as paper X. However, when paper X
+%	says “We solve this problem as follows”, do not say “we”, but say instead “This problem
+%	is solved in [X] as follows . . . ” and then state how you will explain the results of paper X
+%	in a later section of your dissertation.
+%\end{enumerate}
+%
+%In the writing process, the introduction can normally be finished only when the main text
+%is complete because only then do you know its contents and structure. For your dissertation,
+%try nevertheless to produce a draft introduction early on. You will get practice in writing,
+%and gain valuable feedback on your view of the topic from your supervisor
+
+%%%%%%%%%%%%%%%%%%%%%%%% the above must not fully appear in final dissertation!!!! %%%%%%%%%%%%%%%%%
+
+%\section{actual intro}
+
+%% add information about mixture models (pearson etc.) to intro. maybe include a section in backgd.
+This dissertation introduces a new type of neural network layer for classification problems which I call responsible softmax.   I will show that both in theory and practice, responsible softmax may be a useful tool for dealing with imbalanced data of many types, especially when the data can be modeled with a mixture model.
+
+Working with imbalanced data is a common problem in machine learning. There are many reasons for this, though a common one is that some classes of data are difficult to obtain. It may also be that the underlying process creating the data is imbalanced. Regardless of the reason, imbalanced data tends to bias classifiers towards the majority classes.  For this reason and others, it is important to address imbalanced data when choosing an algorithm.
+% use forward references from the narrative in the introduction. The introduction (including the 
+% contributions) should survey the whole paper, and therefore forward reference every important part.
+
+There have been several techniques developed over the years to handle the problem of data imbalance. Each of these algorithms has several pros and cons. Trade offs between accuracy, precision, computation time, and generalization are not easy to balance. For example, Batista et. al. \cite{DataBalancing} use data balancing to level the per class instances either by undersampling the majority classes, or oversampling the minority classes.  While this can fix the inherent bias against minority classes in typical classifiers, it also can hurt generalization by either severely reducing the data available for training or memorizing (overfitting) the minority class. 
+
+Another example is prior re-weighting (or scaling).  This refers to the idea that the output of a neural network may be modified via Bayes' Rule to appropriately adjust the model of the class mixtures to match what is found empirically.  While I cover this idea in more detail in section \ref{sect:commonLayerConfig} there are many tricks and techniques that fall into this category. See Lawrence e.t. al. \citep{Lawrence2012} for a partial review.
+% Mention Focal loss or label smoothing (label smoothing paper?) or place it later?
+
+A final example I give for now is mixture of experts (MOE) \cite{MOEJacobs}. The idea here is to train several learners so that they can differentiate between only a few classes.  The idea here is that each learner could be an `expert' in identifying one or two classes.  Then each expert learner reports their confidence on classification to a gating network.  This gating network is trained to choose the correct expert for each data point. Nets that work as MOE are very adaptable, but they can be expensive to train.  Further, many of the training methods for MOE can get stuck in suboptimal local minima as per Makkuva et. al. \cite{MOEGridlock}.
+% I probably need to put most of what i write in the intro later in the dissertation (usually ch 2, but maybe elsewhere?)
+
+Responsible Softmax (RS) addresses some of the problems of imbalance. RS resembles both MOE and prior scaling.  It is similar to prior scaling in that it can be viewed as a re-weighting or regularization of standard softmax layer and cross-entropy loss. It resembles MOE in that it uses a type of gating function to establish weights for the loss. These weights can be trained separately or concurrently with the standard neural network weights.
+%add more about neural nets?
+
+Responsible Softmax derives inspiration from the notion of cluster responsibility from the soft \(K\)-means \citep[ch.20-22]{MacKay2002} and expectation maximization \cite{Dempster77EM,NealHintonEM1999} clustering algorithms.  Much of the work in this dissertation assumes an underlying generalized mixture model for the data. Cluster responsibility is closely related to the mixing coefficients of such models. 
+
+In general, a mixture model combines \( K \) different probability distributions by a convex combination of those models.  In more specific terms, if \( f_k(\bm x,\bm\gt_k)\; k=1,\ldots,K \) are different distribution functions, and \( \{\pi_1,\ldots,\pi_K\} \) are positive reals such that \( \sum_k \pi_k =1 \), then the distribution function of the mixture model is 
+\begin{equation}\label{eqn:mixtureDist}
+\phi(\bm x|\bm\pi,\bm\gt_1,\ldots,\bm\gt_K) = \sum_{k=1}^{K} \pi_kf_k(\bm x,\bm\gt_k).
+\end{equation}
+The parameters \( \{\pi_1,\ldots,\pi_K\} \) are interchangeably called mixing coefficients and class probabilities.  Responsible softmax directly estimates these class probabilities.
+
+This dissertation defines and explores Responsible Softmax (RS) and dynamic responsibility (DR), including a proof of convergence for \DR in theorem \ref{thm:convergence} and comparison of \RS to some standard algorithms.  I first show that \DR requires simple hypotheses for convergence to a MLE for mixing coefficients of a mixture model. This applies also to \RS which uses \DR to weight a softmx layer of a neural network.  Then the paper examines the performance of \RS when compared to the standard softmax and a softmax weighted with an empirical prior derived from the data labels.  I use data sets that highlight the advantages of each algorithm.
+%\Ryan{Add information about how \ref{respMLE} shows that \DR gives a MLE for mixture proportions.}
+
+Chapter 2 covers some basic background required for the dissertation.  Chapter 3 covers mathematical analysis of dynamic responsibility. I show that fixed points of \DR act as maximum likelihood estimators for per class probabilities. Chapter 4 covers the basics needed for using responsible weighting in back propagation and gives a basic outline of RS. Chapter 5 will cover empirical analysis of networks using RS on imbalanced data sets and compare RS to the performance of other methods, including standard softmax.

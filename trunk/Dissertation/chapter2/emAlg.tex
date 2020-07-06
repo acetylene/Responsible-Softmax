@@ -1,0 +1,66 @@
+%!TEX root = ../Dissertation_RC.tex
+
+\subsection{Expectation Maximization} \label{emAlg}
+Upon close inspection, it can be seen that the soft \(K\) means algorithm is 
+very similar to the Expectation Maximization (or EM) algorithm for Gaussian 
+Mixture Models.  We give a brief overview of expectation maximization
+and the relation of this algorithm to responsibility as discussed in section 
+\ref{kmeans}. The discussion below roughly follows discussions available in 
+Bishop and other sources \cite{MML_2019, BishopBook, hastie09esl}.
+
+EM was first described for the general case in a paper by Dempster et. al. \cite{Dempster77EM}.  
+Though the paper mentions that Hartley \cite{hartley1958}, Baum \cite{baum1970} and others \cite{woodbury1970missing,sundberg1974,sundberg1976}
+had already used similar techniques in special circumstances.
+%add reference to pearsonand mixture models?
+
+The basic idea behind EM is to add hidden or latent variables to a modeling
+problem in such a way that maximum likelihood estimation is made easier.  The 
+heuristic of this approach is that the latent variables are simply unobserved 
+features of the data.  
+
+To be more precise, suppose we are given data $ x $ and we want to fit a model 
+with parameters $ \gt $ for the pdf \( p(x|\gt) \) using maximum likelihood 
+estimation. In many cases this is an intractable problem that can be simplified
+by considering the conditional pdf
+\begin{equation}\label{emcond}	
+p(x|\gt,z).
+\end{equation}
+
+Now as \( z \) are latent variables, we must place a prior \( p(z) \) on the 
+distribution of \( z. \) Using \ref{emcond}, and the law of total probability 
+we may write
+\begin{equation}\label{emtotprob}
+p(x|\gt)=\int_{\mathcal{Z}} p(x|\gt,z)p(z)\;dz.
+\end{equation}
+Where the integral is taken over the space of possible latent variables.
+
+In practice, the integral in \ref{emtotprob} can easily become intractable.  The trick is
+to choose \( z \) and \( p(z) \) in a manner that avoids this difficulty. 
+The EM algorithm is an iterative procedure that relies on repeating two steps until convergence.  It is the use of these two steps which help us choose \( z \) and \( p(z) \). These steps are also from which the algorithm receives its name.  
+
+While EM is more broadly defined and used than what we will discuss, we will consider the case where we are using EM to fit a Gaussian mixture model for simplicity.  In this case, let 
+\begin{align}
+	\mathcal{D} &= \{\bm x^{(1)},\bm x^{(2)},\ldots,\bm x^{(N)}\} \nonumber \\
+	f_k(\bm x) &\sim \mathcal{N}(\bm \mu_k,\bm \Sigma_k)\;\; k=1,\ldots,K\\
+	 p(z=k) &=\pi_{k},   \;\; \sum_{k} \pi_{k} = 1	
+\end{align}
+
+Then to use the EM algorithm, set parameters to some initial values: \( \pi_{k}=\pi_{k}^0,\; \mu_{k}=\mu_{k}^0,\; \Sigma_{k}=\Sigma_{k}^0\). Then apply the following steps:
+\begin{enumerate}
+	\item \textit{Expectation} step: Set 
+		\begin{equation}\label{emResp}
+		 r_k^n = \frac{\pi_k f_k(\bm x^{(n)})}{\sum_{j=1}^K \pi_j f_j(\bm x^{(n)})}
+		\end{equation}
+	\item \textit{Maximization} step: Set
+	\begin{align}
+		N_k &= \sum_{n=1}^{N}r_k^{n}\\
+		\pi_k^{new} &= \dfrac{N_k}{N}\\
+		\bm \mu_{k}^{new} &= \dfrac{1}{N_k}\sum_{n=1}^{N} r_k^{n}\bm x^{(n)}\\
+		\bm \Sigma_k^{new} &= \dfrac{1}{N_k}\sum_{n=1}^{N}r_k^{n} (\bm x^{(n)}-\bm \mu_{k}^{new})(\bm x^{(n)}-\bm \mu_{k}^{new})^{\intercal}
+	\end{align}
+	\item If all of \( \pi_k, \;\bm\mu_k,\;\bm\Sigma_k \) are close enough to their new counterparts, stop.  Otherwise, set \( \pi_k = \pi_k^{new}, \;\bm\mu_k = \bm\mu_{k}^{new}, \;\bm\Sigma_k = \bm\Sigma_k^{new}\), then repeat steps 1 and 2.
+\end{enumerate}
+
+We note that this is a specific implementation of the EM algorithm in the case we suspect that a Gaussian mixture model works well for the underlying data.  Other changes that may be made are choosing different parameterized distributions \( f_k(\bm x) \), or even adapting the algorithm for completely different models. For example the Baum-Welch algorithm \cite{baum1970}, is tailored  specifically to using EM on Hidden Markov Models. More information about generalizations of EM may be found in Hastie et. al. \citep[p.276]{hastie09esl}.
+
+Other than ease of explanation, we use the preceding description of EM to illustrate the similarity of EM and \( K \)-means algorithms.  For example, fix \( \bm\Sigma_{k} \) to be isotropic with variance as described in \ref{isoSigma}, then equations \ref{softResp} and \ref{emResp} agree on the definition of responsibility.  %This connection can be explored somewhere else, for now we are just interested in responsibility! \Ryan{Should I mention ELBO bound here?}%nope!

@@ -1,0 +1,169 @@
+\label{sect:GMMresults}
+The Gaussian mixture model used for this section has the parameters given in the appendix \Ryan{appendix WIP}
+
+%\begin{table}[h]
+%	\Ryan{Add table!}
+%	\caption[Parameters for GM model used to generate data for testing]{The parameters were created randomly in MATLAB.  Source code can be found in the appendix, or on appropriate website?}\label{table:GMMparams}
+%\end{table}
+
+The training and test data for each run are generated independently by MATLAB. Where appropriate, the RNG seed was saved to reproduce results.  Each net was trained on the same training data for each run, and the RNG was seeded with the same seed before each training of a neural net to ensure the same initialization parameters. The training set was partitioned into training and validation sets prior to beginning training.  An independent test set is also generated before each run.  Training, validation, and test sets are used 300 of times for each run, and 5 runs are performed.  This section only reports on the outcomes of the first run, but similar results were achieved on each run.
+
+The confusion matrices for the neural nets described in section \ref{sect:commonLayerConfig} are shown in table \ref{table:GMMconfusion}.
+
+\begin{table}[ht]
+	\renewcommand{\arraystretch}{1.4}
+	\centering
+	%\captionsetup[subtable]{position=top}
+	\subcaptionbox{Confusion table for GMM Net \#1.\label{table:GMMconfusion1}}{
+		\begin{tabular}{|c|c|c|c|c|}
+			\hline
+			30.253±.001 & 0.0 & .027±.001   & 0.0 & 0.0         \\ \hline
+			1.680±.000  & 0.0 & 0.0         & 0.0 & 0.0         \\ \hline
+			.328±.004   & 0.0 & 32.206±.008 & 0.0 & .706±.006   \\ \hline
+			0.0         & 0.0 & .033±.001   & 0.0 & 3.207±.001  \\ \hline
+			0.0         & 0.0 & .021±.001   & 0.0 & 31.539±.001 \\ \hline
+		\end{tabular}
+	}
+	\subcaptionbox{Confusion table for GMM Net \#2.\label{table:GMMconfusion2}}{
+		\begin{tabular}{|c|c|c|c|c|}
+			\hline
+			30.165±.004 & .101±.004 & .014±.001   & 0.0       & 0.0         \\ \hline
+			1.616±.003  & .063±.003 & 0.0         & 0.0       & 0.0         \\ \hline
+			.398±.006   & .114±.003 & 31.739±.010 & .330±.008 & .659±.009   \\ \hline
+			0.0         & 0.0       & .031±.001   & .333±.012 & 2.875±.012  \\ \hline
+			0.0         & 0.0       & .012±.000   & .082±.004 & 31.466±.004 \\ \hline
+		\end{tabular}
+	}
+	\subcaptionbox{Confusion table for GMM Net \#3.\label{table:GMMconfusion3}}{
+		\begin{tabular}{|c|c|c|c|c|}
+			\hline
+			29.897±.010 & .374±.010 & .009±.001   & .000±.001  & 0.0         \\ \hline
+			1.273±.011  & .406±.011 & .001±.001   & 0.0        & 0.0         \\ \hline
+			.658±.016   & .595±.017 & 29.916±.036 & 1.329±.031 & .743±.018   \\ \hline
+			0.0         & .000±.001 & .013±.001   & 1.221±.027 & 2.006±.027  \\ \hline
+			0.0         & 0.0       & 0.0         & .340±.009  & 31.220±.009 \\ \hline
+		\end{tabular}
+	}
+	\subcaptionbox{Confusion table for GMM Net \#4.\label{table:GMMconfusion4}}{
+		\begin{tabular}{|c|c|c|c|c|}
+			\hline
+			26.842±.035 & 3.438±.035 & 0.0         & 0.0        & 0.0         \\ \hline
+			.044±.006   & 1.636±.006 & 0.0         & 0.0        & 0.0         \\ \hline
+			.075±.003   & 1.841±.024 & 28.737±.037 & 2.540±.025 & .047±.002   \\ \hline
+			0.0         & 0.0        & .027±.001   & 3.122±.004 & .092±.004   \\ \hline
+			0.0         & 0.0        & 0.0         & 2.463±.023 & 29.097±.023 \\ \hline
+		\end{tabular}
+	}
+	\caption[Confusion matrices with error estimates for GMM nets \#1-\#4]{The nets were tested on a set of samples drawn independently from the training set. Values are reported as percentages for clarity. Test data sample size \(N=2500\) for all runs. Error intervals are 95\% confidence standard error. An entry of \( 0.0 \) indicates that all values were zero to 3 decimal places.}\label{table:GMMconfusion}
+\end{table}
+
+Table \ref{table:GMMprecRec} shows per class precision and recall for the same nets on the same training and test data. One interesting aspect pf these tables is that as the hyperparameter \( C \) increases, the per class precision and recall also increase. However, as figure \ref{fig:deepandwide8} shows, this increase in per class precision and recall is not strict. This suggests that choosing a value of \( C \) which maximizes per class precision and recall may be a reasonable option.
+
+\begin{table}[ht]
+	\renewcommand{\arraystretch}{1.4}
+	\centering
+	\subcaptionbox{Precision and Recall table for GMM Net \#1.\label{table:GMMprecRec1}}[.45\linewidth]{
+		\begin{tabular}{|c|c|c|}
+			\hline
+			\multicolumn{3}{|c|}{\textbf{GMM Net 1}} \\ \hline
+			Class      & Precision      & Recall     \\ \hline
+			1          & 0.936          & 0.999      \\ \hline
+			2          & 0.000          & 0.000      \\ \hline
+			3          & 0.998          & 0.966      \\ \hline
+			4          & 0.000          & 0.000      \\ \hline
+			5          & 0.979          & 0.999      \\ \hline
+		\end{tabular}
+	}
+	\subcaptionbox{Precision and Recall table for GMM Net \#2.\label{table:GMMprecRec2}}[.45\linewidth]{
+		\begin{tabular}{|c|c|c|}
+			\hline
+			\multicolumn{3}{|c|}{\textbf{GMM Net 2}} \\ \hline
+			Class      & Precision      & Recall     \\ \hline
+			1          & 0.935          & 0.997      \\ \hline
+			2          & 0.209          & 0.027      \\ \hline
+			3          & 0.998          & 0.953      \\ \hline
+			4          & 0.401          & 0.090      \\ \hline
+			5          & 0.898          & 0.997      \\ \hline
+		\end{tabular}
+	}
+	\subcaptionbox{Precision and Recall table for GMM Net \#3.\label{table:GMMprecRec3}}[.45\linewidth]{
+		\begin{tabular}{|c|c|c|}
+			\hline
+			\multicolumn{3}{|c|}{\textbf{GMM Net 3}} \\ \hline
+			Class      & Precision      & Recall     \\ \hline
+			1          & 0.934          & 0.988      \\ \hline
+			2          & 0.279          & 0.194      \\ \hline
+			3          & 0.999          & 0.894      \\ \hline
+			4          & 0.385          & 0.364      \\ \hline
+			5          & 0.918          & 0.989      \\ \hline
+		\end{tabular}
+	}
+	\subcaptionbox{Precision and Recall table for GMM Net \#4.\label{table:GMMprecRec4}}[.45\linewidth]{
+		\begin{tabular}{|c|c|c|}
+			\hline
+			\multicolumn{3}{|c|}{\textbf{GMM Net 4}} \\ \hline
+			Class      & Precision      & Recall     \\ \hline
+			1          & 0.988          & 0.930      \\ \hline
+			2          & 0.289          & 0.882      \\ \hline
+			3          & 0.999          & 0.868      \\ \hline
+			4          & 0.380          & 0.969      \\ \hline
+			5          & 0.996          & 0.922      \\ \hline
+		\end{tabular}
+	}
+	\caption[Per class precision and recall for GMM nets \#1-\#4]{This table shows per class precision and recall for GMM nets trained and tested on the same data as in table \ref{table:GMMconfusion}}\label{table:GMMprecRec}
+\end{table}
+
+Where the parameters for \( \bm\pi^{\ast}\!,\; f_k(x,\bm\gt_k) \) are known, a reasonable `ideal' classifier may be obtained by using a maximum \textit{a posteriori} estimate as discussed in section \ref{sect:eval}.  An even better option is to treat the outputs of the neural nets as point estimates of per class probabilities for data points, and compare that to the discrete posterior distribution given by Bayes rule. This might be a good method to study in future work.
+
+The images in figures \ref{fig:bayesclassregions} and \ref{fig:netclassregions} show classification regions for all the mentioned classifiers. As discussed, the neural net with the softmax layer completely misses the underrepresented classes, and does not even have a classification region for one of those classes. Looking at these figures helps to explain why despite doing poorly on classification for minority classes, softmax is the best at overall precision and recall. However, when looking at per class precision and recall, standard softmax does poorly, as shown in table \ref{table:GMMprecRec}.
+
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{chapter5/bayesClassRegions}
+	\caption[Classification Regions for the MAP classifier 1]{This figure represents the classification regions for a MAP estimator of the data in figure \ref{fig:sampleGMM_K5}. The class is estimated via equation \eqref{eqn:MAPestimator}, since the distributions and mixing components are known. }
+	\label{fig:bayesclassregions}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{chapter5/netClassRegions}
+	\caption[Classification Regions for GMM nets \#1-\#4]{This shows classification regions for GMM Nets \#1-\#4. Colors are the same as in figures \ref{fig:sampleGMM_K5} and \ref{fig:bayesclassregions}. }
+	\label{fig:netclassregions}
+\end{figure}
+
+\FloatBarrier
+
+
+The \RS layers each converged to a value for \( \hat{\bm \pi} \) as an estimate of \( \bm\pi^{\ast}.\) As summarized in table \ref{table:GMMClassWeights}, the neural nets made reasonable estimates of \( \bm\pi^{\ast} \). Note that these values are similar to the percentages found in the counfusion matrices of table \ref{table:GMMconfusion}.
+
+\begin{table}[ht]
+	\centering
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{c|c|c|c|c|c|}
+		\cline{2-6}
+		& \(\pi_1\) & \(\pi_2\) & \(\pi_3\) & \(\pi_4\) & \(\pi_5\) \\ \hline
+		\multicolumn{1}{|c|}{\textbf{GMM Net \#2}} & 0.2359    & 0.0389    & 0.2299    & 0.2440    & 0.2512    \\ \hline
+		\multicolumn{1}{|c|}{\textbf{GMM Net \#3}} & 0.2441    & 0.0254    & 0.2286    & 0.2478    & 0.2541    \\ \hline
+		\multicolumn{1}{|c|}{\(\bm\pi^{\ast}\)}    & 0.2489    & 0.0206    & 0.2441    & 0.2431    & 0.2433    \\ \hline
+	\end{tabular}
+	\caption[MLE of Class weights for GMM nets \#2 and \#3]{A representative example of trained class weights for GMM nets \#2 and \#3. The class weight vector \( \bm\pi^{\ast} \) used for generating the GMM data is shared for comparison.}\label{table:GMMClassWeights}
+\end{table}
+
+A one-off experiment was also performed with different class weights and on GMM nets with large values of \( C \). As seen in figure \ref{fig:deepandwide8}, larger values of the Hyperparameter \( C \) can lead to unexpected outcomes. Figure \ref{fig:deepandwide6mapclassregions} shows the classification regions for the MAP estimator on the data set used to train the nets in figure \ref{fig:deepandwide8}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{chapter5/deepandWide6_edit}
+	\caption[Classification regions for MAP estimator 2]{In this data set, \( \bm\pi^{\ast} = ( 0.4466,    0.0227,    0.0302,    0.0417,    0.4589) \), and all other GMM parameters are as in figure \ref{fig:bayesclassregions}. }
+	\label{fig:deepandwide6mapclassregions}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{chapter5/deepandwide8_edit}
+	\caption[Classification regions for RS GMM nets with large $C$]{ The first and last classification region images represent softmax and fixed weight softmax respectively.  Images 2-5 show the classification regions for nets with \RS layer and hyperparameter \( C = 1,4,8,16 \) respectively. Colors of each class are as in figure \ref{fig:deepandwide6mapclassregions}.}
+	\label{fig:deepandwide8}
+\end{figure}
+
+\FloatBarrier

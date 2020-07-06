@@ -1,0 +1,66 @@
+\label{respMLE}
+
+Theorem \ref{unique} proves that looking for the fixed points of \Rpi F when $F$ has full rank is equivalent to finding a maximum likelihood estimator. This means that maximization algorithms work in such cases to find the fixed point of \Rpi{F} on the interior of $S_K$.  More importantly, with a little bit of work results from \citep{WaldMLE, pollard1981, pollard1982} adapt to give many of the same properties for this algorithm as we would for the MLE.  In particular, these things prove consistency of the fixed point $\hat{\bm\pi}$ as an estimator for the point $\bm\pi^\ast=\{\pi_k^\ast\}_{k=1}^{K}$ which describes the mixing proportions of a mixture model.
+
+Algorithm \ref{newtAlg} uses Newton's method to maximize $\ell(\bm\pi)$ on $S_K$. This algorithm requires using Hessian of $\ell(\bm\pi)$, but this is calculated in equation \ref{hessDef} of theorem \ref{hess}.
+
+\begin{table}[h]
+\begin{algorithm}[H]
+\caption{Maximization Algorithm}\label{newtAlg}
+\begin{algorithmic}
+\Require $F$ a $K\times N$ matrix
+\Require $\bm\pi_0$, $\ge$
+\Procedure{Newton Maximization}{$F,\bm\pi_0,\ge$}%\Comment{}
+	\State $\bm\pi \gets \bm\pi_0$
+	\State $\Delta\bm\pi \gets \mathbbm{1}_K$
+	\While{$\lVert\Delta\bm\pi\rVert>\ge\lVert\bm\pi\rVert$}
+		\State $\bm D_{\ell}(\bm\pi) \gets \Matrix{H_{\ell}(\bm\pi)&\mathbbm{1}_K\\ \mathbbm{1}_K^{\intercal}& 0 }$
+		\State $\Delta\bm\pi \gets D_{\ell}(\bm\pi)^{-1}(\nabla\ell(\bm\pi),0)$
+		\State $\bm\pi \gets \bm\pi + \Delta\bm\pi$
+	\EndWhile
+	\State \textbf{return} $\bm\pi$ \Comment{at this point $\bm\pi$ is approximately $\hat{\bm\pi}$}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+\caption{A Newton Method version of the Main Algorithm}
+\end{table}
+The column vector $\mathbbm{1}_K$ as used in this algorithm is defined in the proof to theorem \ref{unique}.  A version of this algorithm is found in the \Ryan{(CHANGE LATER, add appendix)}file \url{..\\MATLAB\\stablepointNewton.m}.
+
+Using the block matrix in this algorithm ensures that $\bm\pi+\Delta\bm\pi$ stays in $S_K$.  This is equivalent to the geometric idea that $\Delta\bm\pi$ be restricted to the tangent plane of $S_K$.  In light of theorem \ref{unique}, it is also worth noting that this algorithm gives $\Delta\bm\pi=0$ precisely when $\nabla\ell(\bm\pi)=\mathbbm{1}_K$.
+
+One set of issues this algorithm resolves is the problem discussed in remark \ref{boundary}.  While algorithm \ref{ratioAlg} cannot leave $\partial S_K$ when given an initial value in $\partial S_K$, algorithm \ref{newtAlg} will not do this.  However, in practice algorithm \ref{newtAlg} tends to be more sensitive to the conditions of the matrix $F$ than algorithm \ref{ratioAlg}. 
+
+The biggest problem that \ref{newtAlg} faces happens when \( \argmax_{S_K} \elpi{F} = \hat{\bm\pi} \in \partial S_K\). In this case remark \ref{rk:boundaryGradient} shows that following the gradient will lead to a maximum outside of \( S_K \).  Such behavior happens fairly often in practical situations, especially when working with imbalanced data.  
+
+The use of algorithm \ref{newtAlg} might be recovered via use of KKT conditions as in section \ref{section:lagrange}.  Another common method is to add some sort of additional term such as \( -H(\bm\pi) \), the entropy of  \( \bm\pi \), to prevent \( \elpi F \) from having a maximum on the edge.  This technique is sometimes called the `free energy' approach, and comparing the two methods would be a good topic for future work.
+
+% \Ryan{(EXPOUND? This would be a good place to revisit discussion about relationship between fixed points of \( R_F \) and maximal values of \( \ell_F \))}
+
+I now turn to examining the behavior of $\hat{\bm\pi}$ as an estimator of $\bm\pi^\ast$. It is worthwhile to look at some experimental data. As $N$ increases $\hat{\bm\pi}$, as described in theorem \ref{thm:convergence}, approaches $\bm\pi^\ast$.
+
+\begin{table}[h]
+%\vspace{2ex}
+\centering
+\begin{tabular}{r||r|r}
+\toprule
+\textbf{$N$} & \textbf{$\bm \mu$} & \textbf{$\bm{\gs^2}$}\\
+\midrule
+10 & 0.372980 & 0.04218\\
+100 & 0.133670 & 0.008056\\
+1000 & 0.042706 & 0.000884 \\
+100000 & 0.004335 & 0.00000952\\
+\bottomrule
+\end{tabular}
+\caption{Experimental Evidence of Consistency}
+\label{exprConsist}
+\end{table}
+
+Table \ref{exprConsist} summarizes some numerical experiments done with the scripts \Ryan{(CHANGE LATER, add appendix)}\url{..\\MATLAB\\GMMData.m} and \url{..\\MATLAB\\error_samples.m}. The version of  algorithm \ref{ratioAlg} in the file \url{..\\MATLAB\\stablepoint.m} was used. For each $N$, 10000 trials were generated and the difference 
+\[\Delta\bm\pi=\bm\pi^\ast-\hat{\bm\pi}\]
+was recorded for each trial.  
+
+The second column records the mean of $\|\Delta\bm\pi\|$ for the trials. The third column shows the variance of $\|\Delta\bm\pi\|$ for the trials.  As expected for a consistent estimator, the error shrinks like $O\left(\dfrac{1}{\sqrt{N}}\right)$.
+
+%\Ryan{Add discussion that this is maximizing log likelihood, as \( -\ell_F \) is a Lyapunov function. Maybe look at likelihood ratio?}
+
+As \( L_F(\bm\pi) \) is formed from the likelihood function of a given sample, and iterating \Rpi F gives a maximum for \( \elpi F \) on \( S_K \), finding a fixed point as in algorithms \ref{ratioAlg} or \ref{newtAlg} is calculating argmax of the Log likelihood.  In other words, \( \hat{\bm\pi} \) is a MLE for \( \bm\pi^{\ast} \).

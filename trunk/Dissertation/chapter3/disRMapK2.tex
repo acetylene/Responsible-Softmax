@@ -1,0 +1,83 @@
+For now we will limit our discussion to the case $K=2$.  The advantage in this is that $R(\bm\pi)$ is a homogenous map so we may consider the ratios of the two coordinates as a map on the projective line.  The advantage is that this reduces the number of dimensions in consideration to 1.
+
+To be precise, start with the $2\times N$ matrix
+\begin{equation}\label{eqn:FdefK2}
+	F=
+	\begin{pmatrix}
+	a_1 & a_2 & a_3 & \ldots & a_N\\
+	b_1 & b_2 & b_3 & \ldots & b_N
+	\end{pmatrix}
+\end{equation}
+
+We should think of this $F$ as being defined by taking $N$ i.i.d. samples from the distribution $X_i\sim P(x)=\pi_1 f_1(x)+\pi_2 f_2(x)$ and define $a_i=f_1(x_i)$, $b_i=f_2(x_i)$. In particular, we have that $a_i\geq 0$ and $b_i\geq 0$.
+
+In this context we have the map 
+\begin{equation}\label{eqn:RdefK2}
+R_F(\pi_1,\pi_2)=\frac 1N\left (\sum_{i\leq N}\frac{\pi_1a_i}{\pi_1a_i+\pi_2b_i},\; \sum_{i\leq N}\frac{\pi_2b_i}{\pi_1a_i+\pi_2b_i}\right )
+\end{equation}
+
+It is clear from the definition that for any $\gl\in\R$, we have $R(\gl\pi_1,\gl\pi_2)=R(\pi_1,\pi_2)$, and so $R$ is homogeneous of degree zero as stated above. If we then define $t=\frac{\pi_1}{\pi_2}$ and 
+\begin{equation}\label{eqn:Tdefn}
+T(t)=\frac{\sum_{i\leq N}\frac{ta_i}{ta_i+b_i}}{\sum_{i\leq N}\frac{b_i}{ta_i+b_i}}
+\end{equation}
+
+then $T(t):\mathbb{P}^1_{\R}\rightarrow\mathbb{P}^1_{\R}$ is a map from the projective line to itself.  If we write \( R(\pi_1,\pi_2) = \frac 1N (r_1(\pi_1,\pi_2),r_2(\pi_1,\pi_2)) \), then the equation 
+\begin{equation}\label{eqn:coordRatios}
+T\left(\frac{\pi_1}{\pi_2}\right)= \frac{r_1(\pi_1,\pi_2)}{r_2(\pi_1,\pi_2)}
+\end{equation}
+describes the relationship between \( T(t) \) and \( R(\pi_1,\pi_2) \).
+
+The following theorem gives another characterization of the map $T(t)$.
+
+\begin{thm}\label{ODE}
+The function $f(t)=\prod_{i=1}^{N} ta_i+b_i$, is a solution to the differential equation \[T(t)=\frac{tf'(t)}{Nf(t)-tf'(t)}\]
+\end{thm}
+
+\begin{proof}
+We will show that $f(t)$ satisfies the given ODE.  Let the numerator and denominator of $T(t)$ be $tA(t)$ and $B(t)$ respectively.  Then note from equation \eqref{eqn:Tdefn} that we have \[A(t)=\sum_{i=1}^N \frac{a_i}{ta_i+b_i},\] \[B(t)=\sum_{i=1}^N \frac{b_i}{ta_i+b_i},\] and \[T(t)=\frac{tA(t)}{B(t)}.\]
+We now calculate as follows:
+\begin{align}
+T(t)\;=&\;\frac{tf'(t)}{Nf(t)-tf'(t)}\nonumber \\ 
+\frac{NT(t)}{t(1+T(t))}&=\frac{f'(t)}{f(t)}\nonumber \\ 
+\int\frac{NT(t)}{t(1+T(t))}\;dt&=\log(f(t)) \label{eqn:logDeriv}
+\end{align}
+Since $tA(t)+B(t)=N$, we have 
+\[1+T(t)=\frac{1}{B(t)}(B(t)+tA(t))=\frac{N}{B}\]
+and so
+\[\frac{NT(t)}{t(1+T(t))}=t^{-1}B(t)T(t)=A(t)\]
+substituting the expression $A(t)=\sum_{i=1}^N \frac{a_i}{ta_i+b_i}$ into 
+\[\int A(t)\;dt=\log(f(t))\]
+and integrating gives the desired result.
+\end{proof} 
+At this point it is important to see that with $f(t)$ defined as in theorem \ref{ODE}
+\begin{equation}
+\pi_2^N\cdot f(t)=\prod_{i=1}^N (\pi_1a_i+\pi_2b_i)
+\end{equation}
+and the RHS above is the evaluation of the sample $x_1,\;x_2,\;\ldots\;,x_N$ on the joint distribution, with  i.i.d. $X_i\sim P(x):=\pi_1 f_1(x)+\pi_2 f_2(x)$. In connection with this observation we have the following corollary.
+\begin{cor}\label{cor:RgradK2}
+	If \( L_F(\pi_1,\pi_2) =  \prod_{i=1}^N (\pi_1a_i+\pi_2b_i)\) and \( \mu_i =\log(\pi_i) \) for \( i=1,2 \), then \( R_F(\pi_1,\pi_2) \) as described in equation \eqref{eqn:RdefK2} satisfies
+	\begin{equation}
+	R_F(\pi_1,\pi_2) = \frac 1N \nabla_{\bm\mu}\log(L_F(\pi_1,\pi_2))
+	\end{equation} 
+\end{cor}
+
+\begin{proof}
+	We begin by observing that equation \eqref{eqn:logDeriv} relates the log derivative of \( f(t) \) to \( T(t) \).  Given the relationship between \( T(t) \) and \( R_F \) as described in equation \eqref{eqn:coordRatios}, the result is unsurprising.
+	
+	We continue by direct derivation. If \( \ell_F = \log(L_F) \) then 
+	\begin{align}\label{eqn:ellDeriv}
+		\pdv{\ell_F}{\mu_1} &= \sum_{i=1}^{N} \pdv{\log(\pi_1a_i+\pi_2b_i)}{\mu_1}\nonumber \\
+							&= \sum_{i=1}^{N} \frac{a_i}{\pi_1a_i+\pi_2b_i}\pdv{\pi_1}{\mu_1} \\
+							&= \sum_{i=1}^{N} \frac{\pi_1a_i}{\pi_1a_i+\pi_2b_i} = r_1(\pi_1,\pi_2).\nonumber
+	\end{align}
+	A similar computation gives 
+	\[\pdv{\ell_F}{\mu_2} = r_2(\pi_1,\pi_2)\]
+	Thus we have 
+	\begin{equation}\label{eqn:RgradK2}
+		R_F(\pi_1,\pi_2) = \frac 1N (r_1(\pi_1,\pi_2),r_2(\pi_1,\pi_2)) = \frac 1N \left(\pdv{\ell_F}{\mu_1} ,\pdv{\ell_F}{\mu_2} \right)
+	\end{equation}
+	as required.
+\end{proof}
+
+One consequence of corollary \ref{cor:RgradK2} is that fixed points of \( R_F \) are constrained maxima of \( \ell_F \) on \(S_2\).  I explore this further in theorem \ref{unique}, but this does allow us to see that iteration of \( R_F \) as in algorithm \ref{ratioAlg} will converge in some cases.
+

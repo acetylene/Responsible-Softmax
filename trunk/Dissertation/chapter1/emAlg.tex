@@ -1,0 +1,39 @@
+%!TEX root = ../Dissertation_RC.tex
+
+\subsection{Expectation Maximization} \label{emAlg}
+Upon close inspection, it can be seen that the soft \(K\) means algorithm is 
+very similar to the Expectation Maximization (or EM) algorithm for Gaussian 
+Mixture Models.  What follows is a brief overview of expectation maximization
+and the relation of this algorithm to responsibility as discussed in section 
+\ref{kmeans}. The discussion below roughly follows discussions available in 
+Bishop and other sources \cite{MML_2019, BishopBook, hastie09esl}.
+
+EM was first described in a paper by Dempster et. al. \cite{Dempster77EM}.
+The basic idea behind EM is to add hidden or latent variables to a modeling
+problem in such a way that maximum likelihood estimation is made easier.  The 
+heuristic of this approach is that the latent variables are simply unobserved 
+features of the data.  
+
+To be more precise, suppose we are given data $ x $ and we want to fit a model 
+with parameters $ \gt $ for the pdf \( p(x|\gt) \) using maximum likelihood 
+estimation. In many cases this is an intractable problem that can be simplified
+by considering the conditional pdf
+\begin{equation}\label{emcond}	
+p(x|\gt,z).
+\end{equation}
+
+Now as \( z \) are latent variables, we must place a prior \( p(z) \) on the 
+distribution of \( z. \) Using \ref{emcond}, and the law of total probability 
+we may write
+\begin{equation}\label{emtotprob}
+p(x|\gt)=\int_{\mathcal{Z}} p(x|\gt,z)p(z)\;dz.
+\end{equation}
+Where the integral is taken over the space of possible latent variables.
+
+In practice, the integral in \ref{emtotprob} can easily diverge.  The trick is
+to choose \( z \) and \( p(z) \) in a manner that avoids this difficulty. 
+The EM algorithm is an iterative
+
+%One simplification used for clustering is the assumption that \( z \) is discrete.
+%Even if \( z \) is not discrete, we may use Bayes rule to update the prior 
+%\(p(z)\).

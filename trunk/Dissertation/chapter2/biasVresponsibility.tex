@@ -1,0 +1,115 @@
+Let us suppose that $X\subset\mathcal{X}$ can be modeled by a mixture model of the form
+\[p(\bm x;\bm\pi,\bm\Theta)=\sum_{k=1}^{K}\pi_kf_k(\bm x,\bm\theta_k),\] as in 
+\textcolor{red}{(sup  V unsup)}.  We have seen that if we know the functions  
+$f_k(\bm x,\bm\theta_k)$, we may approximate $\bm\pi$ by the fixed-point process
+$R(F,\hat{\bm\pi})=\hat{\bm\pi}$ where $F_{kn}=f_k(\bm x^{(n)},\bm\gt_k)$.
+We require that $\hat{\pi}_k\geq 0$ for all $k\leq K$, so we may set $\hat{\mu}_k = 
+\log\hat{\pi}_k$, with the requirement that $\hat{\mu}_k=-\oo$ if $\hat{\pi}_k=0$.
+
+A major drawback of the fixed point iteration method is that we require the ability 
+to evaluate $f_k(\bm x^(n))$ for all $n,k$.  If we do not have this ability, it becomes a
+barrier to creating a reliable model.  Algorithms such as the EM algorithm or the closely
+related variational auto-encoder solve this by making the assumption that the functions 
+$f_k$ have a specific form, usually Gaussian. This has the drawback that the model can
+be inflexible. Such things as heteroscedasticity, and data that is not linearly separable
+such as the classic bulls-eye, or paired moons data sets, require difficult adjustments
+to the mentioned algorithms.
+
+On the other hand, there are techniques such as bayesian nonparametric models and
+heirarchical mixtures of experts that are more flexible in their restrictions.  These
+models offer greater power, but at the expense of greater computational complexity.  In
+both cases we also have to worry about overfitting, in the sense that there are not 
+always guarantees that the varaince of the given model will be computationally bounded
+away from zero.
+
+We propose an algorithm for modeling the $f_k$ that fits somewhere between these two
+extremes. It has the great advantage that it fits in existing deep network structures. 
+This allows the use of high powered computational techniques such as stochastic gradient
+descent. It also gives the flexibility of the more powerful models and still preserves
+the structure of a mixture model on the given data.
+
+Let $T$ be the training targets of the data, and $Y$ the output of the neural network.  
+In this case we will be working with a perceptron style neural network, as is typical 
+with deep learning.  We will only focus on the final few layers of the network in the
+following discussion.
+
+Now, in the case of supervised learning with neural networks, we have the targets $T$ for
+some training set.  Often it is the case that these targets are \textit{one-hot encoded}.
+This means that $\bm t^{(n)}\in \{0,1\}^{K}$, has $\sum_k t_k^{(n)} = 1$.  This requires
+that the $t_k^{(n)}$ are all zero except the entry corresponding to the class of $\bm
+x^{(n)}$.  One shorthand way of writing this is to say that $t_k^{(n)}=\delta_{\ell_n}^k
+$, where $\ell_n$ is the class label of $\bm x^{(n)}$, and $\delta_{\ell_n}^k$ is the 
+Kronecker delta function. \textcolor{red}{maybe mimic patternnet here?}
+We may also allow $\bm t^{(n)}\in (0,1)^{K}$, but enforce the requirement that $\sum_k
+t_k^{(n)} = 1$.  This is slightly more flexible than one-hot encoding, and represents
+the situation where the labeling is less certain.  Either situation will be reasonable.
+
+It is worth looking briefly at the relationship of the targets $T$ and the class labels 
+$\mathcal{L}=\{\ell_1, \ell_2,\ldots,\ell_N\}$.  In the case that $T$ is one-hot encoded,
+say $t_k^{(n)}=\gd_k^{\ell_n}$, then the entries of $T$ are expressing certainty
+concerning the the label $\ell_n$. This situation may be viewed as expressing the idea
+that $P(\ell_n = k|\bm x^{(n)}) = \gd_k^{\ell_n}$. 
+
+If $T$ is instead a list of categorical distributions, e.g. $t_k^{(n)}\in [0,1]$ and 
+$\sum_k t_k^{(n)} = 1$, then we are expressing more uncertainty about the labels. It
+is still the case that $P(\ell_n = k|\bm x^{(n)}) = t_k^{(n)}$.
+
+Given training data $X$, we want to choose the loss function and activation function
+to enforce the mixture model structure on 
+$X \sim \sum_{k=1}^{K}\pi_kf_k(\bm x,\bm\Theta)$, where $\bm\Theta = \bm W$ are the
+weights of the neural network. To save time, we will leave out the direct dependence of 
+the $f_k$ on the weights unless necessary. Since the goal is classification, we desire
+that $Y_{nk}$ be an approximation for the conditional probability that label $\ell_n$ is 
+$k$ given $\bm x^{(n)}$, i.e. $y_k^{(n)}\approx P(\ell_n=k|\bm x^{(n)}) = t_k^{(n)}$. 
+Of course, this requires that $\sum_{k}y_k^{(n)} = 1$.
+
+Since we want to use a mixture model for $X$, then it must be the case that 
+$f_k(x^{(n)})\delta x \approx P(x^{(n)}\leq X\leq x^{(n)}+\gd x|\ell_n=k)$. Then by Bayes
+rule we have 
+\[P(\ell_n=k|\bm x^{(n)}) = \frac{f_k(x^{(n)})P(\ell_n=k)}
+{\sum_i f_i(x^{(n)})P(\ell_n=i)},\]
+\textcolor{red}{(Make above more rigorous?)}
+which tells us that we want to set 
+\begin{equation}\label{Ydef}
+y_k^{(n)}=\dfrac{\pi_k f_k(x^{(n)})}{\sum_{i=1}^{K}\pi_i f_i(x^{(n)})}.
+\end{equation}
+
+%When we are trying to find the $\bm\pi$, then this doesn't hold, as now they would be
+%continuous parameters. But if $\bm\pi$ is fixed, then we may do as above! Alternate!
+
+A good goal  in a situation like this would be to minimize the difference between $Y$ 
+and $T$. Since both $Y$ and $T$ are distributions we have multiple candidates for 
+having $Y$ approximate $T$. \textcolor{red}{mention some others with citations?}
+
+The method we will use is that of cross entropy loss.  The cross-entropy of two 
+distributions $p(x)$ and $q(x)$ on the same underlying probability space 
+$\mathcal{X}$ is the quantity 
+\begin{equation}
+H(p,q):= E_p[-\log (q)] = -\int_{\mathcal{X}} p\log (q) d\mu.
+\end{equation}
+Where $\mu$ is any measure on $\mathcal{X}$ such that $p$ and $q$ are absolutely
+continuous with respect to $\mu$.
+
+The cross entropy is closely related to the Kullback-Leibler divergence of $p$ and $q$.
+This quantity is defined as
+\[D_{\text{KL}}(p\parallel q):=\int_{\mathcal{X}}p(x)\log\left(\dfrac{p}{q}\right)d\mu.\]
+We can then see that 
+\[H(p,q)= D_{\text{KL}}(p\parallel q)+H(p),\]
+where 
+\[H(p) = -\int_{\mathcal{X}}p\log(p)d\mu\]
+is the Shannon Entropy of $p$.
+
+In our case, we are working with a fixed distribution $P(\mathcal{L}|X)=T$, and so the
+Shannon Entropy $H(T)$ is constant.  Thus if we find a distribution $Y$ such that 
+$H(Y,T)$ is minimized, then we find a distribution which minimizes the Kullback-Leibler
+divergence of $Y$ from $T$.
+
+%% read Rubenstein and Kroese?
+
+There are many reasons to choose cross-entropy loss, but the one that we find motivating
+comes from \cite{NealHintonEM1999}.  It is the case, as Neal and Hinton show, that a form
+of cross entropy acts as a Lyapunov function for the EM algorithm. In other words, each
+step, either expectation or maximization, of the EM algorithm reduces the cross entropy 
+between a target and predicted distribution.  They further use this fact to show that any 
+improvement in either step reduces the overall effectiveness of the algorithm.
+

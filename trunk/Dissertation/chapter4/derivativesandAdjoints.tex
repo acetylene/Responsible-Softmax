@@ -1,0 +1,47 @@
+\subsection{Computation of \( \pdv{Y}{F} \)}\label{subsect:ComputationGraph}
+Following the discussion in section \ref{sect:LayerDesc}, recall the definition
+\[Y_i^j = \dfrac{{\pi}_{C,i} F_i^j}{\sum_{k=1}^{K} \pi_{C,k} F_k^j}\]
+Where $F_i = \bm\gs\{(W\cdot X)_i\}$ and $\bm\pi_C=R^C(F,\bm \pi_0)$, 
+is \( C \)-th iterate of \( \bm\pi_0 \) under $R_F$.
+
+In order to successfully do backpropagation, the neural network must calculate the gradient 
+of the loss \( L \) with respect to the weights, \(W\). As mentioned in section \ref{subsect:backprop} this is done via the chain rule.  Thus to calculate
+\begin{equation}\label{eqn:LossGrad}
+	\pdv{L}{W} = \pdv{L}{Y}\cdot\pdv{Y}{F}\cdot\pdv{F}{W},
+\end{equation}
+the neural network must first compute \( \pdv{Y}{F} \). To aid in computation of the derivative and gradient of \( Y \) appropriately, consider the bipartite directed graph in figure \ref{fig:layerDependencies}.
+
+\begin{figure}[h!]
+	\centering
+  	\input{chapter4/YComputeDiagram}
+	\caption[Computation Graph for \( Y \)]{A directed bipartite graph for computing \( Y \). Unboxed nodes represent variables, boxed nodes indicate functions, which perform computations on the variables. Dashed lines represent a repetition of the node $F$ at the given locations.}
+	\label{fig:layerDependencies}
+\end{figure}
+
+This graph presents a very detailed view of computing \( Y \). This will help when computing \( \pdv{Y}{F} \).  Each boxed vertex represents a single step \textit{intermediate function} computation in calculating \( Y(F,\bm p_C) \).  The unboxed vertices are the variable nodes. While the only variables that \( Y \) directly depends on are \( F \) and \( \bm p_0 \), there are several \textit{intermediate variables} which are calculated along the way.  To calculate the gradient of \( Y \) with respect to \( F \), the gradients can be calculated for each intermediate function with respect to the intermediate variables. Then these gradients may be appropriately combined to compute \( \pdv{Y}{F} \).  This is very similar to the discussion in Deisenroth et. al. \cite[example 5.14]{MML_2019}.  Many other resources also cover this material.
+
+The method of breaking a single computation into several computations can become progressively granular to a point that the intermediate functions are the basic operations performed by a computer. When this is implemented numerically in a computer, either through software or hardware, the result is called \textit{automatic differentiation} (AD).  The reference by Baydin et. al. \cite{baydin2017automatic} contains a recent survey of AD.  
+
+Automatic differentiation pertains to the current discussion not only because of its relation to figure \ref{fig:layerDependencies}, but also as an implementation discussion. Many software platforms include AD as a part of their machine learning and neural net implementations. As of release 2019b, this is also true of MATLAB software.  An implementation of the \RS layer in MATLAB code  that uses AD can be found in appendix \Ryan{(insert reference!)}.  While this makes coding easier, it is possible for automatic differentiation to be slower than well implemented vectorized code to compute gradients.  For this, in addition to academic reasons, it is a good idea to calculate \( \pdv{Y}{F} \) directly.
+
+Table \ref{table:vertexDesc} summarizes the intermediate vertices from the computation graph \ref{fig:layerDependencies}.  The gradient of most intermediate functions will be calculated in section \ref{subsect:dLdYcalc}, but first section \ref{sect:dRdPiANDdRdF} will cover derivatives of \( R_F^C \).
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|m{0.23\textwidth}||c|m{0.24\textwidth}|}
+		\toprule
+		 Name & Intermediate Variable Description & Name & Intermediate Function Description\\
+		\midrule
+		\( \mathpzc{N} \) & \( \op{col}(\bm p_C)\odot F \) & \( \odot \) & Hadamard product \\
+		\midrule
+		\( \mathpzc{D} \) & \(  \op{row}(\overbar{\!P}):=\mathbbm 1_K\cdot \overbar{\!P} \) & \( \oslash \) & Hadamard division\\ \midrule
+		\( \overbar{\!P} \) & \( \bm\pi_C^{\intercal}\cdot F \) & \( \<\cdotp,\cdotp\> \) & Appropriate Multiplication\\ \midrule
+		\( \bm \pi_C \) & \( R_F^C(\bm\pi_0) \) & \( \op{col}(\cdot) \) & \( (\cdotp)\cdot\mathbbm 1_N^{\intercal} \), \( N\) columns, all of them the same.\\ \midrule
+		\( Y \) & \( \mathpzc{N}\oslash \mathpzc{D} \) & \( \op{row}(\cdot) \) & \( \mathbbm 1_K\cdotp(\cdot) \), \( K \) rows all of them the same.\\ \midrule
+		\(\mathpzc{C}\)&\( \op{col}(\bm\pi_C):=\bm\pi_C\cdot\mathbbm 1_N^{\intercal} \)&\( (\cdotp)^{\intercal} \) & Transpose of matrix or vector \\
+		\bottomrule
+	\end{tabular}
+\caption[Intermediate Terms for Computation of \( \pdv*{Y}{F} \)]{This table lists a brief description of  the vertices found in the graph \ref{fig:layerDependencies}. The exact definition of each term while be discussed when computing the gradients in section \ref{subsect:dLdYcalc}.}\label{table:vertexDesc}
+\end{table}
+
+The Hadamard product and division mentioned in table \ref{table:vertexDesc} are simply the entrywise product and division respectively, of two matrices having the same size.

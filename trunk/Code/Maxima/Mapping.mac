@@ -1,0 +1,23 @@
+N:2$
+K:2$
+define(F(pi),1/N*makelist( sum(pi[k]*f[k,n] / sum(pi[l]*f[l,n], l,1,K), n,1,N), k,1,K));
+define(g(r), block([G:F([r,1])],G[1]/G[2])),ratsimp;
+/*
+                                  2
+                   2 f     f     r  + (f     f     + f     f    ) r
+                      1, 1  1, 2        1, 1  2, 2    1, 2  2, 1
+(%o21)     g(r) := ------------------------------------------------
+                    (f     f     + f     f    ) r + 2 f     f
+                      1, 1  2, 2    1, 2  2, 1         2, 1  2, 2
+(%i22)                                   2
+                   2 f     f     r  + (f     f     + f     f    ) r
+                      1, 1  1, 2        1, 1  2, 2    1, 2  2, 1
+(%o21)     g(r) := ------------------------------------------------
+                    (f     f     + f     f    ) r + 2 f     f
+                      1, 1  2, 2    1, 2  2, 1         2, 1  2, 2
+(%i22)
+*/
+
+/* Thus  g(r) is a 1-D family of maps, where r is mapped to 
+
+                r * (p+q*r)/(q*r+s)

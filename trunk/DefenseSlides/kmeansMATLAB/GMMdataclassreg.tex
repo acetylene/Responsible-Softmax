@@ -1,0 +1,31 @@
+% This file was created by matlab2tikz.
+%
+%The latest updates can be retrieved from
+%  http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz
+%where you can also make suggestions and rate matlab2tikz.
+%
+\begin{tikzpicture}[scale = .7]
+
+\begin{axis}[%
+width=4.521in,
+height=0.904in,
+at={(0.758in,1.812in)},
+scale only axis,
+axis on top,
+xmin=0.5,
+xmax=1000.5,
+xtick={53.1315789473684,140.850877192982,228.570175438596,316.289473684211,404.008771929825,491.728070175439,579.447368421053,667.166666666667,754.885964912281,842.605263157895,930.324561403509},
+xticklabels={{-25},{-20},{-15},{-10},{-5},{0},{5},{10},{15},{20},{25}},
+ymin=0.5,
+ymax=200.5,
+ytick={22.7222222222222,67.1666666666667,111.611111111111,156.055555555556,200.5},
+yticklabels={{-2},{0},{2},{4},{6}},
+axis x line*=bottom,
+axis y line*=left,
+axis background/.style={fill=white},
+legend style={legend cell align=left, align=left, draw=white!15!black}
+]
+\addplot [forget plot] graphics [xmin=0.0, xmax=1000.5, ymin=0.0, ymax=200.5] {../kmeansMATLAB/GMMdataclassreg-2.png};
+\end{axis}
+
+\end{tikzpicture}%

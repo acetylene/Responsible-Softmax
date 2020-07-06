@@ -1,0 +1,84 @@
+%!TEX root = chapter1.tex
+\label{softmax}
+
+The softmax function is a map \(\gs:\R^D \rightarrow S_D\). As a reminder,
+ \(S_D = \{x\in\R^D|\sum_i x_i = 1, \; x_i\geq 0 \; \forall i\}\). The softmax function is given by
+ \begin{equation}\label{eqn:softmaxDef}
+ \gs_i(\bm x) = \frac{e^{x_i}}{\sum_j e^{x_j}}.
+ \end{equation}
+ In the case that \(D=2\), the softmax function is simply the sigmoidal 
+ activation function. In this sense, the softmax function may be considered as
+ a multivariate extension of the logistic regression model.
+
+ The softmax is so named because it approximates a smooth version of the 
+ \(\argmax\) function.   Given a vector \(\bm x\in \R^{D}\), we may 
+ represent the \(\argmax\) function in the following manner.
+ \begin{equation*}
+	 \argmax_i(\bm x) = 
+	 \begin{cases}
+	 	1 & \text{if } x_i = \max_i(\bm x)\\
+	 	0 & \text{otherwise}
+	 \end{cases}
+ \end{equation*}
+ In this form, it is clear that \(\argmax:\R^D\rightarrow \{0,1\}^{D}\) is 
+ a locally constant function.  In this form, we may also see that softmax 
+ smoothly approximates argmax, in the following sense.  If for a given 
+ \(\bm x\) some coordinate \(x_i\) satisfies \(x_i\gg x_j\;\forall j\neq i\), 
+ then \(\gs(\bm x) \approx \argmax(\bm x)\).
+
+ However, if for some \(i,j\), \(x_i=x_j\gg x_k\;\forall\, k\neq i,j\), then 
+ \(\gs(\bm x) \approx \frac 12 \argmax(\bm x)\).  In a similar way, 
+ \(\gs(\bm x)\) varies continuously over all of \(\R^D\). When argmax 
+ indicates more than one index for the maximum, then softmax will distribute 
+ the max assignment equally to each of the indices.
+
+ The advantage of this comparison is that some of the properties of the 
+ softmax function become immediately apparent.  First, softmax is projective, 
+ so for any \(\gl \in\R\), \(\gs(\gl\bm x) = \gs(x)\). Second, if we define 
+ \(\bm c = c\cdot \bm 1_d = (c,c,\ldots,c)^{\intercal}\) then 
+ \(\gs(\bm x+\bm c)=\gs(\bm x)\), which is a type of translation invariance.
+
+ In regard to both of these properties, we mention the log-sum-exp trick used 
+ frequently in computation of the softmax function. The point is that often in 
+ machine learning applications one may be required to use data types, that 
+ will easily cause underflow and overflow errors.  For example, if \(x\) 
+ represents a single precision floating point number and \(x<-103\), then 
+ \(\op{fl}(\log(\op{fl}(e^x))) = \op{fl}(\log 0) = -\infty\), even though it 
+ should be the case that \(\log(e^x) = x\). Such a situation might be 
+ encountered often in neural network applications.
+
+ The log-sum-exp function \(\op{lse}:\R^D\rightarrow\R\) is defined by 
+ \[\op{lse}(\bm x) = \log\left(\sum_i e^{x_i}\right).\]
+ It is worth noting that \(\nabla\op(\bm x) = \gs(\bm x)\), so that softmax 
+ represents the gradient of the log-sum-exp function.  It is a property of the 
+ lse function that 
+ \[y = \log\left(\sum_{i=1}^{D} e^{x_i}\right) = \log\left(\sum_{i=1}^{D} e^a
+ e^{x_i-a}\right) = \log\left(e^a\sum_{i=1}^{D} e^{x_i-a}\right).\]
+ If \(a\in\R\)
+ \[y = a + \log\left(\sum_{i=1}^{D} e^{x_i-a}\right).\]
+ For the softmax function, this amounts to translation invariance as mentioned 
+ above.  In other words,
+\[\gs_i(\bm x) = \frac{e^{x_i-a}}{\sum_{j} e^{x_j-a}}.\]
+A common value to use to avoid overflow is \(a =\max_i x_i\). This also tends 
+to avoid loss of precision due to underflow.
+
+Finally, in connection to the lse trick, it is noted that 
+\[\log(\gs_i(\bm x)) = x_i - \log\left(\sum_j e^{x_j}\right).\]
+So that one may implement the shift via the translation property of the lse 
+function.  However, this tends to exaggerate numerical inaccuracies we are looking 
+to avoid. For further details one may refer to \cite{AccurateSoftmax}.
+
+%probably not necessary 14 May 2020
+%\Ryan{ TODO:add discussion below}
+%This is a placeholder for a discussion about the softmax and Log Sum Exp functions.  They will be closely related to the process of determining the matrix $F$ through learning (gradient descent).
+%
+%note: On $\R^2$ softmax looks like logistic regression, can be generalized.  Also there is a connection between LSE and softmax, described in bishop:NN.
+%(what is log of softmax?) 
+%
+%late night notes:
+%does relationship look like:
+%\[f(\argmax)=\max f(x)?\]
+%maybe not in general, as one on the left may be a set, and the one on the right isn't guaranteed to exist.
+%However, it might be nice to see a similar relationship with softmax and LSE.
+%
+%\Ryan{TODO: Add a discussion about how softmax looks like a normalized gibbs distro over finite states}

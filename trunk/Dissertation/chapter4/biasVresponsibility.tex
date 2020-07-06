@@ -1,0 +1,111 @@
+Let us suppose that $X\subset\mathcal{X}$ can be modeled by a mixture model of the form
+\[p(\bm x;\bm\pi,\bm\Theta)=\sum_{k=1}^{K}\pi_kf_k(\bm x,\bm\theta_k),\] as in 
+section \ref{supVunsup}. If the functions  
+$f_k(\bm x,\bm\theta_k)$ are known, the mixing components $\bm\pi^{\ast}$ may be approximated by the fixed-point process $R(F,\hat{\bm\pi})=\hat{\bm\pi}$ where $(F)_k^n=f_k(\bm x^{(n)},\bm\gt_k)$.
+This requires that $\hat{\pi}_k\geq 0$ for all $k\leq K$, so set $\hat{\mu}_k = 
+\log\hat{\pi}_k$, with the requirement that $\hat{\mu}_k=-\oo$ if $\hat{\pi}_k=0$.
+
+%\Ryan{insert discussion of neural net?(refer to background)}
+
+Let $T$ be the training targets of the data, and $Y$ the output of the neural network.  
+This dissertation uses a feedforward neural network, as is typical 
+with deep learning. This discussion will only focus on the final few layers of the network.
+
+Now, in the case of supervised learning, targets $T$ for some training set are given.  Often it is the case that these targets are \textit{one-hot encoded} as discussed in section \ref{supVunsup}.
+This means that $\bm t^{(n)}\in \{0,1\}^{K}$, and $\sum_k t_k^{(n)} = 1$.  This requires
+that the $t_k^{(n)}$ are all zero except the entry corresponding to the class of $\bm
+x^{(n)}$.  One shorthand way of writing this is to say that $t_k^{(n)}=\delta_{\ell_n}^k
+$, where $\ell_n$ is the class label of $\bm x^{(n)}$, and $\delta_{\ell_n}^k$ is the 
+Kronecker delta function. 
+
+Using targets in neural networks also allows $\bm t^{(n)}\in (0,1)^{K}$, but enforces the requirement that $\sum_k t_k^{(n)} = 1$.  This is slightly more flexible than one-hot encoding, and represents the situation where the labeling is less certain. This is closely related to the regularization technique of label smoothing as mentioned in M\"uller \cite{muller2019labelsmoothing}.  Either one hot labels or smooth labels will be reasonable for training targets.  The first situation is more typical of classification problems, the second may be treated more like regression.  Feedforward neural nets are suitable for both activities.
+
+It is worth looking briefly at the relationship of targets $T$ and class labels 
+\(\mathcal{L}=\{\ell_1, \ell_2,\ldots,\ell_N\}\).  In the case that $T$ is one-hot encoded,
+say $t_k^{(n)}=\gd_{\ell_n}^k$, then the entries of $T$ are expressing certainty
+concerning the the label $\ell_n$. This situation may be viewed as expressing the idea
+that $P(\ell_n = k|\bm x^{(n)}) = \gd_k^{\ell_n}$. If $T$ is instead a list of categorical distributions, \textit{e.g.} $t_k^{(n)}\in [0,1]$ and $\sum_k t_k^{(n)} = 1$, then the model expresses more uncertainty about the labels. It is still the case that $P(\ell_n = k|\bm x^{(n)}) = t_k^{(n)}$. 
+
+Given training data $X$, building the neural network requires a choice of loss function and activation function(s) to enforce the mixture model structure on 
+$X \sim \sum_{k=1}^{K}\pi_kf_k(\bm x,\bm\Theta)$, where $\bm\Theta = \bm W$ are the
+weights of the neural network. To save time, this notation leaves out the direct dependence of 
+the $f_k$ on the weights unless necessary. Since the goal is classification $y_k^{(n)}$, the outputs of the neural net on \( x^{(n)} \), should approximate the conditional probability that label $\ell_n$ is 
+$k$ given $\bm x^{(n)}$, \textit{i.e.} $y_k^{(n)}\approx P(\ell_n=k|\bm x^{(n)}) = t_k^{(n)}$. 
+Of course, this requires that $\sum_{k}y_k^{(n)} = 1$.  Denote outputs of the neural network  on the \( n \)-sample by \( (Y)_k^{n} :=  y_k^{(n)}\).
+
+As dynamic responsibility assumes a mixture model for $X$, it also supposes that $P(x^{(n)}|\ell_n=k)\sim f_k(x^{(n)})$. Then by Bayes' rule 
+\begin{align}
+P(\ell_n=k|\bm x^{(n)}) &= \frac{P(\bm x^{(n)}|\ell_n=k)P(\ell_n=k)}{\sum_i P(\bm x^{(n)}|\ell_n=i) P(\ell_n=i)}\\ \nonumber
+					    &= \frac{f_k(x^{(n)})P(\ell_n=k)}{\sum_i f_i(x^{(n)})P(\ell_n=i)}.
+\end{align}                         
+%\Ryan{(Make above more rigorous?)}
+which leads to the definition 
+\begin{equation}\label{Ydef}
+y_k^{(n)}=\dfrac{\pi_k f_k(x^{(n)})}{\sum_{i=1}^{K}\pi_i f_i(x^{(n)})}.
+\end{equation}
+
+%When we are trying to find the $\bm\pi$, then this doesn't hold, as now they would be
+%continuous parameters. But if $\bm\pi$ is fixed, then we may do as above! Alternate!
+\subsection{Choice of Loss Function}
+A good goal  in a situation like this is to minimize the difference between $Y$ 
+and $T$. Since both $Y$ and $T$ are distributions, multiple candidates for loss functions work well
+have $Y$ approximate $T$. The method used here is that of cross entropy loss, though other common ones are mean squared error \cite{Bishop1995} and connectionist temporal classification loss \cite{Graves06ctc}.  
+
+Conflating the ideas of a probability distribution and its underlying measure, define cross-entropy of two probability distributions $p(x)$ and $q(x)$ on the same underlying probability space 
+$\mathcal{X}$ by the quantity 
+\begin{equation}\label{eqn:crossent}
+H(p,q):= E_p[-\log (q)] = -\int_{\mathcal{X}} p\log (q) d\mu.
+\end{equation}
+Where $\mu$ is any measure on $\mathcal{X}$ such that $p$ and $q$ are absolutely
+continuous with respect to $\mu$.
+
+The cross entropy is closely related to the Kullback-Leibler (KL) divergence from $q$ to $p$.
+The KL divergence  from $q$ to $p$ is defined as
+\begin{equation}\label{eqn:kldiverge}
+D_{\text{KL}}(p\parallel q):=\int_{\mathcal{X}}p(x)\log\left(\dfrac{p}{q}\right)d\mu.
+\end{equation}
+then  
+\begin{equation}\label{eqn:crossentdiverge}
+H(p,q)= D_{\text{KL}}(p\parallel q)+H(p),
+\end{equation}
+where 
+\begin{equation}\label{eqn:shannonent}
+H(p) = -\int_{\mathcal{X}}p\log(p)d\mu
+\end{equation}
+is the Shannon Entropy of $p$.
+
+In the case discussed here, $P(\mathcal{L}|X)=T$ is a fixed distribution, and so the
+Shannon Entropy $H(T)$ is constant.  Thus finding a distribution $Y$ such that 
+$H(Y,T)$ is minimized also finds a distribution which minimizes \( D_{\text{KL}}(T\parallel Y) \), the Kullback-Leibler divergence of $Y$ from $T$.
+
+%% read Rubenstein and Kroese?
+
+There are many reasons to choose cross-entropy loss, but one that motivates responsible softmax
+comes from Neal and Hinton \cite{NealHintonEM1999}.  It is the case, as Neal and Hinton show, that a form
+of cross entropy acts as a Lyapunov function for the EM algorithm. In other words, each
+step, either expectation or maximization, of the EM algorithm reduces the cross entropy 
+between a target and predicted distribution.  They further use this fact to show that any 
+improvement in either step reduces the overall effectiveness of the algorithm. This idea returns in section \ref{sect:LayerDesc}.
+
+\subsection{Method for determining \( F \)}
+As theorem \ref{thm:convergence} shows, if the matrix \( F \) given by \((F)_k^n=f_k(\bm x^{(n)},\bm\gt_k)\) has linearly independent rows, iteration of \( R_F(\bm\pi) \) converges to a unique fixed point \( \hat{\bm \pi} \) on the interior of \( S_K \). Note here that for theorem \ref{thm:convergence} to work, the functions \( f_k(\bm x^{(n)},\bm\gt_k) \) must be positive. As the functions seek to approximate pdfs, this should not pose a problem.  
+
+Since the output of a neural network seeks to approximate these pdfs, exponentiation of the output is reasonable.  This ensures positivity of the output, and almost surely guarantees that \( F  \) will satisfy the linear independence requirement.  Because the function \( R(F,\bm p) \) is homogeneous in both the rows and columns of \( F \), it makes sense to use the typical softmax output of a neural network as discussed near equation \ref{MLPsoftmax}.
+
+With the task of approximating \( F \) in mind, this section revisits the structure of Neural Networks.  To simplify things, consider the case with one fully connected hidden layer as in figure \ref{fig:MLP}.  This fully connected layer takes the data $\bm X$ as input and outputs an activation $\bm A$ by combination of a linear transformation and a non-linear activation function.  To be precise, if $\bm X=(\bm x^{(n)})_{n\leq N}$ for $\bm x^{(n)}\in \R^{D}$ then $\bm A=(\bm a^{(n)})_{n\leq N}$ where $\bm a^{(n)}\in \R^{K}$ and
+\[\bm a^{(n)}=\gs\left(\bm W\bm x^{(n)}\right),\]
+with $\bm W=(w_{ij})$ a $K\times D$ matrix of weights and \( \gs \) a chosen non-linear activation function. For simplicity, let us suppose that \( \gs(x) = (1+e^{-x})^{-1} \) is the sigmoidal activation function for now. A common identification of the vector space of such matrices and the space of linear transformations $W\in L(\R^D,\R^K)$, $W:\R^D\rightarrow \R^K$ is taken in this situation.
+
+In typical neural networks used for classification the activations are then transformed by the softmax function.  However, per the discussion in section \ref{softmax},
+%\Ryan{check section for appropriate discussion} 
+first make a different transformation
+\[F=e^{\bm A}\]
+so that $\bm f^{(n)}=e^{\bm a^{(n)}}$ is a column vector in $\R^K$ with non-zero entries. Doing this implies \( f_k(\bm x,\bm\gt_k) \) can be well approximated by an exponential family distribution. This also means that $F\in M_{K,N}$, and defines $\hat{\bm\pi}_F$ as in equation \ref{pisubF}. Then for classification use the matrix
+\[Y(F,\hat{\bm\pi})=\left(\frac{\hat{\pi}_if_{ij}}{\sum_{k=1}^{K}\hat{\pi}_kf_{kj}}\right)\]
+as in equation \ref{Ydef}.  
+
+In connection with the softmax function $\bm\sigma:\R^K\rightarrow\R^K$ and section \ref{softmax}, it is worth noting that by defining $\hat{\bm\mu}_F=\log(\hat{\bm\pi}_F)$, $Y(F,\bm p)$ changes in the following manner.  First note that because $F$ depends on $\bm A$, then so does $\log\hat{\bm\pi}_F=\hat{\bm\mu}_F$.  Then because $\hat{\pi}_if_{ij}=\exp(\hat{\mu}_i+a_{ij})$ for $1\leq i\leq K$ and $1\leq j\leq N$, 
+\begin{equation}\label{eqn:YdefLogcoords}
+Y(F,\hat{\bm\pi})=Y(\bm A):=\sigma(\bm A+\hat{\bm\mu}(\bm A)).
+\end{equation}
+This recalls the fact that \( R(F,\bm\pi) \) is the gradient of \( \ell(F,\bm\pi) \) with respect to coordinates \( \bm\mu = \log(\bm\pi)  \).

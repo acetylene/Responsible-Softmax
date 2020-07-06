@@ -1,0 +1,135 @@
+\label{sect:simpleEg}
+This section begins by exploring homogeneity of the functions \( L_F(\pi_1,\pi_2) =  \prod_{i=1}^N (\pi_1a_i+\pi_2b_i)\) and \( R_F(\pi_1,\pi_2) = \frac 1N \left(\pi_1\pdv{\log(L_F)}{\pi_1} ,\pi_2\pdv{\log(L_F)}{\pi_2} \right) \).  It has already been remarked near equation \eqref{eqn:RdefK2} that \( R_F(\pi_1,\pi_2) \) is homogeneous of degree 0 in its arguments.  Similarly, \( L_F(\pi_1,\pi_2) \) is homogeneous of degree \( N \) in its arguments \textit{i.e.} \( L_F(\gl\pi_1,\gl\pi_2) =  \gl^NL_F(\pi_1,\pi_2)  \).
+
+It is also true that both of these functions are homogeneous in their parameters. In fact, take the matrix \( F \) as in equation \ref{eqn:FdefK2} and set 
+\begin{equation}\label{eqn:GdefK2hom}
+G=
+\begin{pmatrix}
+\gl_1a_1 & \gl_2a_2 & \gl_3a_3 & \ldots & \gl_Na_N\\
+\gl_1b_1 & \gl_2b_2 & \gl_3b_3 & \ldots & \gl_Nb_N
+\end{pmatrix}
+\end{equation} 
+then a quick calculation shows that \( R_F(\pi_1,\pi_2) = R_G(\pi_1,\pi_2)\).  In other words, \( R_F \) is homogeneous of degree zero in the columns of \( F \).  However this is not the case for \( L_F \), for it is the case that \( L_G(\pi_1,\pi_2) = \left(\prod_{i=1}^{N}\gl_i\right)L_F(\pi_1,\pi_2) \), \textit{i.e.} \( L_F \) is homogeneous of degree 1 in each column of \( F \).  These facts also imply that \( L_{\gl F} = \gl^{N}L_F \) and \( R_{\gl F} = R_F \).
+
+I will use the observation of homogeneity to generalize some of my calculations.  For example, calculations might assume that \( a_i + b_i = 1\;\forall i=1\ldots N \) by dividing each column of an original matrix by it's sum. This ability will be important in chapter \ref{respLayer}. Many of the following examples use projective coordinates for the columns, \textit{e.g.} \( a_i = 1\;\forall i=1\ldots N\).  A more practical way to do this with a matrix of real data would be to divide each column by one of its entries.  This is what the given examples do; exactly one entry in each column will have the value 1.
+
+\subsection{An Example for a simple family of matrices \( F_\ga \)}
+
+\begin{eg}\label{example:1paramK2N2}
+	As a first example consider the matrix \( F = \begin{psmallmatrix}
+	1 & \ga\\ 2 & 1
+	\end{psmallmatrix} \) for varying \( \ga>0 \).
+	 Figure \ref{fig:1paramExample} gives a graph of the fixed points \( \hat{\bm \pi}_\ga \) for varying \( \ga \). Note that as might be expected, \( \hat{\pi}_1 \) increases with \( \ga \). However, this increase is not strict or smooth.  In fact, it is constant until \( \ga =1.5 \), after which it grows approximately like \( 1-e^{-\ga} \). Since \( \hat{\pi}_1+\hat{\pi}_2 = 1 \), similar but opposing statements hold for \( \hat{\pi}_2 \).
+
+	 A bit of algebra makes this example more precise.  From figure \ref{fig:1paramSubfig4}, note that the function 
+	 \begin{equation}
+	  \ell_\ga (\pi_1,1-\pi_1) = \frac{1}{2}\left[\ln(2-\pi_1)+\ln(1+(\ga-1)\pi_1)\right]
+	 \end{equation} 
+	  always goes through the point \( \left(0,\frac{1}{2}\ln(2)\right) \). For some of the curves, this point is the maximum and for others it is not. The place where it changes is again at \( \ga = 1.5 \). To see why this is, consider the partial derivative
+	 \[ \eval{\pdv{\ell_\ga}{\pi_1}}_{\pi_1=0} = \dfrac{1}{2}\left(-\dfrac 12 +\ga-1\right). \] 
+	 This is clearly zero exactly when \( \ga = \frac 32 \).
+	 
+	 I leave this example with one final remark.  Solving \( \pdv{\ell_\ga}{\pi_1} = 0\) for \( \pi_1 \) gives 
+	 \[ \hat{\pi}_1 = 1-\dfrac{1}{2(\ga-1)}. \]
+	 This shows that, when \( \ga\geq\frac 32 \), \( \hat{\pi}_1 = 1-e^{-\ln(2(\ga-1))} \), giving \( \hat{\pi}_2 = e^{-\ln(2(\ga-1))} \) as mentioned earlier.
+	 
+\end{eg}
+
+%\pagebreak
+
+\begin{figure}[ht]
+	\centering
+	\subcaptionbox{A plot of stablepoints on \( S_2 \) for different \( F_\ga \). Here \( N=2 \)\label{fig:1paramSubfig1}}[.4\linewidth]{
+		\input{chapter3/K_2_N_2_1paramFigSimplex}
+	}
+	%	\qquad
+	\subcaptionbox{A plot of point coordinates on \( S_2 \) for different \( F_\ga \).\label{fig:1paramSubfig2}}[.4\linewidth]{
+		\input{chapter3/K_2_N_2_1paramFigCoords}
+	}
+	\subcaptionbox{A plot of eigenvalues for \( \nabla^2\ell_\ga(\hat{\bm \pi}_\ga) \) on \( S_2 \) for different \( F_\ga \).\label{fig:1paramSubfig3}}[.35\linewidth]{
+		\input{chapter3/K_2_N_2_1paramHessEV}
+	}
+	\subcaptionbox{A plot of \( \ell_\ga(\pi_1,1-\pi_1)\) on \( S_2 \) for different \( F_\ga \).\label{fig:1paramSubfig4}}[.45\linewidth]{
+		\input{chapter3/K_2_N_2_1paramEll_x}
+	}
+	\caption[A plot of fixed points for \( F_\ga \)]{A plot of fixed points for \( F_\ga \) as described in example \ref{example:1paramK2N2}. Plot \subref{fig:1paramSubfig1} represents points on \( S_2 \) which are stable point for a different \( F_\ga \).   Each point on the curves in plot \subref{fig:1paramSubfig2} represents a coordinate for the stable point of a different \( F_\ga \). The \( x \)-axis represents \( \ga \). }
+	\label{fig:1paramExample}
+\end{figure}
+%\pagebreak
+
+%\Ryan{Next examples: simple version of \( K=3 \) and simple (overlap) GMM for \( K=2 \)}
+
+
+It is worth noting that in example \ref{example:1paramK2N2} that increasing \( N \) gives a smaller effect to a change in the parameter \( \ga. \)  In one example, consider appending to \( F_\ga \) the matrix 
+\(A = \begin{psmallmatrix}
+	1&2\\
+	2&1
+\end{psmallmatrix} \) some finite number of times.
+Taking \( N=12 \) by appending \( A \) three times to \( F_\ga \) changed the maximum distance separating \( \pi_1 \) and \( \pi_2 \) to less than .9 as seen in figure \ref{fig:1ParamN12}.  This corresponds with the intuition that as \( N \) increases the importance of a single sample decreases.
+
+%From and algebraic standpoint, this corresponds
+\begin{figure}[ht]
+	\centering
+	\input{chapter3/K_2_N_12_1paramFigCoords}
+	\caption[Example with \( K=2 \) and \( N=12 \)]{Coordinate plots of \( \hat{\bm\pi}_\ga \) for varying \( \ga \). In this case, \(N=12\), so a single entry of \( F_\ga \) has a smaller effect.}
+	\label{fig:1ParamN12}
+\end{figure}
+
+%	\Ryan{\huge{!!!!!***** START HERE *****!!!!! 8 Apr 2020}}
+%\Ryan{Note that \( F_\ga \) below requires \( N=101 \) to give the graphs seen. If we define \( G_\ga \) similarly, but with much smaller \( N \) \textit{e.g.} \( N=3 \), then \( \hat{\bm\pi}_\ga\rightarrow (1,0) \) very quickly}
+%\begin{figure}[h]
+%	\centering
+%	\subcaptionbox{A plot of stablepoints on \( S_2 \) for different \( F_\ga \).\label{fig:expDecaySubfig1}}{
+%		\input{chapter3/K_2_N_101_expDecayFigSimplex}
+%	}
+%%	\qquad
+%	\subcaptionbox{A plot of point coordinates on \( S_2 \) for different \( F_\ga \).\label{fig:expDecaySubfig2}}[3.8in]{
+%		\input{chapter3/K_2_N_101_expDecayFigSeparate}
+%	}
+%	\caption[A plot of fixed points for \( F_\ga \)]{A plot of fixed points for \( F_\ga \) as described in example \Ryan{!!reference!!}. Plot \subref{fig:expDecaySubfig1} represents points on \( S_2 \) which are stable point for a different \( F_\ga \).   Each point on the curves in plot \subref{fig:expDecaySubfig2} represents a coordinate for the stable point of a different \( F_\ga \). The \( x \)-axis represents the negative log of \( \ga \). }
+%	\label{fig:expDecayExample}
+%\end{figure}
+%
+%\Ryan{It might be worth giving several examples of \( \hat{\bm \pi}_F \) in the \( K=2 \) case}
+
+\subsection{A GMM Example with an Unknown Mean}
+
+For this example, begin by considering the Gaussian mixture model defined by the distribution
+\begin{equation}\label{eqn:GMMdistK2}
+\bm X \sim .8\mathcal{N}(0,3) +.2\mathcal{N}(2.5,.04)
+\end{equation}
+
+\begin{figure}[ht]
+	\centering
+	\input{chapter3/gmm_K2_hist}
+	\caption[Example GMM Histogram]{Histogram and p.d.f. of a 1 dimensional GMM with \( K=2 \) clusters}\label{fig:gmmK2hist}
+\end{figure}
+
+We may generate samples \( \{X_1,X_2,\ldots,X_N\} \) of the random variable \(\bm X \) via the process described in experiment \ref{exper:MCMixSample}. Figure \ref{fig:gmmK2hist} shows a histogram of \( N=10^5 \) samples of \( \bm X \), along with a graph of the pdf from \ref{eqn:GMMdistK2}.
+
+\begin{eg}\label{eg:GMMExample}
+		For a sample \( \bm X = \{x_n\}_{n=1}^N \), let \( F_\ga \) be the \( 2\times N \) matrix given by \( (F_\ga)_{ij} = f_i(x_j,\ga) \)  \( i=1,2\;\;j=1,\ldots,N \) where
+		\begin{align}
+		f_1(x,\ga) &= \dfrac{1}{\sqrt{6\pi}} \exp(-\frac{x^2}{3}) \label{eg:GMMeqnf1}\\ 
+			   &\text{ and}\nonumber \\ 
+		f_2(x,\ga)&= \sqrt{\dfrac{5}{2\pi}} \exp(-5(x-\ga)^2 )	   \label{eg:GMMeqnf2}
+		\end{align}
+		Thus the `unknown mean' part of the example refers to the fact that equation \ref{eg:GMMeqnf2} depends on \( \ga \) as the mean, \( \mu_2 \), for the second cluster. Note that \( f_1(x,\ga) \) in equation \ref{eg:GMMeqnf1} does not actually depend on \( \ga \).
+		
+		\begin{figure}
+			\centering
+			\subcaptionbox{Here \( N=50 \). Ratios of the samples of the clusters are in the title. \label{fig:gmmExampleK2sub1}}[.4\linewidth]{
+				\input{chapter3/K_2_N_50_1paramGMM}
+			}
+			%	\qquad
+			\subcaptionbox{Here \( N=500 \). Ratios of the samples of the clusters are in the title. \label{fig:gmmExampleK2sub2}}[.4\linewidth]{
+				\input{chapter3/K_2_N_500_1paramGMM}
+			}
+			\caption[Fixed Point Estimates of GMM Mixing Probabilities]{These graphs display coordinates of the fixed point \( \hat{\bm \pi}_\ga \) for varying \( F_\ga \). The rows of \( F_\ga \) are given by evaluating equations \ref{eg:GMMeqnf1} and \ref{eg:GMMeqnf2} on a sample \( \bm X \) of varying sizes.  The parameter \( \ga \) represents a guess for \( \mu_2 \).  The graphs shown here are for sample sizes \( N = 50 \) and \( N=500 \).} \label{fig:gmmExampleK2}
+		\end{figure}
+	
+		In figure \ref{fig:gmmExampleK2} we see the behavior of \( \hat{\bm \pi}_\ga \) for several different sample sizes. We note that the non differentiable behavior of \( \hat{\bm \pi}_\ga \) is still captured in these examples. As expected, the curves for the coordinates settles down as \( N \) increases. It is also important to point out that the maximum occurs when \( \ga =\mu_2 =2.5 \). Notably, \( \hat{\bm \pi}_{2.5} \) approximates \( \pi^{\ast} \), which is the ratio of the given sample clusters.
+		
+\end{eg}
+
+Important takeaways from examples \ref{example:1paramK2N2} and \ref{eg:GMMExample} are the behavior as \( N \) increases and the non-smooth behaviors of the fixed point as parameters change. Later sections discuss each of these.  Section \ref{respMLE}, discusses the relationship of fixed points with the maximum likelihood estimate for \( \hat{\bm \pi} \). Example \ref{eg:linDep} and theorem \ref{thm:linDep} discuss one reason that this fixed point process might be non-smooth, and chapter \ref{respLayer} addresses further difficulties.

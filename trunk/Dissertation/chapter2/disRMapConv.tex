@@ -1,0 +1,129 @@
+ For the rest of this section define let $F=(f_{ij})$ be a $K\times N$ matrix with non-negative entries.  For $\bm\pi\in\R^K$, let $\ds L(\bm\pi)=\prod_{j=1}^{N}\left(\sum_{i=1}^{K}f_{ij}\pi_{i}\right)$ and $\ell(\bm\pi)={\dfrac{1}{N}}\log(L(\bm\pi))$. Then from the previous theorem we end up with the corollary below.
+
+\begin{cor}\label{diffDef}
+ The map $R(\bm\pi)$ as defined in (\ref{map}) satisfies
+\[R(\bm\pi)=\left(\frac{\partial\ell}{\partial\pi_i}\cdot\pi_i\right)_{1\leq i\leq K}\]
+\end{cor}
+\begin{proof}
+This follows from the fact that 
+\[\frac{\partial\ell}{\partial\pi_i}=\frac 1N\sum_{j=1}^{N}\frac{f_{ij}}{\sum_{k=1}^{K}\pi_k\cdot f_{kj}}.\]
+If we suppose that $\ds f_{ij}=f_{i}(x_j)$ for $1\leq i\leq K$ different p.d.f.s $f_i$, then this definition corresponds with the definition in (\ref{map}).
+
+\end{proof}
+
+Corollary \ref{diffDef} shows us that we have a very close relationship between the maps $R(\bm\pi):S_K\rightarrow S_K$ and $\ell(\bm\pi):\R^K\rightarrow \R$. We will use this to show algorithm \ref{ratioAlg} converges.  
+
+\begin{rk}\label{boundary}
+
+It is important to note here that $R(\bm\pi)$ behaves very differently on the boundary of $S_K$ than it does on the interior. In fact, if we have $\pi_{i_l}=0$ for some set of indicies $\{i_l\}$, $1\leq l\leq L < K$, then those indicies will stay zero on every iteration of the map $R(\pi)$.  This implies that if some iteration of $R(\pi)$ lands in the boundary of $S_K$, then every iteration after will remain in the boundary.
+
+\end{rk}
+
+%Let $\partial S_K$ be the boundary of the simplex. Then we can cover $\partial S_K$ with $K$ sets, each homeomorphic to $S_{K-1}$.  To be precise, let $\fr s_i=\left\{(\pi_1,\ldots,\pi_K)\in S_K|\pi_i=0\right\}$.  Then it is clear that there are $K$ such sets, and that their union is $\partial S_K$. Further, let $g_i:S_{K-1}\rightarrow \fr s_i$ be given by inserting a 0 in the $i$-th coordinate, e.g. $g_i(\pi_1,\ldots,\pi_{K-1})=(\pi_1,\ldots,\pi_{i-1},0,\pi_i,\ldots,\pi_{K-1})$.  We have the inverse map $h_i:S_{K-1}\rightarrow \fr s_i:(\pi_1,\ldots,\pi_K)\mapsto (\pi_1,\ldots,\pi_{i-1},\pi_{i+1},\ldots,\pi_K)$
+
+To show that algorithm \ref{ratioAlg} converges, we first note that $-\ell(\bm\pi)$ is a convex function on $\R^K$.  This is obvious as $\ell(\bm\pi)$ is the sum of the logs of linear functions. Lemma \ref{hess} explains when $-\ell(\bm\pi)$ is \textit{strictly} convex.
+
+\begin{lemm}\label{hess}
+If $F=(f_{ij})$ has full rank, then $-\ell(\bm\pi)$ is strictly convex.
+\end{lemm}		
+
+\begin{proof}
+To begin, let $F_i$ be the $i$-th column of $F$.  In this notation $(F')_j$ would be the $j$-th row of $F$. $F'_i$ is the transpose of the $i$-th column.  To condense notation, we note that \(\ds \sum_{k=1}^{K}\pi_k\cdot f_{kj}=\langle F_j,\bm\pi\rangle\)
+With this notation, we calculate the Hessian of $\ell(\bm\pi)$.
+\begin{align*}
+\frac{\partial^2\ell}{\partial\pi_j\partial\pi_i}&=\frac{\partial}{\partial\pi_j}\frac 1N\sum_{n=1}^{N}\frac{f_{in}}{\sum_{k=1}^{K}\pi_k\cdot f_{kn}}\\
+&=-\frac 1N\sum_{n=1}^{N}\frac{f_{in} f_{jn}}{\langle F_n,\bm\pi\rangle^2}
+\end{align*}
+We note here that \(\ds \sum_{n=1}^{N}f_{in}f_{jn} =\langle (F')_i,(F')_j\rangle\) is the inner product of the $i$-th and $j$-th rows of $F$. Let $\ds G(\bm\pi)=\left[\frac{F_1}{\langle F_1,\bm\pi\rangle},\ldots,\frac{F_N}{\langle F_N,\bm\pi\rangle}\right] $. Then we have
+\[\frac{\partial^2\ell}{\partial\pi_j\partial\pi_i}=-\frac 1N \langle(G(\bm\pi)')_i,(G(\bm\pi)')_j\rangle\]
+so if $H_{\ell}(\bm\pi)$ is the Hessian of $\ell(\bm\pi)$, we have
+\begin{equation}\label{hessDef}
+H_{\ell}(\bm\pi)=-\frac 1N G(\bm\pi)\cdot G(\bm\pi)'
+\end{equation}
+
+Since $G(\bm\pi)\cdot G(\bm\pi)'$ is positive definite iff $G(\bm\pi)'$ has linearly independent columns, we have the theorem.
+\end{proof}
+
+We can use lemma \ref{hess} to prove theorem \ref{unique}.
+%TODO re-write this proof in more parts. Perhaps a lemma or two?
+\begin{thm}\label{unique}
+If $F$ has full rank, then on the interior of $S_K$, iteration of $R(\bm\pi)$ converges to a unique fixed point.
+\end{thm}
+
+\begin{proof}
+Let $\bm 1_K=(1,1,\ldots,1)\in \R^K$ be the vector of all ones.  If $F$ has full rank, and $\hat{\bm\pi}=\argmax_{\bm\pi\in S_K}\ell(\bm\pi)$, we claim that $\hat{\bm\pi}=R(\hat{\bm\pi})$.
+%TODO rewrite this proof!
+ Note here that if $\nabla\ell(\bm\pi_0)=\bm 1_K$ for some $\bm\pi_0$, corollary \ref{diffDef} gives that $\bm\pi_0$ satisfies $R(\bm\pi_0)=\bm\pi_0$.\\
+Now, for $\bm\pi\in S_K$ we have
+\begin{align*}
+\left(\frac{\partial\ell}{\partial\pi_i}\right)_{\bm\pi\in S_K}&=\left(\frac{\partial\ell}{\partial\pi_i}\right)_{\pi_k=1-\sum_{j<K}\pi_j} \\
+&=\frac{\partial\ell}{\partial\pi_i}+\frac{\partial\ell}{\partial\pi_K}\frac{\partial\pi_K}{\partial\pi_i}=\frac{\partial\ell}{\partial\pi_i}-\frac{\partial\ell}{\partial\pi_K}
+\end{align*}
+Thus if $\ds \left(\nabla\ell(\hat{\bm\pi})\right)_{\bm\pi\in S_K}=0$, we have $\frac{\partial\ell}{\partial\pi_i}=\frac{\partial\ell}{\partial\pi_K}$ $\forall i< K$. In other words $\nabla\ell(\hat{\bm\pi})=\gl\bm 1_K$ for some $\gl\geq 0$. Now \[\ds \frac{\partial\ell}{\partial\pi_i}=\frac 1N\sum_{j=1}^{N}\frac{f_{ij}}{\sum_{k=1}^{K}\pi_k\cdot f_{kj}}\geq 0\] as $f_{ij}\geq 0$ $\forall j$. \\ We have equality here iff $f_{ij}=0$ $\forall j$, but this cannot happen if $F$ has full rank. Therefore $\gl>0$.
+Now $1=\langle R(\bm\pi),\bm 1_K\rangle=\langle \nabla\ell(\bm\pi),\bm\pi\rangle$ $\forall \bm\pi\in S_K$, but $\langle \nabla\ell(\hat{\bm\pi}),\hat{\bm\pi}\rangle=\gl\langle \bm 1_K,\hat{\bm\pi}\rangle=\gl$. Thus $\gl=1$ and $\hat{\bm\pi}=R(\hat{\bm\pi})$.
+
+Since $F$ has full rank by assumption, $\ell(\bm\pi)$ is strictly convex, and therefore it has a unique maximum $\hat{\bm\pi}\in S_K$.  As discussed above, this maximum is a fixed point of the map $R(\bm\pi)$. We need now to show $\hat{\bm\pi}$ is in the interior of $S_K$, we can do this by showing that $\hat{\pi}_i\neq 0$ $\forall i$.
+
+By way of contradiction, suppose that for some fixed $j$, $\hat{\pi}_j=0$. Let $A=B(\hat{\bm\pi},\ge)\bigcap S_K$, then for every $\bm a\in (A\setminus\hat{\bm\pi})$, we have $\ell(\bm a)<\ell(\hat{\bm\pi})$.  Without loss of generality, we may find a point $\bm a \in A$ such that $a_i=\hat{\pi}_i$ for $i\neq j$ but $a_j>0$, as $A$ is a relatively open subset of $S_K$.  Now let 
+\[\ga_n=\sum_{i\neq j} \hat{\pi}_if_{in}\]
+so that 
+\begin{align*}
+\sum_{n=1}^N\log(\ga_n+a_jf_{nj})=\ell(\bm a)&<\ell(\hat{\bm\pi})=\sum_{n=1}^N\log(\ga_n)\\
+\sum_{n=1}^N\log(\ga_n+a_jf_{jn})&<\sum_{n=1}^N\log(\ga_n)\\
+\prod_{n=1}^{N}(\ga_n+a_jf_{jn})&<\prod_{n=1}^{N}(\ga_n)\\
+\prod_{n=1}^{N}(\ga_n+a_jf_{jn})&-\prod_{n=1}^{N}(\ga_n)<0\\
+\end{align*}
+now the term on the last line above can only be less than zero if $f_{nj}<0$ for at least one $n$, but this contradicts the hypothesis on $F$.
+
+So we have shown that there is a unique maximum of $\ell(\bm\pi)$ on the interior of $S_K$, and that this maximum is a fixed point of the map $R(\bm\pi)$.  Further, it is clear from the previous discussion that if we have a fixed point for $R(\bm\pi)$ on the interior of $S_K$, then it will have to be a maximum for $\ell(\bm\pi)$ on the simplex.  It remains to be shown that if $F$ does not have full rank, then the set of fixed points for $R(\bm\pi)$ is the intersection of a linear subspace of $\R^K$ with the interior of $S_K$.
+\end{proof}
+
+As an example of what can happen when $F$ does not have full rank, let \(K=2\), and \(\bm{F}=(f_{i,j})\) be a \(K\times N\) matrix with positive entries and full rank. (Here \(N \gg K\)).  Define \Rpi F as the Bayesian iteration map on  the simplex 
+\[S_2:=\left\{\{\pi_k\}_{k=1}^{2}:0\leq \pi_k\leq 1; \sum_{k=1}^{2}\pi_k =1\right\}\]
+(as defined in \ref{simplexDef}.)
+
+Also let \(\hat{\bm{\pi}}=(\hat{\pi}_1,\hat{\pi}_2)^\intercal\) be the fixed point of \Rpi F.
+
+Then for positive $\gl\in\R$ and a fixed $a\in(0,.5)$, let 
+
+\[\bm A=\begin{pmatrix}
+1 & 0\\
+0 & 1\\
+\gl a & \gl(1-a)\\
+\end{pmatrix}\]
+
+and $\bm G_{\gl}=\bm A\bm F$.
+
+Then \Rpi{G_\gl} exhibits a bifurcation at $\gl=1$.
+
+For $\gl<1$ there is a heteroclinic orbit (in $S_3$) going from $(0,c,1-c)^{\intercal}$ to $(\hat{\pi}_1,\hat{\pi}_2,0)^\intercal$, where $c=\hat{\pi}_2-\frac{a}{1-a}\hat{\pi}_1$ (note, this is if $\hat{\pi}_1<\hat{\pi}_2$, otherwise the roles of $\hat{\pi}_1,\hat{\pi}_2$ reverse!)
+
+For $\gl>1$, the direction of the heteroclinic orbit reverses.
+
+At $\gl=1$, the entire line in $S_3$ between $(0,c,1-c)^{\intercal}$ and $(\hat{\pi}_1,\hat{\pi}_2,0)^\intercal$ consists of fixed points of \Rpi{G_{\gl}}.
+
+As a partial generalization of the example above, we have the following theorem.
+\begin{thm}\
+If $F$ does not have full rank, then the set of fixed points for the map $R(\bm\pi)$ is the intersection of a linear subspace of $\R^K$ with $S_K$.
+\end{thm}
+
+\begin{proof}%TODO fill this in!
+%OUTLINE:
+%$\dim(\op{null}(F)) > 0$, 
+%What happens when $\op{null}(F) \bigcap S_K \neq \emptyset$?
+%
+%Via Marek:
+%The essence of the argument is: 
+%For a convex function the set of minima is convex.
+%For the function you have, the level sets are algebraic sets because the function is a logarithm of a polynomial.
+%	there is only one minimum value as we are looking 
+%If an algebraic variety contains an open subset of a linear variety then it contains that linear variety.
+%A convex subset has topological dimension k iff contains a simplex of dimension k (Caratheodory's Theorem).
+Since $F$ is not full rank, it is possible that $\ell(\bm\pi)$ is not strictly convex.  Let $\mathcal{M}\in S_K$ be the set of minimizers for $\ell(\bm\pi)$, and let $m$ be the minimum value achieved by $\ell(\bm\pi)$ on $\mathcal{M}$.  Without loss of generality we may suppose that $\elpi$ is not strictly convex, so that $\mathcal{M}$ is not a single point.\\
+The level set $\mathcal{C}_m \defined \left\{\bm\pi\in\R^K|\elpi =m\right\}$ is an algebraic subset of $\R^{K}$ cut out by the equation $L(\bm\pi)=\exp(Nm)$.  Now by Bezout's theorem, we know that for a linear subvariety $\mathcal{L}$ of $\R^{K}$, either $\mathcal{C}_m\bigcap\mathcal{L}$ is finite, or $\mathcal{L}\subset\mathcal{C}_m$.  Since $\mathcal{M}\subset\mathcal{C}_m$, we know that if $\mathcal{L}\subset\R^K$ is an affine linear subvariety that includes $\mathcal{M}$ as a relatively open subset, then $\mathcal{L}\subset\mathcal{C}_m$.
+
+%convince self that: If an algebraic variety contains a relatively open subset of a linear variety then it contains that linear variety... true in zariski, is it also tru in euclidean topo? Yes! Bezout!
+
+Now $\mathcal{M}$ is a convex set, as $\elpi$ is a convex function.  In particular, $\mathcal{M}$ is contained in some linear subset $M\subset\R^K$.  $C_m$ must contain all of $M$. $\mathcal{M}$ is a proper subset of $S_K$ which had topological dimension less than $K-1$. An element trace shows that $\mathcal{M}=S_K\bigcap M$.
+
+\end{proof}

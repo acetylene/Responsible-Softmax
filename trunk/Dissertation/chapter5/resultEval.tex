@@ -1,0 +1,56 @@
+%%% SOME NOTES:
+% Via machine learning mastery:
+%Lesson 04: Tour of Model Evaluation Metrics
+%Lesson 05: The Failure of Accuracy
+%Lesson 06: Precision, Recall, and F-Measure
+%Lesson 07: ROC Curves and Precision-Recall Curves
+%Lesson 06: Probability Scoring Methods
+%Lesson 09: Cross-Validation for Imbalanced Datasets
+
+%other possible options: 
+%       F-score - compare to a bayes predictor when 'correct' distributions are known 
+%       Area under ROC surface? hard to find information about doing this.
+%			depends on classification threshold.  if you don't just do max, then what happens.  Compare to 'bayes' classifier.
+%       Weighted brier score?
+%       accuracy is probably a bad choice, but in this case it IS illustrative. In this discussion, precision and recall are important to mention, but again, these are often only mentioned in two class problems. Per class precision and recall are informative enough. get done~!
+%		Kohonen's Kappa. do in need a target distribution to compare to?
+%		G-measure, jaccard index, matthews correlation coefficient
+%		Macro (after finding score) vs. micro (score over whole data set) averages in evaluation.  http://rushdishams.blogspot.in/2011/08/micro-and-macro-average-of-precision.html (for precision, but i suspect you could do this with recall too!)
+%		SMOTE?
+%		https://ieeexplore.ieee.org/document/7033125 for something similar to what i'm doing (they don't automatically calulate the costs, but rather impose some prior)
+\label{sect:eval}
+The methods employed to evaluate the classification ability of the various neural nets fall into three broad categories: confusion matrix methods, per class precision and recall, and comparison of the classifiers to an idealized classifier.  These methods inform each other to create a clearer picture of the performance for each neural net.
+
+While accuracy is a commonly used metric for classification, in cases where data is imbalances, it can be a grossly misleading metric. For example, consider a binary classification problem where more than 95\% of samples fall into a single class. Call this set class 1.  Then a classifier that always returns class 1 would have an accuracy of 95\%, but would be useless for any sort of discrimination. Similar problems occur with other metrics such as precision and recall. One simple method that is a partial remedy to this problem is the use of \textit{per class} metrics.
+
+In reporting per class attributes, confusion matrices offer a quick summary of how data points were classified and misclassified. A confusion matrix \( \mathcal{C} \) has entries \(c_{i,j}\), \( i,j=1,\ldots,K \), determined by the number of samples belonging to class \( i \) that were classified into class \( j \).  Thus the trace of \( \mathcal{C} \) is the number of correctly identified examples. The sum of off-diagonal entries is the number of incorrectly classified samples. The ratio of these two sums is the overall accuracy of the classifier. Similar combined and per class metrics may be calculated using a confusion matrix.  Thus confusion matrices contribute heavily to the reporting of results in sections \ref{sect:GMMresults} and \ref{sect:MNISTresults}.
+
+Per class precision and recall scores suggest important trade-offs that must be considered when training a classifier. These metrics can be expressed in terms of the entries of the confusion matrix \( \mathcal{C} \). If \( p_i \) represents the precision of class \( i \) for a given classifier, and \( r_i \) represents the recall of the same class, then 
+\begin{align}
+p_i &= \frac{c_{i,i}}{\sum_{j} c_{j,i}}\\
+r_i &= \frac{c_{i,i}}{\sum_{j} c_{i,j}}
+\end{align}
+In other words \( p_i \) is the number of data points correctly classified in class \( i \) divided by the number of data points put into class \( i \) by mistake (diagonal entry divided by the column sum). The per class recall \( r_i \) is the number of correctly classified data points divided by the number of data points from class \( i \) incorrectly classified into a different class (diagonal entry divided by the row sum).  There are many other metrics that may be calculated from a confusion matrix, but these are the two used in the results sections.
+
+Idealized classifiers are difficult to identify and frequently even more burdensome on computation.  Fortunately for GMMs, Bayes rule gives an excellent classifier when confidence in parameter values is high. In the case of generated data, the functions \( f_k(\bm x,\bm\gt_k) \) and mixing proportions \( \bm\pi^{\ast} \) are known. Then given data points \( \bm x_n \) of unknown classifications, the classes may be approximated by the maximum \textit{a posteriori} (MAP) estimate
+\begin{equation}\label{eqn:MAPestimator}
+c_n = \argmax_k \frac{\pi_k^{\ast}f_k(\bm x_n,\bm\gt_k)}{\sum_j \pi_j^{\ast}f_j(\bm x_n,\bm\gt_j)}. 
+\end{equation}
+In some sense, the MAP classifier is the best that can be used in this situation.
+
+One visually pleasing method to compare classifiers of low dimensional data is to plot classification regions. While neural net classification regions are not usually the same as the classification regions of a MAP classifier, the comparison is interesting and useful. For typical deep neural nets, the arxiv paper by Fawzi \textit{et. al.} \cite{fawzi2017classification} shows empirically that classifications regions tend to be connected.  Section \ref{sect:GMMresults} presents some neural nets using a \RS layer with large hyperparameter \( C \) which have locally disconnected classification regions.
+
+%f-divergence (e.g. K-L) over confusion mats? this could be calculated, i'm interested in doing so, but i don't have time right now because i didn't think of it soon enough. the graph of classification regions will have to do for now
+
+The easiest way to compare with an idealized classifier for the MNIST data set is to assume that the confusion matrix for such a classifier is perfect, \textit{i.e.} the sum of off diagonal entries is zero. Obtaining such a classifier from a neural net is often an indication of overfitting during training. Section \ref{sect:MNISTresults}, explores an example where using a \RS layer helps get closer to this ideal, but still appears to generalize well.
+
+%\ \\
+%
+%Evaluating performance on synthetic data allows the use of more assessment methods. %but i didn't do that, this is a good place to do future work, especially once i identify good data sets to use.%Uncertainty coefficient look like a fun one to play with! definition is mutual information divided by entropy. i could do this later. also, F divergences as mentioned.  Those are especially interesting in light of lemma \ref{lemm:ellLyapR}, which suggest an interesting relationship between \DR and K-L divergence.
+%
+%\ \\
+%
+%Comparison of MNIST classification to state of the art methods would give poor results.  Fortunately the data is regularly explored, and makes comparison of results between nets more informative.%In particular the softmax example i used is listed as one of the methods on LeCun's website, and i get similar accuracy on balanced data.  That sites does not consider imbalanced data.
+
+
+As purpose of this chapter is not to fully explore the performance, but rather to show that \RS works in a predictable manner. Though there are many metrics to choose from, the performance metric chosen show that in cases of extreme imbalance, \RS is a reasonable choice.  The metrics chosen also hint at avenues of further exploration.

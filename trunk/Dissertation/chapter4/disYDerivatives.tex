@@ -1,0 +1,156 @@
+\label{subsect:dLdYcalc}
+This section seeks to describe the process by which the gradient \( \pdv{L}{F} \) may be calculated.  In consideration of equation \eqref{eqn:LossGrad}, if the backpropagation algorithm is given \(\pdv{L}{Y},\) then the gradient \( \pdv{Y}{F} \) must be calculated.  More accurately, lemma \ref{gradChain} shows that the adjoint operator \( D^{\ast}Y \) of the derivative \( DY \) is required to compute \( \pdv{L}{F} \).  
+
+Using the computation graph for $Y$ from figure \ref{fig:layerDependencies} allows the calculation of this adjoint operator to be broken up into several small pieces. This section will be organized by calculation of the adjoint on each of the pieces.  There will also be some more general lemmas proven where necessary.
+
+At each step, lemma \ref{gradChain} is used implicity, where each calculation is given by passing back gradient information received from previous calculations steps, as is typical with backpropagation. Also, both \( \bm\pi_C \) and \( F \) are used in multiple computation steps.  The correct thing to do in this case is add the gradients from each computation to get the final gradients \( \pdv{L}{\bm\pi_C} \) and \( \pdv{L}{F} \). In the cases where the gradient calculate is only a summand of the total gradient it will be noted with an additional subscript, \textit{e.g.} \( \left(\pdv{L}{F}\right)_{\!\mathpzc{N}} =  D_F^{\ast}\mathpzc{N}[\pdv{L}{\mathpzc N}]\).
+
+\Ryan{?`Maybe summarize the calculations in a table, and then put the actual computations in an appendix? It might even be worthwhile to draw this as a layer diagram, because then it will be familiar.}
+
+The following two lemmas facilitate the first calculation.
+\begin{lemm}[Adjoint of Hadamard product]\label{lemm:hadProdAdj}
+	The linear function $f_A(X)=A\odot X$ is self adjoint on the space of \( K\times N \) matrices.
+\end{lemm}
+\begin{proof}
+	Because the Hadamard product is a linear operator, it is its own derivative \textit{i.e.} \( Df_A=f_A \). While it can be shown that this operator is self adjoint through careful computation, it will be more powerful to use the vec operator as described in the commutative diagram \eqref{eqn:vecfrobcommute}.
+	
+	Under the diffeomorphism vec, consider the function \( g_A(X) = \op{vec}^{-1}(f(\op{vec}(A),\op{vec}(X))) =\op{vec}^{-1}(\diag(\op{vec}(A)) \cdot\op{vec}(X)) \). In this representation, the Hadamard product with \( A \) is given by multiplication by a diagonal matrix, which is clearly self adjoint as \( \diag(\op{vec}(A))^{\intercal} = \diag(\op{vec}(A))\).  Hence \( g_A(X) \) is self adjoint.  Since \( g_A(X) \) is not only similar, but actually equal to \( f_A \), \(f_A \) must also be self adjoint.
+\end{proof}
+
+Lemma \ref{lemm:hadProdAdj} applies directly to Hadamard division \( \oslash \), because for two matrices \( X,Y \) of the same size \( X\oslash Y = X\odot \overbar{Y},\) where \(Y = (y_{ij})_{i,j}\; \overbar{Y} = (y_{ij}^{-1})_{i,j} \). This definition necessarily requires that \( y_{ij}\neq 0 \). This relationship between Hadamard product and division is the key observation in lemma \ref{lemm:hadDivAdj} below.
+
+\begin{lemm}[Adjoint of Hadamard Division]\label{lemm:hadDivAdj}
+	The function \( X\oslash Y \) has derivative \( D(X\oslash Y)[dX,dY] = dX\oslash Y-dY\odot X\oslash(Y\odot Y) \), under the assumption that \( \pdv{X}{Y}=\pdv{Y}{X}=0 \). Because \( \odot \) is self adjoint, so is \( D(X\oslash Y) \).
+\end{lemm}
+
+\begin{proof}
+	Since Hadamard division works elementwise, the derivative may be calculated by looking at partial derivatives. Then 
+	\[ d\left(\frac{x_{ij}}{y_{ij}}\right) = \frac{1}{y_{ij}}dx_{ij}-\frac{x_{ij}}{y_{ij}^{2}}dy_{ij} \]
+	which gives the correct formula for the derivative.
+	
+	Given the relationship between Hadamard product and Hadamard division the derivative formula may be rewritten as \( D(X\odot \overbar{Y})[dX,dY] = dX\odot\overbar{Y}-dY\odot X\odot\overbar{Y}\odot\overbar{Y}. \)  In this form, lemma \ref{lemm:hadProdAdj} clearly shows that the derivative operator is self adjoint.
+\end{proof}
+
+These two lemmas carry most of the weight in calculating of the first two adjoint derivatives. Since the gradient in backpropagation are calculated in the opposite direction, so the first two adjoints to be calculated are the rightmost calculations done in the computation graph \ref{fig:layerDependencies}.
+
+\begin{calc}[Adjoint \#1]\label{calc:adj1}
+	So consider the equation \( Y = \mathpzc{N}\oslash\mathpzc{D} \). By lemma \ref{lemm:hadDivAdj}, 
+\begin{equation}\label{eqn:DYcalc1}
+DY[d\mathpzc{N},d\mathpzc{D}] = d\mathpzc{N}\oslash \mathpzc{D}-d\mathpzc{D}\odot \mathpzc{N}\oslash(\mathpzc{D}\odot \mathpzc{D}).
+\end{equation} 
+Let \( D_{\mathpzc{N}}Y[d\mathpzc{N}] = d\mathpzc{N}\oslash \mathpzc{D} \) and \( D_{\mathpzc{D}}Y[d\mathpzc{D}] =  -d\mathpzc{D}\odot \mathpzc{N}\oslash(\mathpzc{D}\odot \mathpzc{D})\). By lemmas \ref{lemm:hadProdAdj} and \ref{lemm:hadDivAdj}, it follows that if \( dY:=\pdv{L}{Y} \) then 
+\begin{align}
+\pdv{L}{\mathpzc{N}} &= D_{\mathpzc{N}}^{\ast}Y[dY]=dY\oslash \mathpzc{D} = dY\odot Y\oslash\mathpzc{N}\label{eqn:gradcalc1} \\
+\pdv{L}{\mathpzc{D}} &= D_{\mathpzc{D}}^{\ast}Y[dY]=-dY\odot\mathpzc{N}\oslash(\mathpzc{D}\odot\mathpzc{D}) = -dY\odot Y\oslash\mathpzc{D} \label{eqn:gradcalc2}
+\end{align}
+\end{calc}
+
+\begin{calc}[Adjoint \#2]\label{calc:adj2}	
+Now consider the equation \( \mathpzc{N}=F\odot\mathpzc{C} \). Following a similar pattern as calculation \ref{calc:adj1}, write 
+\begin{equation}\label{eqn:DYcalc2}
+D\mathpzc{N}[dF,d\mathpzc{C}] = dF\odot\mathpzc{C}+F\odot d\mathpzc{C}.
+\end{equation}
+Define \( D_F\mathpzc{N}[dF] =  dF\odot\mathpzc{C}\) and \( D_{\mathpzc{C}}\mathpzc{N}[d\mathpzc C] = F\odot d\mathpzc{C}. \) Then using lemma \ref{lemm:hadProdAdj}, and letting \( d\mathpzc{N}:=\pdv{L}{\mathpzc{N}} \) gives
+\begin{align}
+\left(\pdv{L}{F}\right)_{\!\mathpzc{N}} &= D_F^{\ast}\mathpzc{N}[d\mathpzc N] = d\mathpzc{N}\odot\mathpzc{C}\label{eqn:gradcalc3}\\
+\pdv{L}{\mathpzc{C}} &= D_{\mathpzc{C}}^{\ast}\mathpzc{N}[d\mathpzc N] =F\odot d\mathpzc{N}\label{eqn:gradcalc4}
+\end{align}
+\end{calc}
+
+The next two calculations are similar to each other in that they both create a rank 1 matrix out of a row or column vector so that the Hadamard product (or division) may be used.  In programming languages such as MATLAB, an operation such as \( \bm x\odot A \), with \( \bm x \) an \( n\times 1 \) column vector and \( A \) an \(n\times m\) matrix (for some \(n,m\in\N\)), is interpreted as taking the Hadamard product of \(\bm x \) with each column of \( A \). To create precision in this document and still represent the same operation, the \( \op{col} \) and \( \op{row} \) operators must be used.
+
+The \( \op{col} \) and \( \op{row} \) operators create rank 1 \( K\times N \) matrix from a column or row vector respectively.  This is done by copying the given vector an appropriate amount of times. For example, if \( \bm x\in\R^K \) is a \( K\times 1 \) column vector, then \( \op{col}(\bm x) \defined \bm x\cdot\mathbbm 1_N^{\intercal}\) is the \( K\times N \) matrix with \( N \) columns each equal to \(\bm x.\) In this manner, the Hadamard product of a vector and a matrix can be well defined both mathematically and in programming.  
+
+Of course, this also means that the derivative and adjoint derivative of these operators must be calculated.  Fortunately it is clear that both of these operators are linear, so they are their own derivative. The adjoint derivatives are also as expected, \textit{i.e.} the adjoint is calculated through multiplication by the transpose of an appropriate vector. These observations are made robust in the following lemma.
+
+\begin{lemm}[row and col Operators]\label{lemm:rowcolAdj}
+	Define \( \op{col}:\R^K\rightarrow M_{K\times N} \) by \( \op{col}(\bm x) = \bm x\cdot\mathbbm 1_N^{\intercal} \). Similarly, define \( \op{row}:\R^N\rightarrow M_{K\times N} \) by  \( \op{row}(y) = \mathbbm 1_K\cdot \bm y^{\intercal} \). Then for \( U \in TM_{K\times N} \), \( D^{\ast}\op{col}[U] = U\cdot\mathbbm 1_N \) and \( D^{\ast}\op{row}[U] = \mathbbm (1_K^{\intercal}\cdot U)^{\intercal} \).
+\end{lemm}
+
+\begin{proof}
+	As these two operators are so close, it suffices to show this only for \( D^{\ast}\op{col} \). First it is clear that \( \op{col} \) is linear, so \( D\op{col} = \op{col}. \) 	
+	For two vectors \(\bm a,\bm b\in\R^N \), their dot product is characterized by \( \op{tr}(\bm a\cdot \bm b^{\intercal}) = \bm b^{\intercal}\cdot \bm a = \<\bm a,\bm b\> \).Then for \( \bm h\in T\R^K \) and \( U\in TM_{K\times N} \)
+	\begin{equation}
+		\op{tr}((\bm h\cdot\mathbbm 1_N^{\intercal})^{\intercal}\cdot U) = \op{tr}(\mathbbm 1_N\cdot \bm h^{\intercal}\cdot U) = \bm h^{\intercal}\cdot U\cdot\mathbbm 1_N = \<\bm h,U\cdot\mathbbm 1_N\>.
+	\end{equation}
+	Which gives the lemma for col. The proof for row is almost exactly the same, \textit{mutatis mutandis}.
+\end{proof}
+
+\begin{calc}[Adjoint \#3 \& \#4]
+	Consider the equation \(\mathpzc{C} = \op{col}(\bm\pi_C).\) Since lemma \ref{lemm:rowcolAdj} lays all the groundwork, let \( d\mathpzc{C} = \pdv{L}{\mathpzc{C}}. \) Then
+	\begin{equation}\label{eqn:gradcalc5}
+	\left(\pdv{L}{\bm\pi_{C}}\right)_{\mathpzc{C}} = D^{\ast}\!\mathpzc C[d\mathpzc{C}]= d\mathpzc{C}\cdot\mathbbm 1_N.
+	\end{equation}
+	
+	For the equation \( \mathpzc{D}=\op{row}(\,\overbar{\!P}) \), a bit more care must be used.  Since \( \overbar{\!P} \) is a row vector (as shown in table \ref{table:vertexDesc}), the formula given in \ref{lemm:rowcolAdj} must be changed by taking the transpose.  Thus if \( d\mathpzc{D} = \pdv{L}{\mathpzc{D}} \) then
+	\begin{equation}\label{eqn:gradcalc6}
+		\pdv{L}{\,\overbar{\!P}} =D^{\ast}\!\mathpzc D[d\mathpzc D] =\mathbbm 1_K^{\intercal}\cdot d\mathpzc{D}.
+	\end{equation}
+\end{calc}
+
+\begin{calc}[Adjoint \#5]
+	Now consider the computation \( \overbar{\!P} = \bm\pi_C^{\intercal}\cdot F \). Remember here that \( \overbar{\!P} \) is a \( 1\times N \) row vector. Clearly multiplication of a vector and matrix is linear. Thus
+	\begin{equation}\label{eqn:DYcalc3}
+		D\,\overbar{\!P}[dF,d\bm\pi_C] = d\bm\pi_C^{\intercal}\cdot F+\bm\pi_C^{\intercal}\cdot dF.
+	\end{equation}
+	Defining \( D_F\,\overbar{\!P}[dF] = \bm\pi_C^{\intercal}\cdot dF \) and \( D_{\bm\pi_C}\,\overbar{\!P}[d\bm\pi_C] = d\bm\pi_C^{\intercal}\cdot F \) shows that 
+	\begin{align}
+		D_F^{\ast}\overbar{\!P}[d\,\overbar{\!P}] = \bm\pi_c\cdot d\,\overbar{\!P}\\
+		D_{\bm\pi_C}^{\ast}\overbar{\!P}[d\,\overbar{\!P}] = F\cdot d\,\overbar{\!P}^{\intercal}.
+	\end{align}
+	Then if \( d\,\overbar{\!P} = \pdv{L}{\,\overbar{\!P}}\) it follows that 
+	\begin{align}
+	\left(\pdv{L}{F}\right)_{\overbar{\!P}} = \bm\pi_c\cdot d\,\overbar{\!P}\label{eqn:gradcalc7}\\
+	\left(\pdv{L}{\bm\pi_C}\right)_{\overbar{\!P}} = F\cdot d\,\overbar{\!P}^{\intercal}\label{eqn:gradcalc8}.
+	\end{align}
+\end{calc}
+Note that because \( \bm\pi_C \) is involved in two calculations, summing \eqref{eqn:gradcalc5} and \eqref{eqn:gradcalc8} gives
+\begin{equation}\label{eqn:dLdPIC}
+\pdv{L}{\bm\pi_C} = \left(\pdv{L}{\bm\pi_{C}}\right)_{\mathpzc{C}} + \left(\pdv{L}{\bm\pi_C}\right)_{\overbar{\!P}}.
+\end{equation}
+
+Finally, the adjoint with respect to the calculation \( \bm\pi_C = R^C(F,\bm\pi_0) \) must be determined.  Here the iterative nature of \DR allows for some simplification. Though as shown in section \ref{sect:dRdPiANDdRdF}, the derivatives of \( R(F,\bm\pi) \) are not simple.  Fortunately the care taken in that section will aid in computing adjoints. The association of \( D_{\bm\pi}R \) and \( D_FR \) with matrices particularly aids the adjoint calculation because the adjoint of a real matrix operator is the transpose of that matrix.
+
+\begin{calc}[Adjoint \#6]
+	This computation is different from the previous ones in that it is actually working with \( C \) equations of the form \( \bm\pi_i = R(F,\bm\pi_{i-1}) \) for \( i=1,\ldots,C \).  This means that the final gradient is the sum of several smaller gradients, \( \left(\pdv{L}{F}\right)_{R} = \sum_{i=1}^{C}\left(\pdv{L}{F}\right)_{\bm\pi_i}\).  This means that the computation must come in the form of an iterative algorithm, which is summarized in algorithm \ref{gradientIterationAlg}.
+	
+	Because this computation is iterative, it suffices to show the calculation for a single iteration. Recalling equations \eqref{eqn:dRdPi} and \eqref{eqn:dRdFformula}, calculation of the adjoints gives
+	\begin{align}
+		D_{\bm\pi}^{\ast}R(F,\pi_n)[d\bm\pi_n] &= \left(\nabla^2\ell(\bm\pi)\cdot\op{diag}(\bm\pi) +\op{diag}(\nabla\ell(\bm\pi))\right)\cdot d\bm\pi_n \label{eqn:dRdPiAdj}\\
+		D_F^{\ast}R(F,\bm\pi_n)[d\bm\pi_n] &= \op{vec}^{-1}\left(A(F)^{\intercal}\cdot d\bm\pi_n\right). \label{eqn:dRdFAdj}
+	\end{align}
+	Then define \( \pdv{L}{\bm\pi_C} \) as in equation \eqref{eqn:dLdPIC}, and set
+	\begin{align}
+		d\bm\pi_{n-1} &=D_{\bm\pi}^{\ast}R(F,\pi_n)[d\bm\pi_n]\;\; n=2,\ldots,C\\
+		\left(\pdv{L}{F}\right)_R &= \sum_{n=1}^{C} D_F^{\ast}R(F,\bm\pi_n)[d\bm\pi_n].\label{eqn:dLdFR}
+	\end{align}
+\end{calc}
+Given the calculations Adjoint 1-6, use equations \eqref{eqn:gradcalc3}, \eqref{eqn:gradcalc7}, and \eqref{eqn:dLdFR} to get
+\begin{equation}\label{eqn:dLdF}
+\pdv{L}{F} = \left(\pdv{L}{F}\right)_{\!\mathpzc{N}} + 	\left(\pdv{L}{F}\right)_{\overbar{\!P}} + \left(\pdv{L}{F}\right)_R.
+\end{equation}
+
+\begin{table}
+	
+	\begin{algorithm}[H]
+		\caption{Gradient Iteration Algorithm}\label{gradientIterationAlg}
+		\begin{algorithmic}
+			\Require $F$ a $K\times N$ matrix
+			\Require $orbit = (\bm\pi_0,\bm\pi_1,\ldots,\bm\pi_C)$, $d\bm\pi_C$\Comment{\( d\bm\pi_C \) is as defined in \eqref{eqn:dLdPIC}}
+			\Procedure{Iteration}{$F,orbits,\bm\pi_C$}
+			\State $n \gets C$
+			\State $d\bm\pi \gets d\bm\pi_C$
+			\State $dF \gets \bm 0$
+			\While{$n\geq 0$}
+			\State $dF \gets D_F^{\ast}R(F,\bm\pi_n)[d\bm\pi]+dF$ \Comment{Use \eqref{eqn:dRdFAdj}}
+			\State $d\bm\pi \gets D_{\bm\pi}^{\ast}R(F,\pi_n)[d\bm\pi]$\Comment{Use \eqref{eqn:dRdPiAdj}}
+			\State $n\gets n-1$
+			\EndWhile
+			\State \textbf{return} $dF$ \Comment{$d\bm\pi$ at this point would represent \( \pdv{L}{\bm\pi_0} \)}
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+	\caption{Computing gradients with backpropagation, iterative portion}
+\end{table}
+
+%\Ryan{ Add other lemmas and calculations as needed. In particular, add discussion about MATLAB script using AutoDiff to check calculations}

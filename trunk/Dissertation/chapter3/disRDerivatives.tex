@@ -1,0 +1,320 @@
+One issue with algorithm \ref{ratioAlg}, is that it requires knowledge of the matrix of parameters $F$.  If we continue with the idea that $f_{ij}=f_i(\bm x_j)$ then the entries of the parameter matrix $F$ are evaluations of the data $\bm X$ for our models or distributions. Either way, this gives us at least $KN$ parameters to determine before we can even use algorithm \ref{ratioAlg}.  While there are many methods to decide these parameters, one common current method is the use of neural networks and gradient descent.
+
+Before discussing this further we must turn our attention briefly to derivatives of the the function \Rpi F.  Define the space $M_{K,N}$
+ as the subset of $K\times N$ matrices with non-negative entries and no columns identically equal to the zero vector.  Then with $S_K$ defined
+ as in \ref{simplexDef}, let $\mathcal{M}=M_{K,N}\times S_K$. We define a map
+\begin{equation}\label{manifoldResp}
+R:\mathcal{M}\rightarrow S_K:R(F,\bm p) = R_F(\bm p)
+\end{equation}
+
+Under this notation, with the goal of calculating gradients, we look at $DR$  which is the \textit{total derivative} of $R$.  For a given point $(F,\bm p)\in \mathcal{M}$, the map $DR(F,\bm p)$ is a linear map between $T_{(F,\bm p)}\mathcal{M}$ the tangent space to $\mathcal{M}$ at $(F,\bm p)$ and $T_{R(F,\bm p)}S_K$.  In general, the map $DR$ can also be noted by $R_*$ and is called the pushforward map in the differential geometry setting.  We will continue to call it the total derivative and use the notation $DR(F,\bm p)$ or just $DR$ when the point is given in context.
+
+Because $\mathcal{M}$ is a product manifold, we may write $DR$ as the sum of two linear operators
+\begin{equation*}
+DR(F,\bm p)[H,h] = D_FR(F,\bm p)[H] + D_{\bm p}R(F,\bm p)[h]  \\
+\end{equation*}
+for \( H\in TM_{K,N},\; h\in TS_K\). In this case we may define the maps $D_FR[H]:=DR[H,0]$ and $D_{\bm p}R[h]:=DR[0,h]$ as the derivative of $R$ holding $\bm p$ or $F$ constant respectively.
+
+By theorem \ref{unique} for each $F\in M_{K,N}$ of full rank there is a unique fixed point $\hat{\bm \pi}_F$ such that 
+\begin{equation}\label{pisubF}
+R(F,\hat{\bm \pi}_F)=\hat{\bm \pi}_F.
+\end{equation}
+Since the matrix $F$ is clear in the previous equation, we will omit it except when emphasis of the dependence on $F$ is required.
+
+By the implicit function theorem we may now write
+\[D\hat{\bm\pi}=D_{\bm p}R\cdot D\hat{\bm\pi}+D_FR\]
+which gives us
+\begin{equation}\label{dPiDF}
+D\hat{\bm\pi}=\left(I_K-D_{\bm p}R\right)^{-1}\cdot D_{F}R
+\end{equation}
+and this will be useful later.
+
+\subsection{Methods to compute $DR$}
+
+Let $P:\mathcal{M}\rightarrow \R^{N}$ be given by $P(F,\bm p)=\bm p^{\intercal}F$.  Note that $P$ is bilinear.  We now let $\mathbb{\log}$ represent the component wise natural log, and define 
+\[\ell:\mathcal{M}\rightarrow \R:\ell(F,\bm p)=\frac{1}{N}\bm 1_N\cdot\mathbb{\log}\circ P(F,\bm p).\]
+Then for fixed $F$, $\ell(F,\bm p)=\ell_F(\bm p)$ where $\ell_F(\bm p)$ is defined as in the discussion around corollary \ref{diffDef}.  This new definition will allow us to look more closely at the derivatives of $R_F(\bm p)$, and examine the behavior of the surface described by $R_F(\bm\pi)-\bm\pi=0$ for changing $F$.
+
+As before, we may also define $D_F\ell$ and $D_{\bm p}\ell$ as the portions of $D\ell$ that act on $TM_{K,N}$ and $TS_K$ respectively.  Further, by using the standard inner product on $S_K$, and the Frobenius inner product $\langle U,V\rangle=\op{tr}(U^{\intercal}V)$ on $M_{K,N}$  we define $\nabla_F\ell$ and $\nabla_{\bm p}\ell$ by
+\[D_F\ell(G)\cdot H=\op{tr}(H^{\intercal}\nabla_F\ell(G))\]
+and
+\begin{equation}\label{gradEll}
+D_{\bm p}(\bm \pi)\cdot \bm h=\bm h^{\intercal}\nabla_{\bm p}\ell(\bm\pi)
+\end{equation}
+
+Under this notation, we have that 
+
+\begin{equation}\label{rGradDef}
+R(\bm p,F)=\op{diag}(\bm p)\cdot\nabla_{\bm p}\ell(\bm p,F)
+\end{equation}
+
+%We can see this by calculating $D_{\bm\pi}\ell$ and using the standard inner product on $\R^{K}$.  In this case we see that for $\bm h\in \R^{K}$
+%\[[D_{\bm\pi}\ell]_{\bm p}\bm h=\bm h^{\intercal}\nabla_{\bm\pi}\ell(\bm p,F)\]
+%Taking $\bm h=\bm e_i$ for $\bm e_i$ $1\leq i\leq K$ the standard basis for $\R^{K}$ in equation \ref{gradEll} gives us equation \ref{rGradDef}.  
+
+It is worth noting at this point that if we were to embed $S_K$ into $\R^{K}$ in a different manner, we could get a definition of the map $R(\bm p,F)$ purely as the gradient of $\ell(\bm p,F)$.  Namely, if we use the coordinates $\mu_i=\ln(\pi_i)$, then $\pi_i=e^{\mu_i}$ is the inverse function and we can see that equation \ref{rGradDef} is given by the change of coordinates.  %This is particularly useful to prove symmetry when we calculate the gradient of $R(\bm\pi, F)$ in the $\bm\pi$ direction.
+
+%If we let $x:S_K\rightarrow \R^K$ be given by $x(p)=\log(p)$. That is, if the standard coordinates for $p$ are $p^i$, then $x(p^{i})=\log(p^{i})$. 
+To be precise, let $\tilde{\ell}(\bm\mu,F):=\ell(e^{\bm\mu},F)$. Then we have 
+\[\left.\nabla_{\bm \mu}\tilde{\ell}(\bm\mu,F)\right|_{\bm\mu=\bm\nu}=\frac{1}{N}\left(\sum_{n=1}^{N}\frac{e^{\nu_i}F_{in}}{\sum\limits_{k=1}^{K}e^{\nu_k}F_{kn}}\right)_{i=1}^{K}=R(e^{\bm\nu},F)\]
+so then if $\bm p=e^{\bm\nu}$
+\[R(\bm p,F)=\bm p\odot\left.\nabla_{\bm\pi}\ell(\bm\pi,F)\right|_{\bm\pi=\bm p}\]
+where $\bm u\odot \bm v$ represents the Hadamard product of $\bm u$ and $\bm v$.
+
+We now calculate the partial derivatives of $R$ to better understand $DR$.  Note that  with the discussion below we a choosing to use the standard coordinate system, so we are not using the full strength of the Frech\'et derivative.
+
+From corollary \ref{diffDef}, we have
+\[R(F,\bm\pi)=\left(\frac{\partial\ell}{\partial\pi_i}\cdot\pi_i\right)_{1\leq i\leq K}.\]
+this gives
+\begin{align*}
+	\dfrac{\partial r_j}{\partial \pi_i}&=\frac{\partial}{\partial \pi_i}\left(\frac{\partial\ell}{\partial\pi_j}\cdot\pi_j\right) \\
+										&=\frac{\partial^2\ell}{\partial \pi_i\partial\pi_j}\pi_j+\frac{\partial\ell}{\partial\pi_j} \frac{\partial\pi_i}{\partial\pi_j} \\
+										&=\frac{\partial^2\ell}{\partial \pi_i\partial\pi_j}\pi_j+\delta_{ij}\frac{\partial\ell}{\partial\pi_j}
+\end{align*}
+where $\delta_{ij}$ is the Kronecker delta function.
+
+From this we see that 
+\[D_{\hat{\bm\pi}}R_F(\bm\pi)= H\ell(\bm\pi)\cdot\op{diag}(\bm\pi)+\op{diag}(\nabla\ell(\bm\pi))\]
+where $\op{diag}(\bm v)$ is the diagonal matrix with entries given by $\bm v$. 
+
+Next, we calculate
+\begin{align}\label{partialRF}
+\dfrac{\partial r_j}{\partial f_{rs}}&=\frac{\partial}{\partial f_{rs}}\left(\frac{\partial\ell}{\partial\pi_j}\pi_j\right)\nonumber \\
+									 &=\frac{\pi_j}{N}\frac{\partial}{\partial f_{rs}}\left(\sum\limits_{n=1}^N \frac{f_{jn}}{\sum\limits_{k=1}^{K}f_{kn}\pi_k}\right)\nonumber \\
+									 &=\frac{\pi_j}{N}\sum_{n=1}^{N}\delta_{ns}\left(\frac{\delta_{jr}}{\sum\limits_{k=1}^{K}f_{kn}\pi_k}-\frac{f_{js}\pi_r}{\left(\sum\limits_{k=1}^{K}f_{kn}\pi_k\right)^2}\right) \nonumber \\
+									 &=\frac{\pi_j}{N}\left(\frac{\delta_{jr}}{\sum\limits_{k=1}^{K}f_{ks}\pi_k}-\frac{f_{js}\pi_r}{\left(\sum\limits_{k=1}^{K}f_{ks}\pi_k\right)^2}\right)
+\end{align}
+
+Where $r_j$ represents the $j$-th coordinate of the function $R(\bm\pi,F)$.  
+
+Now for $H\in M_{K, N}$ we calculate
+\begin{align}\label{RdiffQNum}
+r_j(\bm\pi,F+H)-r_j(\bm\pi, F)&= \frac{\pi_j}{N}\left(\sum\limits_{n=1}^N \frac{f_{jn}+h_{jn}}{\sum\limits_{k=1}^{K}(f_{kn}+h_{kn})\pi_k}-\sum\limits_{n=1}^N \frac{f_{jn}}{\sum\limits_{k=1}^{K}f_{kn}\pi_k}\right)\nonumber \\
+			   				  &=\frac{\pi_j}{N}\left(\sum\limits_{n=1}^N \frac{f_{jn}+h_{jn}}{\sum\limits_{k=1}^{K}(f_{kn}+h_{kn})\pi_k}- \frac{f_{jn}}{\sum\limits_{k=1}^{K}f_{kn}\pi_k}\right) \nonumber \\
+			   				  &=\frac{\pi_j}{N}\left(\sum\limits_{n=1}^N \frac{f_{jn}}{\sum\limits_{k=1}^{K}f_{kn}\pi_k+\sum\limits_{k=1}^{K}h_{kn}\pi_k}+\frac{h_{jn}}{\sum\limits_{k=1}^{K}f_{kn}\pi_k+\sum\limits_{k=1}^{K}h_{kn}\pi_k}- \frac{f_{jn}}{\sum\limits_{k=1}^{K}f_{kn}\pi_k}\right).
+\end{align}
+
+If we let $\ga_n=\sum\limits_{k=1}^{K}f_{kn}\pi_k$ and $\gb_n=\sum\limits_{k=1}^{K}h_{kn}\pi_k$, then the $n$th summand of \ref{RdiffQNum} becomes
+\begin{align}\label{diffFrac}
+\frac{f_{jn}}{\ga_n+\gb_n}+\frac{h_{jn}}{\ga_n+\gb_n}-\frac{f_{jn}}{\ga_n}&=\frac{\ga_n(f_{jn}+h_{jn})-f_{jn}(\ga_n+\gb_n)}{\ga_n(\ga_n+\gb_n)}\nonumber \\
+																		  &=\frac{\ga_nh_{jn}-f_{jn}\gb_n}{\ga_n(\ga_n+\gb_n)}\nonumber \\
+																		  &=\frac{\ga_nh_{jn}-f_{jn}\gb_n}{\ga_n^2}\cdot\frac{1}{1+\frac{\gb_n}{\ga_n}}.
+\end{align}
+
+Then for $x$ close to zero, we have $\dfrac{1}{1+x}\approx 1-x$, so \ref{diffFrac} becomes
+\[\frac{\ga_nh_{jn}-f_{jn}\gb_n}{\ga_n^2}\cdot\left(1-\frac{\gb_n}{\ga_n}\right).\]
+Combining the above with \ref{RdiffQNum}, we get
+\begin{equation}\label{derFrechR}
+r_j(\bm\pi,F+H)-r_j(\bm\pi, F)=\frac{\pi_j}{N}\left(\sum\limits_{n=1}^N \frac{h_{jn}\ga_n-f_{jn}\gb_n}{\ga_n^2}\right) +O(\|H\|^2).
+\end{equation}
+
+The benefit of this is that in connection with the calculation of the partials in \ref{partialRF}, we have confirmed the calculation of the Jacobian of $r_j$.  Put more precisely, if the Fr\'{e}chet derivative is represented by $Dr_j$, and the Jacobian is represented by $\dfrac{\partial r_j}{\partial F}$, we have
+\[[Dr_j]_GH=\op{tr}\left(\nabla r_jH^{\intercal}\right)\]%\dfrac{\partial r_j}{\partial F}
+where $\op{tr}(\cdot)$ represents the trace map.
+
+This now gives us a precise form for the term $\displaystyle D_FR$ in equation \ref{dPiDF}.
+
+
+
+\subsection{Using Derivatives of $R$ for Gradient Descent}
+For now, let us suppose that from our fixed point process for \Rpi F we define the matrix $Y$ by 
+\[y_{ij}:=\frac{\hat{\pi}_if_{ij}}{\sum_{k=1}^{K}\hat{\pi}_kf_{kj}}.\]
+Then if we have targets $T$ with $\sum_i t_i^{(n)}=1$ (typically one-hot encoded) we define the cross entropy loss as 
+\begin{equation}\label{crossLoss}
+L=-\sum_{n=1}^N\sum_{k=1}^{K}t_i^{(n)}\log(y_i^{(n)})
+\end{equation}
+Now to implement back-propagation, we calculate the gradient of the loss with respect to $F$.
+Note that $L$ does not depend directly on $F$, but rather depends on it via the following dependency graph.
+
+\begin{figure}[h]
+\begin{tikzpicture}
+
+\node[] (1) {L};
+\node[right=of 1] (2) {Y};
+\node[right=of 2] (3) {$\hat{\bm \pi}$};
+\node[right=of 2, below=of 3] (4) {F};
+\node[right=of 3] (5) {F};
+\draw[every loop]
+            (1) edge[auto=left] (2)
+			(2) edge[auto=left] (3)
+			(2) edge[auto=left] (4)
+			(3) edge[auto=left] (5);
+\end{tikzpicture}
+\caption{Variable dependency graph for $L$}\label{LossDepGraph}
+\end{figure}
+%\[\frac{\partial L}{\partial F}=\frac{\partial L}{\partial Y}\frac{d Y}{d F} \]
+%where 
+%\[\frac{d Y}{d F} = \frac{\partial Y}{\partial \hat{\bm\pi}} \frac{\partial \hat{\bm\pi}}{\partial F} + \frac{\partial Y}{\partial F} \]
+%is the \textit{total derivative} of $Y$ with respect to $F$.
+
+Now from the \ref{dPiDF}, we know that 
+\[D\hat{\bm\pi}=\left(I_K-D_{\bm\pi}R\right)^{-1}\cdot D_{F}R.\]
+Further, since \(R(p,F)=\frac{1}{N}\bm Y(p,F)\cdot 1_N\) and taking the dot product with $\bm 1_N$ is a linear function, we have 
+\[\frac{\partial\hat{\bm\pi}}{\partial F}=\left(I_K-\frac 1N\bm 1_N^{\intercal}\cdot D_{\bm\pi}Y\right)^{-1}\frac{1}{N}\bm 1_N^{\intercal}\cdot\frac{\partial Y}{\partial F}\]
+which leaves us with 
+\begin{equation}\label{drVdy}
+\frac{d Y}{d F} = \frac{\partial Y}{\partial \hat{\bm\pi}} \left(I_K-\frac 1ND_{\bm\pi}Y\cdot \bm 1_N\right)^{-1}\frac{1}{N}\frac{\partial Y}{\partial F}\cdot \bm 1_N + \frac{\partial Y}{\partial F}.
+\end{equation}
+So to calculate $\frac{\partial L}{\partial F}$, we must calculate $ \frac{\partial Y}{\partial F}$ and $\frac{\partial Y}{\partial \hat{\bm\pi}}$.
+
+With this task in mind, let us revisit the structure of Neural Networks.  To simplify things, we will consider the case with one fully connected hidden layer.  This fully connected layer takes the data $\bm X$ as input and outputs an activation $\bm A$ by linear transformation.  To be precise, if $\bm X=(\bm x^{(n)})_{n\leq N}$ for $\bm x^{(n)}\in \R^{D}$ then $\bm A=(\bm a^{(n)})_{n\leq N}$ where $\bm a^{(n)}\in \R^{K}$ and
+\[\bm a^{(n)}=\bm W\bm x^{(n)},\]
+with $\bm W=(w_{ij})$ a $K\times D$ matrix of weights. We make a common identification here of the vector space of such matrices and the space of linear transformations $W\in L(\R^D,\R^K)$, $W:\R^D\rightarrow \R^K$.
+
+In typical neural networks used for classification the activations are then transformed by the softmax function.  However, per the discussion in section \ref{softmax}, we first make a different transformation
+\[F=e^{\bm A}\]
+so that $\bm f^{(n)}=e^{\bm a^{(n)}}$ is a column vector in $\R^K$ with non-zero entries.  This means that $F\in M_{K,N}$, and we may define $\hat{\bm\pi}_F$ as in equation \ref{pisubF}. We then use for classification the matrix
+\[Y(F,\hat{\bm\pi})=\left(\frac{\hat{\pi}_if_{ij}}{\sum_{k=1}^{K}\hat{\pi}_kf_{kj}}\right)\]
+as above.  
+
+In connection with the softmax function $\bm\sigma:\R^K\rightarrow\R^K$ and section \ref{softmax} (FIXTHIS), it is worth noting that by defining $\hat{\bm\mu}_F=\log(\hat{\bm\pi}_F)$, we may redefine $Y(\bm p,F)$ in the following manner.  First note that because $F$ depends on $\bm A$, then so does $\log\hat{\bm\pi}_F=\hat{\bm\mu}_F$.  Then because $\hat{\pi}_if_{ij}=\exp(\hat{\mu}_i+a_{ij})$ for $1\leq i\leq K$ and $1\leq j\leq N$, we have 
+\begin{equation}
+Y(F,\hat{\bm\pi})=Y(\bm A):=\sigma(\bm A+\hat{\bm\mu}(\bm A)).
+\end{equation}
+
+This allows us to proceed as in \cite{patternnet}, with the added difficulty of the non-linearity of $\hat{\bm\mu}(\bm A)$.
+
+To calculate the derivative of $Y$, we give a different formulation in terms of the Hadamard product.  We note briefly that the Hadamard product satisfies the axioms necessary to make any set of equal sized matrices into an abelian group. \textcolor{red}{(discuss further in different section)}
+
+Following the discussion in a previous section, given a matrix $X\in L(\R^N,\R^K)$ we denote by $\bar{X}$ the Hadamard inverse of the matrix $X$. That is $(\bar{X})_{ij}=(X)_{ij}^{-1}.$  Then $\bar{X}\odot X=1_{n\times m}$, where $1_{n\times m}$ is the appropriate sized matrix of all ones.
+Recall that for a given $F\in M_{K,N}$ and $\bm p\in S_K$, we define $P(F,\bm p)=\bm p^{\intercal}F$.  Given these definitions, we have
+\[Y(F,\bm p)=\bm p\odot F\odot \bar{P}.\]
+It is important to note here that care must be taken with terms like $\bm p\odot F$.  Since $\bm p$ is a $K$ by 1 vector and $F$ is a $K$ by $N$ matrix, the Hadamard product is not strictly defined between the two.  Instead, we define
+\[\bm p\odot F:=(\bm p\cdot \bm 1_{N}^{\intercal})\odot F.\]
+Similarly, 
+\[F\odot \bar{P}:=F \odot (\bm 1_K\cdot \bar{P}).\]
+In the calculations that follow, these definitions will be assumed until it is necessary to use the full definition.
+
+With notation established, we prove the following
+\begin{thm}\label{DYvec}
+For a given $m=(F,\bm p)\in \mathcal{M}$ and an arbitrary $(H,\bm h)\in T\mathcal{M}\cong TM_{K,N}\times TS_K$ we have $DY_{m}[(H,\bm h)]=D_FY_{m}[H]+D_{\bm p}Y_{m}[\bm h]$. Where 
+\[D_FY_{m}[H]=\bm p\odot H\odot \bar{P}-\bar{P}\odot Y\odot(\bm p^{\intercal}H)\]
+and 
+\[D_{\bm p}Y_{m}[\bm h]=\bm h\odot F\odot \bar{P}-\bar{P}\odot Y\odot(\bm h^{\intercal}F)\]
+\end{thm}
+
+\begin{proof}
+Before moving forward with the proof, we note that for the function of two matrix variables, $f(X,Y)=X\odot Y$ we have $Df_{(X,Y)}[H]=X\odot H+H\odot Y$.  This will be used implicitly in what follows.  Also, as it is clear from context in this proof, the notation indicating the point at which these derivatives are being evaluated will be left out.
+
+Initially, we can write
+\[DY[(H,\bm h)]=\bm p\odot H\odot \bar{P}+\bm h\odot F\odot \bar{P}+\bm p\odot F\odot D\bar{P}[(H,h)].\]
+So that we now need to calculate $D\bar{P}[(H,\bm h)]$.
+
+Let $\iota(X)=\bar{X}$, for a matrix $X$. Then it is the case that $D\iota_X[H]=\bar(X)\odot \bar{X}\odot H$ for any $X$ on which this function is defined.  This can be seen easily by doing partial derivatives or taking the Frech\'et derivative of $\iota(X)$.  As a slight abuse of notation, we will let  $\bar{P}\odot \bar{P}=:\bar{P}^2$ when the context is clear.
+
+We may use this to calculate $D\bar{P}[(H,\bm h)]$ using the chain rule.  From the discussion above, $D\bar{P}[(H,\bm h)]=\bar{P}^2\odot DP[(H,\bm h)]$. Then we have $DP[(H,\bm h)]=\bm h^{\intercal}F+\bm p^{\intercal}H$. Putting these together, we have 
+\begin{equation}
+DY[(H,\bm h)]=\bm p\odot H\odot \bar{P}+\bm h\odot F\odot \bar{P}+\bm p\odot F\odot\bar{P}^2\odot(\bm h^{\intercal}F+\bm p^{\intercal}H)
+\end{equation}
+We then let $D_FP[H]=DY[(H,\bm 0)]$, and $D_pP[\bm h]=DY[(0,\bm h)]$. Recalling that $Y=\bm p\odot F\odot\bar{P}$ so that $\bm p\odot F\odot\bar{P}^2=Y\odot \bar{P}$, we have the theorem.
+\end{proof}
+
+Now in \citep{patternnet}, care is taken to distinguish the Frech\'et (or contravariant) derivative of a function from the gradient (or covariant derivative) of the same function.  %This is similar to the relationship of pushforwards and pullbacks in differential geometry
+Since we are doing gradient descent, we really want to calculate the gradient of $L$ with respect to $F$, and to do that we need the following lemma.
+\begin{lemm}\label{gradChain}
+Let $U,V$ be real Riemannian Manifolds and $f:V\rightarrow \R$ and $g:U\rightarrow V$ be smooth maps.  Then if $h=f\circ g$, we have that 
+\[\nabla h=Dg^{*}[\nabla f\circ g]\]
+where $\nabla h,\nabla f$ are the gradients of $h$ and $f$ respectively, and $Dg^{*}$ represents the adjoint linear operator of $Dg$ with respect to the metrics on $TV$ and $TU$.
+\end{lemm}
+\begin{proof}
+This is  lemma 4.1 of \citep{matGradChain}. We will adapt it to our situation. 
+
+First, let $u \in U$ and $x\in T_uU$ be arbitrary. Because $f,g$ are smooth, they induce maps $Dg_u:T_uU\rightarrow T_{g(u)}V$ and $Df_{g(u)}:T_{g(u)}V\rightarrow \R$.
+We have (by definition) that $Dh_u[x]=\bra \nabla h(u),x\ket_{T_uU}$. Further, it is clear that $Dh_u:T_uU\rightarrow\R$ is given by $Dh_u[x]=D(f\circ g)_u[x]=Df_{g(u)}[Dg_u[x]]$. 
+
+Now we have $Df_{g(u)}[Dg_u[x]]=\bra\nabla f(g(u)),Dg_u[x]\ket_{T_{g(u)}V}$.  Then for the linear operator $Dg_u:T_uU\rightarrow T_{g(u)}V$, the adjoint linear operator $Dg^{*}$ is defined by the equation $\bra y,Dg_u[x]\ket_{T_{g(u)}V}=\bra Dg_u^{*}[y],x\ket_{T_uU}$ for $x\in T_uU$ and $y\in T_{g(u)}U$.  This gives us that 
+\[Df_{g(u)}[Dg_u[x]]=\bra\nabla f(g(u)),Dg_u[x]\ket_{T_{g(u)}V}=\bra Dg_u^{*}[\nabla f(g(u))],x\ket_{T_uU}.\]
+So that $\bra \nabla h(u),x\ket_{T_uU}=\bra Dg_u^{*}[\nabla f(g(u))],x\ket_{T_uU}$, and as $u,x$ were arbitrary, the theorem is proved.
+\end{proof}
+
+A key aspect of the proof above is the use of the metric on $U$ and $V$. This allows us to identify $TU\cong TU^{*}$ and  $TV\cong TV^{*}$, to define $Dg^{*}$ appropriately.  It follows that in the discussion below, the appropriate choice of metric (and thus inner product) on the tangent space will be essential.
+
+It may be worth mentioning information geometry and natural gradient descent here. \textcolor{red}{(Fix Later)}.
+
+For what follows, we will use the inner product on $\bm M=L(\R^N,\R^K)$, defined by the Frobenius inner product, $\bra A,B\ket=\op{tr}(A^{\intercal}\cdot B)$. It is worth noting here that the map $\op{vec}:\bm M\rightarrow \R^{KN}$ given by stacking the columns of $M$ is a diffeomorphism, and the Frobenius inner product on $\bm M$ is equivalent to the standard euclidean inner product on $\R^{KN}$.  In short, the following diagram commutes.
+
+\begin{equation}
+%\begin{tikzcd}
+%M\times M \arrow[rd] \arrow[r, "vec"] & \R^{KN}\times \R^{KN} \arrow[d, "euc"]\\
+%& \R
+%\end{tikzcd}
+\begin{tikzcd}
+ \bm M\times \bm M \arrow[rd, "\op{Frob}"] \arrow[d, "\op{vec}" left] & [1em]\\
+\R^{KN}\times \R^{KN} \arrow[r, "\op{euc}" below] & \R
+\end{tikzcd}
+\end{equation}
+
+Where $\op{Frob}$ and $\op{euc}$ represent the inner product (metric) on each of the spaces.  
+
+We will use lemma \ref{gradChain} to calculate the gradient of $L$ as defined in equation \ref{crossLoss} with respect to the matrix of parameters $F$.  It is helpful to note that while $L$ is not linear in $Y$, it is linear in $\tilde{Y}:=\log Y$.  Further, working with the Dependency graph in figure \ref{LossDepGraph}, we see that we may write $L$ as the composition of several functions. So to calculate the gradient, we will use lemma \ref{gradChain} extensively.  We note that particular care must be taken both in determining where inner products are taken, and where the derivatives and their adjoint operators are evaluated.
+
+The following equation gives us a direct view of the compositions involved in $L$
+\begin{align}
+L(F)&= -\op{tr}(T^{\intercal} \tilde{Y}(F,\hat{\bm \pi}(F)))\nonumber \\
+	&= -\op{tr}(T^{\intercal} \log Y(F,\hat{\bm \pi}(F)))
+\end{align}
+
+So since we know the derivatives of $Y,\hat{\bm\pi}$, and $R$, we need to find their adjoint operators.  This will be easier if all the derivatives are in the same notation.  We use the observation that \(R(p,F)=\frac{1}{N}\bm Y(p,F)\cdot 1_N\) and theorem \ref{DYvec}, to calculate $DR$.  We will then use this to calculate $D\hat{\bm\pi}$ following the pattern from equation \ref{dPiDF}.  Finally we will find the adjoint operators with respect to the correct inner products, and then find $\nabla L(F)$.
+
+\begin{lemm}
+$Dlog(X)=\bar{X}\odot DX$
+\end{lemm}
+
+\begin{lemm}
+The linear function $f(X)=A\odot X$ is self adjoint on $TM_{K,N}$.
+\end{lemm}
+
+Remember that if $f=g\circ h$ is a linear map between inner product spaces, then $f^{*}=h^{*}\circ g^{*}$.
+
+other lemmas as needed...
+
+calculations
+
+
+%things learned today, 7 june 2019
+% 1. $D_FY$ is almost exactly as in pattern net.  figure out the derivative of $\tilde{Y}=-log(Y)$ and use the fact that $Y=\sigma(A+\hat{\bm\mu}\bm 1^{\intercal}$. Follow the work in pattern net.
+% 2. $D_p Y$ is more difficult.  For one, you need to figure out $D\hat{\bm\pi}$ (or $D\hat{\bm\mu}$ and this necessarily involves the derivative $D\sigma$.  While $D\sigma$ is computed in pattern net, it is worked out for a single sample, and then extrapolated.  To do it ofr all samples at once necessarily involves the Hadamard product, which cannot be represented by a matrix in $M_{K,N}$.  I wonder if i can do it with one sample... but then $\hat{\bm\pi}$ is just a 1 at the biggest entry (softmax) and things might get wierd?
+% 3. maybe the work with the online classification would be useful in #2?
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%      old stuff, some recycled above!            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%This is a rough draft for an idea of using the algorithm \ref{ratioAlg} in place of a softmax layer in Neural networks.
+%To do so we need to know \(\frac{\partial\hat{\bm\pi}}{\partial F}\)
+%where \(\hat{\bm\pi}\) is a zero of the function\(R_F(\bm\pi)-\bm\pi\). To do this we use the implicit function theorem to write
+%\[\frac{\partial\hat{\bm\pi}}{\partial F}=D_{\bm\pi}R\frac{\partial\hat{\bm\pi}}{\partial F}+\frac{\partial R}{\partial F}\]
+%which gives us
+%\begin{equation}\label{dPiDF}
+%\frac{\partial\hat{\bm\pi}}{\partial F}=\left(I_K-D_{\bm\pi}R\right)^{-1}\frac{\partial R}{\partial F}
+%\end{equation}
+%%\[\frac{\partial\hat{\bm\pi}}{\partial F}=\frac{\partial R}{\partial \hat{\bm\pi}}\frac{\partial\hat{\bm\pi}}{\partial F}+\frac{\partial R}{\partial F}\]
+%%and we note that in standard coordinates we have 
+%%\[\frac{\partial\hat{\pi}_i}{\partial f_{rs}}=\sum_{j=1}^{K}\left(\frac{\partial r_j}{\partial \hat{\pi}_i}\frac{\partial\hat{\pi}_i}{\partial f_{rs}}+\frac{\partial r_j}{\partial f_{rs}}\right)\]
+%%where $f_{rs}$is the $(r,s)$ entry of $F$.  Then
+%%\begin{equation}\label{partialPiF}
+%%	\dfrac{\partial\hat{\pi}_i}{\partial f_{rs}}=\dfrac{\sum\limits_{j=1}^K \dfrac{\partial r_j}{\partial f_{rs}}}{1-\sum\limits_{j=1}^{K} \dfrac{\partial r_j}{\partial \hat{\pi}_i}}.
+%%\end{equation}
+%%
+%%This gives us a formula for \(\frac{\partial\hat{\bm\pi}}{\partial F}\) in terms of the derivatives of $R_F(\hat{\bm\pi})$.  This is helpful because we have a formula for $R_F(\bm\pi)$ as a version of a gradient for the log likelihood function.
+%%
+%%% \[\dfrac{\partial r_j}{\partial F_{rs}}=\frac{\partial}{\partial f_{rs}}\frac{\partial\ell}{\partial\pi_j}\cdot\pi_j\]
+%%%and
+%%% \[\dfrac{\partial r_j}{\partial \pi_i}=\frac{\partial}{\partial pi_i}\frac{\partial\ell}{\partial\pi_j}\cdot\pi_j.\]
+%%%We will calculate these two derivatives, starting with the latter.
+%%
+%
+%
+%%dynamical systems Nitejzcki
+%%joel robin & ralph abraham
+%%use \ell(F\bm\pi) as loss function (forward map), summed over sample (minibatch).
+%%backward map is he drivative as calculated above.
+%
+
+%%To this end, we introduce the function $g:\R^K\times\R^{K\times N}\rightarrow \R^{K\times N}$ by $g(\bm v,X):=\op{diag}(\bm v)\cdot X$.
+%% Then if $D\op{log}$ represents the Frech\'et derivative of the component wise log function, and $P(\bm\pi,F)$ as in the discussion near equation \ref{rGradDef}, we have
+%%\[Y(\hat{\bm\pi},F)=g(D\op{log}(P(\hat{\bm\pi},F)),g(\hat{\bm\pi},F))\]
+%%the benefit of this is that $g$ is linear in each of its arguments, which makes the calculation of $ \frac{\partial Y}{\partial F}$ and $\frac{\partial Y}{\partial \hat{\bm\pi}}$ easier.
+%
+%%Think of D:=dYdF as a K by N matrix with K by N matrices inside. Then D\cdotH' is D^i\cdot H_i, but in this case, D^i is K N by K matrices,
+%%each of which act on H_i to give a 1 by N row vector, so you get a K by N array out of it. Then summing would be like doing the trace of 
+%%HD\cdot H'. NB: the other (off diagonal) entries come from the other columns of D acting on the rows of H'.  Let's translate this to code!

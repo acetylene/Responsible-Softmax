@@ -1,0 +1,24 @@
+%!TEX root = chapter1.tex
+\label{logisticReg}
+Logistic regression is a method of modeling a binary dependent variable.  For 
+example, we may wish to classify data into one of two categories, and then 
+logistic regression may be a good tool for this.
+
+Let us suppose we are in the case where we are trying to classify our data into either class \(0\) or \(1\).  We wish to model  \[p(c=1|X) = 1-p(c=0|X).\] This can be achieved by performing linear regression on the log odds of the probabilities we wish to model.
+
+If we let \(\pi=p(c=1|X)\) then the log odds of \(\pi\) is the value
+\[\ell(\pi) = \log\left(\frac{\pi}{1-\pi}\right).\]
+Logistic regression supposes a linear relationship between the log odds and 
+The data.  That is
+\[\ell(\pi) = \beta_0+\sum_{i=1}^{d} \beta_ix_i.\]
+If we then sove for \(\pi\), we get 
+\[\pi = \frac{1}{1+\exp(\beta_0+\sum_{i=1}^{d} \beta_ix_i)}.\]
+This is particularly significant because the function on the right is known in 
+machine learning as the \textit{sigmoid activation function}, 
+\[\gs(x) =\frac{1}{1+e^{-x}}.\]
+
+Thus we do logistic regression by performing linear regression on the log odds 
+of a binary dependent variable.  The end result is a map of \(\pi = p(c=1|x)\) 
+as \(\pi = \gs\circ a(x)\) for some linear function \(a(x)\). In this sense, we
+may say that a perceptron which uses a sigmoidal activation is performing 
+logistic regression.

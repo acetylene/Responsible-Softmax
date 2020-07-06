@@ -1,0 +1,23 @@
+%%!TEX root = ../Dissertation_RC.tex
+%\makeatletter
+%\providecommand*{\input@path}{}
+%\g@addto@macro\input@path{{../}{../../}}% append
+%\makeatother
+%\documentclass[../Dissertation_RC.tex]{subfiles}
+%
+%\begin{document}
+	\chapter{Responsible Softmax Layer}\label{respLayer}
+		\input{chapter4/RSIntro}
+	\section{Neural Net Learning of the Parameters for Dynamic Responsibility}
+		\input{chapter4/biasVresponsibility}
+	\section{Proposed Neural Network Layer}
+		\input{chapter4/RSdescription}
+	\section{Backpropagation and Responsibility}
+		\input{chapter4/derivativesandAdjoints}
+	\section{Methods to compute $DR$}
+		\input{chapter4/disRDerivatives}
+	\section{Using Derivatives of $R$ to compute \( \pdv{L}{Y} \)}
+		\input{chapter4/disYDerivatives}
+	
+%	\biblio
+%\end{document}

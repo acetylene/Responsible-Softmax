@@ -1,0 +1,42 @@
+\label{classvCluster}
+Classification and clustering are two closely related statistical tasks.  Clustering is more exploratory in nature, while classification is predictive.  Clustering looks to find ways of associating data points with each other to maximize some objective.  Classification seeks to put new data into predefined groups.
+
+In some sense, Clustering may be considered an example of distribution inference given data.  If we have several samples, and a good idea that each sample comes form a different distribution, we can ask separate, but related questions.  First, what are the distributions that were sampled from?  Second, how can we infer which data points came from which distribution? In general, the first question may be called clustering, and the second question classification. For now we will focus mostly on clustering and return to classification later.
+%\textcolor{red}{ (more from dismixture intro)}
+\subsection{Clustering}
+To make the question of clustering more precise, consider the problem of sampling from $K<\oo$ probability distributions given by distribution functions \(f_k(\bm x,\bm\gt_k),\; 1\leq k\leq K\). Each distribution $f_k(\bm x,\bm\gt_k)$ is chosen at random with proportion $\pi_k^\ast$, $\sum_k \pi_k^\ast=1$.  This is a situation that is mimicked easily enough in Monte Carlo simulations, and is common in applications.  
+
+\begin{experiment}\label{exper:MCMixSample}
+	As a two stage experiment, we work as follows to select a point in $\bm x_n\in\R^I$:
+	\begin{enumerate}
+		\item Stage 1: From the $K$ possible distributions, select a label $k_n$ with probability $P(k_n=k)=\pi_{k}^\ast$.
+		\item Stage 2: Sample $\bm x_n$ from $f_{k_n}(\bm x,\bm\gt_k)$
+	\end{enumerate}
+	
+\end{experiment}
+
+Given $N$ such data points, $\bm D=\{\bm x_n\}_{n=1}^{N}$, clustering then is the problem of estimating the parameters $\bm\Theta=\{\bm\pi^\ast,\bm\gt_1,\bm\gt_2,\ldots,\bm\gt_K\}$, where $\bm\pi^\ast\defined\{\pi_k^\ast\}_{k=1}^{K}$. This essentially assigns each of the data points $\bm x_n$ as a sample from a particular distribution in \(X_k \sim f_k(\bm x,\bm \gt_k),\; 1\leq k\leq K\).  We have in this case 
+
+\begin{equation}\label{mixPdf}
+P(\bm x_n|\bm\Theta)=\sum_k P(\bm x_n|k_n=k,\bm\gt_k) P(k_n=k, \bm\gt_k)=\sum_k \pi_k^\ast f_k(\bm x_n,\bm \gt_k).\
+\end{equation}
+Here we make the implication that \( P(\bm x_n|k_n=k,\bm\gt_k) = f_k(\bm x_n,\bm \gt_k) \) and \( P(k_n=k, \bm\gt_k) = \pi_k^\ast \).
+
+We often choose to estimate the parameters $\{\pi_k^\ast\}$ first as often our other estimates for the remaining parameters $\bm\Theta$ are not independent of our choices for the labels.  In example of this, consider some situation where an algorithm has found a local maximum likelihood estimate for the parameters \(\hat{\bm \Theta} = \{\hat{\bm \pi}, \hat{\bm\gt}_1, \ldots, \hat{\bm\gt}_K \} \).   Supposing further that all of the pdfs \( f_k(x,\gt_k) \) are similar (\textit{e.g.} gaussian) then we know that the given local estimate is not unique.  
+
+To be precise, if \( \gs \) is any permutation of \( 1,\ldots, K \), then the estimate given by 
+\[ \gs(\hat{\bm \Theta}) := \{\hat{\pi}_{\gs(1)}, \hat{\pi}_{\gs(2)}, \ldots, \hat{\pi}_{\gs(K)}, \hat{\bm \gt}_{\gs(1)}, \hat{\bm \gt}_{\gs(2)}, \ldots, \hat{\bm \gt}_{\gs(K)}\}\]
+ gives the exact same likelihood as \( \hat{\bm\Theta} \).  This means that our likelihood function is not convex, and that we have no guarantees that any algorithm will give us a 'correct' estimate.  Because of this it is a common practice to use several different initializations for any clustering algorithm used, and compare the results.
+
+\subsection{Classification}
+Classification does not generally share the non-convexity problem associated with clustering.  Instead of trying to estimate parameters for the distribution of the data, clustering attempts to find the best label for a data point from a given set of prescribed labels.  This is often presented as a maximum likelihood problem, in the sense that we are trying to maximize the probability of class labels given the data, \textit{e.g.} find \( k \) such that \( P(\bm x_n|k_n=k,\bm\Theta) \) is maximized.
+
+Classification is often given as a type of supervised learning as discussed in section \ref{supVunsup}.   Often one is interested in the class \( k' \) of a new data point \( \bm x' \) which an algorithm may infer from calculating \( P(\bm x'|k'=k,\bm D) \; \forall k\leq K\).  A maximum likelihood estimate could then compare these probabilities and make a decision on the label. Such a process is also called maximum likelihood classification. Another option would be to use Bayes rule and calculate \( P(k'=k|\bm x',\bm D) \; \forall k\leq K\), and then choose the class with the greatest probability.  This is called a maximum \textit{a posteriori} (MAP) classifier. 
+
+A connection between clustering and classification appears through some analysis via Bayes rule,
+\begin{equation}\label{Bayes}
+ P(k_n=k|\bm x_n, \bm\Theta) =\dfrac{ P(\bm x_n|k_n=k,\bm\Theta)P(k_n=k, \bm\gt_k) }{P(\bm x_n|\bm\Theta)}
+\end{equation}
+in that the goal of clustering is proportional to the goal of classification.  Indeed, it is possible to use clustering and establish a model for use in classification, as done with the software package \textit{AutoClass} \cite{AutoClass1,AutoClass2}.  It is also possible to use labeled data sets and classification to perform nearest neighbors clustering as discussed in \textit{The Elements of Statistical Learning} chapter 13 \cite{hastie09esl}. 
+
+%\Ryan{(is there more to say here??)} not for now

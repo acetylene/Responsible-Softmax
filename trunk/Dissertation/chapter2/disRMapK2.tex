@@ -1,0 +1,44 @@
+For now we will limit our discussion to the case $K=2$.  The advantage in this is that $R(\bm\pi)$ is a homogenous map so we may consider the ratios of the two coordinates as a map on the projective line.  The advantage is that this reduces the number of dimensions in consideration to 1.
+
+To be precise, start with the $2\times N$ matrix
+\[F=
+\begin{pmatrix}
+a_1 & a_2 & a_3 & \ldots & a_N\\
+b_1 & b_2 & b_3 & \ldots & b_N
+\end{pmatrix}\]
+
+We should think of this $F$ as being defined by taking $N$ i.i.d. samples from the distribution $X_i\sim P(x)=\pi_1 f_1(x)+\pi_2 f_2(x)$ and define $a_i=f_1(x_i)$, $b_i=f_2(x_i)$. In particular, we have that $a_i\geq 0$ and $b_i\geq 0$.
+
+In this context we have the map 
+\[R(\pi_1,\pi_2)=\frac 1N\left (\sum_{i\leq N}\frac{\pi_1a_i}{\pi_1a_i+\pi_2b_i},\; \sum_{i\leq N}\frac{\pi_2b_i}{\pi_1a_i+\pi_2b_i}\right )\] 
+
+It is clear from the definition that for any $\gl\in\R$, we have $R(\gl\pi_1,\gl\pi_2)=R(\pi_1,\pi_2)$, and so $R$ is homogeneous of degree zero as stated above. If we then define $t=\frac{\pi_1}{\pi_2}$ and 
+\[T(t)=\frac{\sum_{i\leq N}\frac{ta_i}{ta_i+b_i}}{\sum_{i\leq N}\frac{b_i}{ta_i+b_i}}\]
+
+then $T(t):\mathbb{P}^1_{\R}\rightarrow\mathbb{P}^1_{\R}$ is a map from the projective line to itself.
+
+The following theorem gives another characterization of the map $T(t)$.
+
+\begin{thm}\label{ODE}
+The function $f(t)=\prod_{i=1}^{N} ta_i+b_i$, is a solution to the differential equation \[T(t)=\frac{tf'(t)}{Nf(t)-tf'(t)}\]
+\end{thm}
+
+\begin{proof}
+We will show that $f(t)$ satisfies the given ODE.  Let the numerator and denominator of $T(t)$ be $A(t)$ and $B(t)$ respectively.  Then note that we have \[A(t)=\sum_{i=1}^N \frac{a_i}{ta_i+b_i},\] \[B(t)=\sum_{i=1}^N \frac{b_i}{ta_i+b_i},\] and \[T(t)=\frac{tA(t)}{B(t)}.\]
+We now calculate as follows:
+\begin{align*}
+T(t)\;=&\;\frac{tf'(t)}{Nf(t)-tf'(t)}\\
+\frac{NT(t)}{t(1+T(t))}&=\frac{f'(t)}{f(t)}\\
+\int\frac{NT(t)}{t(1+T(t))}\;dt&=\log(f(t))
+\end{align*}
+Since $tA(t)+B(t)=N$, we have 
+\[1+T(t)=\frac{1}{B(t)}(B(t)+tA(t))=\frac{N}{B}\]
+and so
+\[\frac{NT(t)}{t(1+T(t))}=t^{-1}B(t)T(t)=A(t)\]
+substituting the expression $A(t)=\sum_{i=1}^N \frac{a_i}{ta_i+b_i}$ into 
+\[\int A(t)\;dt=\log(f(t))\]
+and integrating gives the desired result.
+\end{proof} 
+At this point it is important to see that with $f(t)$ defined as in theorem \ref{ODE}
+\[\pi_2^N\cdot f(t)=\prod_{i=1}^N (\pi_1a_i+\pi_2b_i)\]
+and the RHS above is the evaluation of the sample $x_1,\;x_2,\;\ldots\;,x_N$ on the joint distribution, with  i.i.d. $X_i\sim P(x):=\pi_1 f_1(x)+\pi_2 f_2(x)$.

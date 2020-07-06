@@ -1,0 +1,114 @@
+\section{Mixtures in general}\label{sec1}
+ While humans can quickly pick out patterns for data that can be easily visualized, the problems of evaluating high dimensional data, teaching computers to do what humans do easily (e.g.: character recognition), or even of finding new and unknown patterns are interesting from a mathematical perspective.  We will discuss some of the known clustering algorithms available and include some examples of interest.  Examples of interest may include data sets where a given algorithm does especially well, and will include ones where the algorithms work very poorly.
+ 
+In some sense, Clustering may be considered an example of distribution inference given data.  If we have several samples, and a good idea that each sample comes form a different distribution, we can ask two different, but related questions.  First, what are the distributions that were sampled from?  Second, how can we infer which data points came from which distribution? In general, the first question may be called clustering, and the second question classification. For now we will focus mostly on clustering and return to classification later.
+
+To make the question more precise, consider the problem of sampling from $K<\oo$ probability distributions with pdfs \(f_k(x,\gt),\; 1\leq k\leq K\). Each distribution $f_k(x,\gt)$ is chosen at random with proportion $\pi_k^\ast$, $\sum_k \pi_k^\ast=1$.  This is a situation that is mimicked easily enough in Monte Carlo simulations, and is common in applications.  As a two stage experiment, we work as follows to select a point in $x_n\in\R^I$:
+\begin{enumerate}
+\item Stage 1: From the $K$ possible distributions, select a label $k_n$ with probability $P(k_n=k)=\pi_{k}^\ast$.
+\item Stage 2: Sample $x_n$ from $f_{k_n}(x)$
+\end{enumerate}
+
+Given $N$ such data points, $D=\{x_n\}_{n=1}^{N}$, clustering then is the problem of estimating the parameters $\gt=\{\bm\pi^\ast,\ldots\}$, where $\bm\pi^\ast\defined\{\pi_k^\ast\}_{k=1}^{K}$. This essentially assigns each of the data points $\bm x_n$ as a sample from a particular pdf in \(f_k(x,\gt),\; 1\leq k\leq K\).  We have in this case 
+\[P(x_n|\gt)=\sum_k P(x_n|k_n=k,\gt) P(k_n=k, \gt)=\sum_k \pi_k^\ast f_k(x_n,\gt).\]
+
+One reason that we choose to estimate the parameters $\{\pi_k^\ast\}$ first is that often our other estimates for the remaining parameters $\gt$ are not independent of our choices for the labels.  We proceed as inspired by \textit{Information Theory, Inference, and Learning Algorithms}\citep{MacKay2002}.
+
+Using Bayes' rule, we may formulate a strategy for recovering the parameters $\{p_k\}_{k=1}^{K}$. Given the data $D$, we ask what is the likelihood that the labels chosen were $\{k_n\}_{n=1}^{N}$, given some prior distribution of the labels as $\{\pi_k\}_{k=1}^{K}$. That is to say that $P(k_n=k, \gt)=\pi_k$, for example the naive assumption would be $\pi_k=\frac 1K$.
+
+Bayes rule gives:
+\begin{align}\label{Bayes1}
+P(k_n=k|\{x_n\},\{\pi_k\})&=\frac{P(x_n|k_n=k)P(k_n=k)}{\sum_{k'}P(x_n|k_n=k')P(k_n=k')} \nonumber \\
+						  &=\frac{\pi_k f_k(x_n)}{\sum_{k'}\pi_{k'} f_{k'}(x_n)}
+\end{align}
+
+%For a more visual example, consider the ``stacked" functions $f_k$:
+%\begin{center}
+%%TODO fix the grapics here, probably through a relevant MATLAB example.
+%%\includegraphics[scale=.2]{piecewise4.png} 
+%	\begin{tikzpicture}[scale=1.75]
+%		\draw[->] (-1,0) -- (5,0) node[right] {$x_n$};
+%		\draw[->] (0,-.5) -- (0,2.5) node[right] {$P(x_n|\gt)$};
+%		\draw[thick,red] plot[samples=100, smooth, domain=-1:5,id=exp1] (\x,{5*exp(-(\x-1)^2/1)/(2*1*sqrt(2*3.14159))});
+%		\draw[thick,blue] plot[samples=100, smooth, domain=-1:5,id=exp2] (\x,{5*(exp(-(\x-1)^2/1)/(2*1*sqrt(2*3.14159))+exp(-(\x-2)^2/4)/(4*2*sqrt(2*3.14159)))});
+%		\draw[thick,green] plot[samples=100, smooth, domain=-1:5,id=exp3] (\x,{5*(exp(-(\x-1)^2/1)/(2*1*sqrt(2*3.14159))+exp(-(\x-2)^2/4)/(4*2*sqrt(2*3.14159))+exp(-(\x-3)^2/9)/(3*sqrt(2*3.14159)))});
+%		\draw[thick] plot[samples=100, smooth, domain=-1:5,id=exp4] (\x,{5*(exp(-(\x-1)^2/1)/(2*1*sqrt(2*3.14159))+exp(-(\x-2)^2/4)/(4*2*sqrt(2*3.14159))+exp(-(\x-3)^2/9)/(3*sqrt(2*3.14159))+exp(-4*(\x-2.5)^2)/(2*1*sqrt(2*3.14159)))});
+%		\foreach \x in {-1}
+%			\draw[xshift=\x cm] (0pt,2pt) -- (0pt,-2pt) node[below]{$\x$};
+%		\foreach \x in {1,...,5}
+%			\draw[xshift=\x cm] (0pt,2pt) -- (0pt,-2pt) node[below]{$\x$};
+%			
+%%		\node [below=1cm, align=flush center,text width=8cm] at (2,-.25)
+%%        {
+%%           % TODO create graphics here, probably through a relevant MATLAB example.
+%%        };
+%	\end{tikzpicture}
+%\end{center}
+%
+%In this example, $K=4$, and priors are $\{\pi_k\}_{k=1}^{4}$.  This graphic visualizes the density 
+%\[P(x_n|\gt)=\sum \pi_k f_k(x_n)\]
+%where the vertical stripe is divided into regions of about $\pi_k f_k(x)$.
+%Note here that we have joint distribution which is the mixed discrete-continuous distribution of $(x_n,k_n)$:
+%\[P\left(x-\Delta x<x_n<x,k_n=k\right)=\pi_k\cdot\int_{x-\Delta x}^{x}f_k(x_n)\;dx.\]
+
+We have a notion of conditional density
+\begin{align*}
+\frac{P\left(x-\Delta x<x_n<x,k_n=k\right)}{P\left(x-\Delta x < x_n <x+\Delta x\right)}&\approx\\ \frac{\pi_kf_k(x)\Delta x}{\sum_{k'} \pi_{k'}f_{k'}(x) \Delta x}&=P(x_n|k_n=k,\gt)
+\end{align*}
+
+The joint distribution of $\{x_n\}$ and $\{k_n\}$ is 
+\[P(\{x_n\}, \{k_n\}|\{\pi_k\})=\prod_n \pi_{k_n}f_{k_n}(x_n).\]
+Since we have no practical way of knowing the true labels of points $x_n$; we perform marginalization
+\begin{align*}
+P(\{x_n\}|\{\pi_k\})&=\sum_{(k_1,k_2,\ldots,k_N)}\prod_n \pi_{k}f_{k_n}(x_n)\\
+&= \prod_n \left(\sum_{k}\pi_kf_k(x_n)\right)\\
+&= \prod_n P(x_n|\{\pi_k\})
+\end{align*}
+where $\displaystyle{P(x_n|\{\pi_k\}) =\sum_{k}\pi_kf_k(x_n)}$
+
+\begin{eg} Find the most likely values of $\{\pi_k\}$, given data $\{x_n\}$. We assume complete lack of knowledge, i.e. the prior distribution of $\{\pi_k\}$ is uniform on the standard probability simplex 
+\begin{equation}\label{simplexDef}
+	S_K:=\left\{\{\pi_k\}_{k=1}^{K}:0\leq \pi_k\leq 1; \sum_{k=1}^{K}\pi_k =1\right\}
+\end{equation}
+
+\end{eg}
+
+\begin{soln}
+Bayes says
+ \[P(\{\pi_k\}|\{x_n\})=\frac{P(\{x_n\}|\{\pi_k\})P(\{\pi_k\})}{\int\int_{\ldots}\int P(\{x_n\}|\{\pi_k\})P(\{\pi_k\})\; d\pi}\]
+ Remember that the prior $P(\{\pi_k\})$ is uniform.
+\end{soln}
+We note here that if we would perform a maximum \textit{a posteriori} estimate at this point, it would be equivalent to finding a maximum likelihood estimator for $\bm\pi^\ast$.
+
+While the marginal probability is difficult to compute, we get a lot of mileage out of looking at the log likelihood.  We define
+\begin{align*}
+L&:= \ln P(\{x_n\}|\{\pi_k\}) = \sum_n \ln P(x_n|\{\pi_k\})
+\end{align*}
+and then maximize the likelihood on the simplex $S_K$.
+We then define 
+\[\{\hat{\pi}_k\}=\argmax_S L\]
+The problem of finding the `correct' probability distribution $P(\{\pi_k\})$ then becomes the problem of finding the maximum likelihood estimator of $L$.  
+
+To do this we may use the method of Lagrange multipliers. With our objective function as 
+\[\mathcal{L}=L-\gl G\]
+where $G(\{\pi_k\})=\sum_k \pi_k -1$, we get the system of equations:
+\begin{align*}
+&\pder1{\mathcal{L}}{\pi_k}=\pder1{L}{\pi_k}-\gl \pder1{G}{\pi_k}=0\qquad \; k=1,\ldots, K\\
+&\pder1{\mathcal{L}}{\gl}=-G(\{\pi_k\})=0
+\end{align*}
+then we have 
+\begin{align*}
+\pder1{L}{\pi_k}&=\sum_n \pder1{}{\pi_k}\ln P(x_n|\{\pi_k\})\\
+&=\sum_n \frac{f_k(x_n)}{P(x_n|\{\pi_k\})}
+\end{align*}
+so that the above equations becomes the system of algebraic equations
+\begin{align}\label{lageq}
+\sum_n\frac{f_k(x_n)}{\sum_{k'}\pi_{k'}f_{k'}(x_n)}&=\gl&k=1,2,\ldots, K\\
+\sum_k\pi_k=1
+\end{align}
+
+This problem, namely of finding the posterior estimates $\{\hat{\pi}_k\}$ in this manner is well-posed.  We note that in the formation of this problem, we did not incorporate all the conditions of the simplex $S$.  Namely, some of the $\hat{\pi}_k$ could be negative. In practicality this means we need to check the boundary conditions.
+
+%Below is a CAS generated exact solution for $N=2$ data points and $K=2$ clusters.
+
+%TODO generate and insert an example.

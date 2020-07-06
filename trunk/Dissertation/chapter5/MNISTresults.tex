@@ -1,0 +1,76 @@
+\label{sect:MNISTresults}
+The standard MNIST data set of LeCun \textit{et. al.} \cite{lecun1998gradient} consists of \( 60,000 \) digitized grayscale handwritten digits. The digits are a curated selection from the much larger \( NIST \) handwritten digit data set.  The MNIST data is separated into a training set of \( 50,000 \) digits and a test set of \( 10,000 \) digits.  The digits 0 thru 9 are roughly equally represented in the data, as there are roughly 6,000 of each digit in the entire data set.
+
+A preliminary experiment was run with training MNIST nets \#1-\#3 on the unaltered MNIST data set.  All nets performed roughly equally well, in that there was no significant statistical difference at the 95\% confidence level. The nets with a \RS layer also had \( \hat{\bm \pi} \) converge fairly closely to the proportions of classes in the data.  The test set has slightly different proportions than the training set, and the \RS layers still generalized reasonably well. Code for this experiment can be found in \Ryan{appendix!}. 
+
+Results such as this are not surprising. Given close to equal proportions in the data, the \RS layer is approximately equal to the softmax layer. As seen in section \ref{sect:GMMresults}, the \RS layer handles imbalanced data better than the softmax layer. Thus to see different results between \RS and softmax. the MNIST data set must be resampled to create a unbalanced training and test sets.
+
+Several different weights of all 10 digits were tried, and ultimately weights corresponding to Benford's law \cite{benford1938} were selected. While Benford's law is common in some natural processes, the choice to use these weights is reflective only of the fact that there is a large discrepancy in the relative frequency of the samples.  For example, the digit 1 will occur 6 times more often than the digit 9.
+
+All the charts and tables in this section are for MNIST nets trained on data resampled to have weights closer to the distribution described by Benford's law.  This means that the training and test sets for these experiments are subsets of the original MNIST data.  To account for the difference that comes from initial weights of a neural network, each net was trained 40 times on the same (disjoint) subsets of training and test data. As mentioned in section \ref{sect:commonLayerConfig} all nets were initialized the same for each run. This experiment was run 3 times with different selections of test and training data, only results from the first experiment are shown here.  Code to run this numerical experiment can be found in the \Ryan{appendix}.
+
+\begin{figure}[ht]
+	\centering
+	\input{chapter5/benfordConfusion2}
+	\caption[Confusion matrices for MNIST nets \#1-\#4]{This figure represents the confusion matrices for MNIST nets \#1-\#4.  The images are color coded to indicate high versus low values.  Higher values are brighter yellow, and lower values are blue. Notice that the \RS layer confusion maps have deeper blues in the off diagonal.}
+	\label{fig:benfordconfusionstikz}
+\end{figure}
+
+\begin{table}[ht]
+	\renewcommand{\arraystretch}{1.4}
+	\centering
+	\begin{tabular}{l|l|l|l|l|}
+		\cline{2-5}
+		& \textbf{MNIST Net 1} & \textbf{MNIST Net 2} & \textbf{MNIST Net 3} & \textbf{MNIST Net 4} \\ \hline
+		\multicolumn{1}{|l|}{\textbf{Sum of off diagonals}} & 4.043 ± .612         & 3.783 ± .600         & 3.788 ± .579         & 3.546 ± .600         \\ \hline
+	\end{tabular}
+	\caption[Accuracy of MNIST training with imbalanced data]{Relative percent sums of off diagonal entries of the confusion matrices for MNIST. This is equivalent to 1 minus accuracy of the net. Reported intervals are standard error 95\% intervals}
+\end{table}
+
+\begin{table}[ht]
+	\renewcommand{\arraystretch}{1.4}
+	\centering
+	\begin{tabular}{l|l|l|l|}
+		\cline{2-4}
+		& Class 1 rel. pct. & Class 2 rel. pct. & Class 3 rel. pct. \\ \hline
+		\multicolumn{1}{|l|}{softmax}       & 32.730 ± .028     & 16.745 ± .040     & 11.869 ± .027     \\ \hline
+		\multicolumn{1}{|l|}{RS, $C=1$}     & 32.652 ± .041     & 16.715 ± .037     & 11.806 ± .030     \\ \hline
+		\multicolumn{1}{|l|}{RS, $C=4$}     & 32.670 ± .036     & 16.720 ± .052     & 11.867 ± .028     \\ \hline
+		\multicolumn{1}{|l|}{Fixed}         & 32.586 ± .049     & 16.681 ± .045     & 11.824 ± .036     \\ \hline
+		\multicolumn{1}{|l|}{Benford's Law} & 30.1              & 17.6              & 12.5              \\ \hline
+	\end{tabular}
+	\begin{tabular}{l|l|l|l|}
+		\cline{2-4}
+		& Class 4 rel. pct. & Class 5 rel. pct. & Class 6 rel. pct. \\ \hline
+		\multicolumn{1}{|l|}{softmax}       & 8.434 ± .030      & 6.155 ± .028      & 6.355 ± .023      \\ \hline
+		\multicolumn{1}{|l|}{RS, $C=1$}     & 8.546 ± .027      & 6.083 ± .035      & 6.472 ± .015      \\ \hline
+		\multicolumn{1}{|l|}{RS, $C=4$}     & 8.427 ± .026      & 6.208 ± .021      & 6.411 ± .022      \\ \hline
+		\multicolumn{1}{|l|}{Fixed}         & 8.555 ± .026      & 6.148 ± .036      & 6.502 ± .016      \\ \hline
+		\multicolumn{1}{|l|}{Benford's Law} & 9.7               & 7.9               & 6.7               \\ \hline
+	\end{tabular}
+\begin{tabular}{l|l|l|l|}
+	\cline{2-4}
+	& Class 7 rel. pct. & Class 8 rel. pct. & Class 9 rel. pct. \\ \hline
+	\multicolumn{1}{|l|}{softmax}       & 5.501 ± .022      & 4.126 ± .025      & 4.041 ± .030      \\ \hline
+	\multicolumn{1}{|l|}{RS, $C=1$}     & 5.590 ± .019      & 4.309 ± .021      & 4.044 ± .027      \\ \hline
+	\multicolumn{1}{|l|}{RS, $C=4$}     & 5.561 ± .023      & 4.223 ± .021      & 4.125 ± .022      \\ \hline
+	\multicolumn{1}{|l|}{Fixed}         & 5.657 ± .021      & 4.389 ± .015      & 4.113 ± .024      \\ \hline
+	\multicolumn{1}{|l|}{Benford's Law} & 5.8               & 5.1               & 4.6               \\ \hline
+\end{tabular}
+\caption[Confusion matrix diagonal for MNIST nets \#1-\#4]{Confusion matrix diagonal for various nets trained on nets using MNIST data resampled according to Benford's law. If a perfect accuracy classifier were trained, then the percentages would reflect the bottom row of each subtable. Confidence intervals are standard error 95\% confidence intervals}
+\end{table}
+
+\begin{table}[ht]
+	\renewcommand{\arraystretch}{1.4}
+	\centering
+	\begin{tabular}{l|c|c|c|c|c|c|c|c|c|}
+		\cline{2-10}
+		& \multicolumn{1}{l|}{$\hat{\pi}_1$} & \multicolumn{1}{l|}{$\hat{\pi}_2$} & \multicolumn{1}{l|}{$\hat{\pi}_3$} & \multicolumn{1}{l|}{$\hat{\pi}_4$} & \multicolumn{1}{l|}{$\hat{\pi}_5$} & \multicolumn{1}{l|}{$\hat{\pi}_6$} & \multicolumn{1}{l|}{$\hat{\pi}_7$} & \multicolumn{1}{l|}{$\hat{\pi}_8$} & \multicolumn{1}{l|}{$\hat{\pi}_9$} \\ \hline
+		\multicolumn{1}{|l|}{RS, $C=1$} & 32.16                              & 16.78                              & 12.26                              & 8.97                               & 6.66                               & 6.61                               & 6.33                               & 5.61                               & 4.58                               \\ \hline
+		\multicolumn{1}{|l|}{RS, $C=4$} & 32.30                              & 16.83                              & 12.19                              & 9.03                               & 6.54                               & 6.79                               & 6.11                               & 5.37                               & 4.80                               \\ \hline
+		\multicolumn{1}{|l|}{Benford}   & 30.1                               & 17.6                               & 12.5                               & 9.7                                & 7.9                                & 6.7                                & 5.8                                & 5.1                                & 4.6                                \\ \hline
+	\end{tabular}
+	\caption[MLE of class weights for MNIST nets \#2 and \#3]{Final \( \hat{\bm \pi} \) for MNIST nets \#2 and \#3 trained on Benford weighted MNIST data. These weights are recorded as percentages for comparison to Benford's law.}\label{table:benfordPiHat}
+\end{table}
+
+\FloatBarrier

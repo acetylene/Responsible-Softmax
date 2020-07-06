@@ -1,0 +1,53 @@
+Theorem \ref{unique} tells us that looking for the fixed points of \Rpi F when $F$ has full rank is equivalent to finding a maximum likelihood estimator. This means that we can use maximization algorithms in such cases to find the fixed point of \Rpi{F} on the interior of $S_K$.  More importantly, with a little bit of work we can adapt work from \citep{WaldMLE, pollard1981, pollard1982} to get many of the same properties for this algorithm as we would for the MLE.  In particular, we get consistency of the fixed point $\hat{\bm\pi}$ as an estimator for the point $\bm\pi^\ast=\{\pi_k^\ast\}_{k=1}^{K}$.
+
+First we share an algorithm that uses Newton's method to maximize $\ell(\bm\pi)$ on $S_K$. This algorithm requires the use of the Hessian of $\ell(\bm\pi)$, but this is calculated in equation \ref{hessDef} of theorem \ref{hess}.
+\begin{table}
+\begin{algorithm}[H]
+\caption{Maximization Algorithm}
+\begin{algorithmic}
+\Require $F$ a $K\times N$ matrix
+\Require $\bm\pi_0$, $\ge$
+\Procedure{Newton Maximization}{$F,\bm\pi_0,\ge$}\Comment{}
+	\State $\bm\pi \gets \bm\pi_0$
+	\State $\Delta\bm\pi \gets \bm 1_K$
+	\While{$\lVert\Delta\bm\pi\rVert>\ge\lVert\bm\pi\rVert$}
+		\State $\bm D_{\ell}(\bm\pi) \gets \Matrix{H_{\ell}(\bm\pi)&\bm 1_K\\ \bm 1_K'& 0 }$
+		\State $\Delta\bm\pi \gets D_{\ell}(\bm\pi)^{-1}(\nabla\ell(\bm\pi),0)$
+		\State $\bm\pi \gets \bm\pi + \Delta\bm\pi$
+	\EndWhile
+	\State \textbf{return} $\bm\pi$ \Comment{at this point $\bm\pi$ is approximately $\hat{\bm\pi}$}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+\caption{A Newton Method version of the Main Algorithm}\label{newtAlg}
+\end{table}
+The column vector $\bm 1_K$ as used in this algorithm is defined in the proof to theorem \ref{unique}.  A version of this algorithm is found in the \textcolor{red}{(CHANGE LATER)}file \url{..\\MATLAB\\stablepointNewton.m}.
+
+The use of the block matrix in this algorithm is intended to be sure that $\bm\pi+\Delta\bm\pi$ stays in $S_K$.  This is equivalent to the geometric idea that we want $\Delta\bm\pi$ to be restricted to the tangent plane of $S_K$.  In light of theorem \ref{unique}, it is also worth noting that this algorithm gives $\Delta\bm\pi=0$ precisely when $\nabla\ell(\bm\pi)=1_K$.
+
+One set of issues this algorithm resolves is the problem discussed in remark \ref{boundary}.  While algorithm \ref{ratioAlg} cannot leave $\partial S_K$%gives bad guesses for $\hat{\bm\pi}$
+ when given an initial value in $\partial S_K$, algorithm \ref{newtAlg} will not do this.  However, in practice, algorithm \ref{newtAlg} tends to be more sensitive to the conditions of the matrix $F$ than algorithm \ref{ratioAlg}. \textcolor{red}{(EXPOUND?)}
+
+We now turn to examining the behavior of $\hat{\bm\pi}$ as an estimator of $\bm\pi^\ast$.  Before going into the theory, it is worthwhile to look at some experimental data. As we increase $N$ we expect that $\hat{\bm\pi}$ as described in theorem \ref{unique} will approach $\bm\pi^\ast$.
+
+\begin{table}[h]
+%\vspace{2ex}
+\begin{tabular}{r||r|r}
+\toprule
+\textbf{$\bm N$} & \textbf{$\bm \mu$} & \textbf{$\bm{\gs^2}$}\\
+\midrule
+10 & 0.372980 & 0.04218\\
+100 & 0.133670 & 0.008056\\
+1000 & 0.042706 & 0.000884 \\
+100000 & 0.004335 & 0.00000952\\
+\bottomrule
+\end{tabular}
+\caption{Experimental Evidence of Consistency}
+\label{exprConsist}
+\end{table}
+
+Table \ref{exprConsist} summarizes some numerical experiments done with the scripts \textcolor{red}{(CHANGE LATER)}\url{..\\MATLAB\\GMMData.m} and \url{..\\MATLAB\\error_samples.m}. The version of  algorithm \ref{ratioAlg} in the file \url{..\\MATLAB\\stablepoint.m} was used. We generated 10000 trials for each $N$ and recorded the difference 
+\[\Delta\bm\pi=\bm\pi^*-\hat{\bm\pi}\]
+ for each trial.  
+
+The second column records the mean of $\|\Delta\bm\pi\|$ for the trials. The third column shows the variance of $\|\Delta\bm\pi\|$ for the trials.  As expected for a consistent estimator, the error shrinks like $O\left(\dfrac{1}{\sqrt{N}}\right)$.

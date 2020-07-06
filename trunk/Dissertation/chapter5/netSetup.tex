@@ -1,0 +1,72 @@
+\label{sect:commonLayerConfig}
+
+When comparing multiple neural nets, all nets in consideration must posses identical structures and initialization aside from the changes tested. This makes it more likely that any changes in the outcomes are solely from changes in the final layers. For testing \RS, it is possible to use any neural network where softmax would be used, which provides many potential options for testing. This section covers the common settings of basic neural nets for the experiments to be performed. This includes choices of layer structure, transfer functions, weight initialization, learning rate and batch size.
+
+This paper proposes a change only to the final layers of a neural network used for classification, so for each experiment on a data set, the initial layers and parameters for those layers will be exactly the same. However, weight initialization can have a large effect on final results for generalization so several training runs are done with different random initializations of the weights.  Each final layer gets the same initialization of the weights on previous layers through the use of random number generator seeds.
+
+Because the \DR supposes differntiability of the \RS layer reacts sensitively to differentiability, the choice of activation layers requires careful consideration.  In all of the experiments, \( \tanh \) layers were used to preserve differentiability of layer predictions.  While several runs tried to use ReLU layers, this led to catastrophic instability in the neural nets with \RS layers.
+
+For the generated data, the numerical experiments use low dimensionality \( D=2 \) data sets, so that only fully connected layers are necessary.  Since wider nets tend to perform better, after the input layer there are 2 fully connected layers with a tanh activation layer between them.  The first layer has width \( K*4 \), and the second layer is required to be of width \( K \) for using either softmax or responsible softmax.
+Table \ref{table:GMMlayers} summarizes this setup.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|}
+		\toprule
+		\textbf{Layer}  & \textbf{Width} \\ \midrule
+		Input           & $D = 2$     \\ \midrule
+		Fully connected & $4K$  \\ \midrule
+		$\tanh$ layer   & N/A   \\ \midrule
+		Fully connected & $K$   \\
+		\bottomrule
+	\end{tabular}
+	\caption[General layer setup for GMM classification]{A summary of the initial layers for classifying data generated from a GMM.}\label{table:GMMlayers}
+\end{table}
+
+For the MNIST data set \cite{lecun1998gradient} the dimensionality \( D=28^2=784 \) of the data set encourages the use of a convolutional neural net (CNN) for reasonable results. It is not the purpose of this paper to cover CNN architecture in detail, so only the specific implementation used in training will be mentioned here. Those interested in details of CNNs are encouraged to consult common references such as \cite{lecun2015deep,Schmidhuber_2015,Goodfellow-et-al-2016}. 
+
+In the interest of reduced training time, experiments used only a very shallow CNN with only one convolutional layer. This layer is followed by a tanh activation layer, a max pooling layer, and finally a fully connected layer. The parameters of the layers used for all neural net classification of MNIST data in this dissertation are as described in table \ref{table:MNISTlayers}.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|m{0.23\textwidth}|m{0.23\textwidth}|}
+		\toprule
+		\textbf{Layer}  & \textbf{Parameters} \\ \midrule
+		Input           & $28\times 28$ inputs     \\ \midrule
+		Convolutional layer & 11 $5\times 5$ filters  \\ \midrule
+		$\tanh$ layer   & N/A   \\ \midrule
+		Max pooling layer & $2\times 2$ with stride 3   \\ \midrule
+		Fully connected Layer& $K$ \\
+		\bottomrule
+	\end{tabular}
+	\caption[Common convolutional layers for MNIST classification]{Parameters of initial neural net layers used in MNIST classification.}\label{table:MNISTlayers}
+\end{table}
+
+As discussed in sections \ref{sect:LayerDesc} and \ref{sect:expConvRate}, the \RS layer requires a hyperparameter \( C \).  Testing how \( C \) affects classification requires numerical experiments on multiple \RS layers, so several nets were trained with varying values of \( C \). Most of the experiments trained two nets with \RS layers with iteration parameters \( C = 1,4 \). In the case of classifying generated data, several more values of \( C \) were explored.  These results are shared in section \ref{sect:GMMresults}.
+
+An reasonable baseline to test the \RS layer against is the standard softmax layer. Another is the softmax layer weighted with priors derived from the relative frequency of classes in the training labels $T$.  For the purpose of comparing to \RS layers, a `fixed' \RS layer was used in numerical experiments.  A fixed \RS layer is equivalent to taking \( C=0 \) in a normal \RS layer. The initial value of \( \bm\pi_0 \) is then set to an appropriate value for testing. In the case of all experiments run the fixed value \( \bm\pi_0 = \bm\pi^{\ast} \), where \( \bm\pi^{\ast} \) is established in creating or sampling the training and test data.
+
+
+In summary, for most of the experiments run, four nets will be used. For illustration purposes some nets were also trained with large values of \( C \) on GMM data. Table \ref{table:neuralnetconfig} outlines the most common nets used in experiments.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|m{0.23\textwidth}|m{0.23\textwidth}|m{0.23\textwidth}|}
+		\toprule
+		\textbf{Net}  & \textbf{Initial Layers}& \textbf{Classification layer}\\ \midrule
+		GMM net \#1     & GMM Layers   & Softmax     \\ \midrule
+		GMM net \#2     & GMM Layers   & Responsibility Softmax \( C=1 \) \\ \midrule
+		GMM net \#3     & GMM Layers   & Responsibility Softmax \( C=4 \) \\ \midrule
+		GMM net \#4     & GMM Layers   & Fixed Weight Softmax \\ \midrule
+		MNIST net \#1   & MNIST Layers & Softmax     \\ \midrule
+		MNIST net \#2   & MNIST Layers & Responsibility Softmax \( C=1 \) \\ \midrule
+		MNIST net \#3   & MNIST Layers & Responsibility Softmax \( C=4 \) \\ \midrule
+		MNIST net \#4   & MNIST Layers & Fixed Weight Softmax \\ 
+		\bottomrule
+	\end{tabular}	
+	\caption[A table of neural net setups used in numerical experiments]{Each net is classified by the type of data it is designed to process (initial layers), the type of softmax layer used, and the weights or hyperparameter used relative to the type of softmax layer used. GMM layers is a reference to table \ref{table:GMMlayers}, and MNIST layers is a reference to table \ref{table:MNISTlayers}. }\label{table:neuralnetconfig}
+\end{table}
+
+For all the neural net training runs, the batch size and initial learning rate were all set the same. Batch size was set to 100.  The learning rate was controlled by the Adam adaptive learning rate algorithm.  In consideration of the relationship between the hyperparameter \( C \) and batch size mentioned in section \ref{sect:expConvRate}, a good choice for future experiments would entail an exploration of this connection.
+%This table summarizes the choices made for the different neural nets.% redo experiments with 'shuffle', 'every-epoch' on and consider the results.
+\FloatBarrier

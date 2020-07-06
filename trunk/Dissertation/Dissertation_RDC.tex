@@ -1,0 +1,75 @@
+%\documentclass[12pt,letterpaper,final]{ua-thesis} %Uncomment this line to convert to final form
+\documentclass[12pt,letterpaper]{ua-thesis} %Comment out this line and uncomment above for final form
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.10}
+\author{Ryan Coatney}
+\title{A Responsible Softmax Layer in Deep Learning}
+\director{Marek Rychlik}
+\department{Department of Mathematics}
+\date{2020}
+\def\layersep{2.5cm}
+
+\makeatletter
+\newif\iffinal
+\@ifclasswith{ua-thesis}{final}{\finaltrue}{\finalfalse}
+\makeatother
+
+\newif\ifdraft
+\iffinal
+	\draftfalse
+\else
+	\drafttrue
+\fi
+
+
+
+
+\ifdraft
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\topmargin}{-0.5in}        %%%  This sets all the spacing stuff to use the page more
+\setlength{\oddsidemargin}{-0.3in}    %%%  efficiently than the normal "article" setup would.
+\setlength{\evensidemargin}{-0.3in}   %%%  It's OK to play with these some.
+\setlength{\textheight}{9.5in}     %%%
+\setlength{\textwidth}{7.2in}     %%%
+\setlength{\headsep}{.2in}          %%%
+\setlength{\headheight}{0.2in}       %%%
+\setlength{\footskip}{.1in}         %%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\linespread{1.5} %1.5 or 1.6 is normal, but using this causes funny spacing near theorems and proofs.
+\fi 
+
+\input{include_commands}
+\usetikzlibrary{cd,shapes,arrows}
+\tikzset{>=latex'}
+%\usepackage{subfiles}
+
+
+\def\biblio{\bibliographystyle{amsalpha}\bibliography{../../dissertationBib}}
+\begin{document}
+
+\def\biblio{}
+
+
+%\iffinal
+  \input{frontMatter}
+%\fi
+
+\begin{abstract}
+	\input{abstract}
+\end{abstract}
+
+\input{chapter1/chapter1}
+\input{chapter2/chapter2}
+\input{chapter3/chapter3}
+\input{chapter4/chapter4}
+\input{chapter5/chapter5}
+
+\bibliographystyle{amsalpha} 
+\bibliography{dissertationBib}
+\end{document}

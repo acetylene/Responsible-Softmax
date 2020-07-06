@@ -1,0 +1,297 @@
+\label{sect:convergence}
+For the rest of this section define let $F=(f_{ij})$ be a $K\times N$ matrix with positive entries.  For $\bm\pi\in\R^K$, let $L_F(\bm\pi)=\prod_{j=1}^{N}\left(\sum_{i=1}^{K}f_{ij}\pi_{i}\right)$. If additionally, $\bm\pi\in\R_+^K\defined\{\bm x\in\R^K|x_i\geq 0\,\forall i\}$ is in the positive orthant, 
+let $\ell_F(\bm\pi)={\dfrac{1}{N}}\log(L(\bm\pi))$. Occasionally, where the use of \( F \) is clear from context, the notation will omit it. Theorem \ref{ODE} implies the corollary below.
+
+\begin{cor}\label{diffDef}
+ The map $R_F(\bm\pi)$ as defined in equation \eqref{map} satisfies
+\[R_F(\bm\pi)=\left(\pi_i\cdot\eval{\frac{\partial\ell_F}{\partial\pi_i}}_{\bm\pi}\right)_{1\leq i\leq K}\]
+If \( \mu_i = \log \pi_i,\; i=1,\ldots,K\) then this also means that 
+\begin{equation}\label{eqn:RGrad}
+R_F(\bm\pi) = \left(\eval{\pdv{\ell_F}{\mu_i}}_{\bm\pi = e^{\bm\mu}}\right)_{1\leq i\leq K} = \nabla_{\bm \mu}\elpi[e^{\bm\mu}]{F}
+\end{equation}
+In short, \( R_F \) is the gradient of \( \ell_F \) with respect to the coordinates \( \mu_i,\; i=1,\ldots,K  \).
+\end{cor}
+\begin{proof}
+This follows from the fact that 
+\[\frac{\partial\ell}{\partial\pi_i}=\frac 1N\sum_{j=1}^{N}\frac{f_{ij}}{\sum_{k=1}^{K}\pi_k\cdot f_{kj}}.\]
+Defining \( F \) by $ F^j_i = f_{ij}=f_{i}(x^{(j)})$ for $1\leq i\leq K$ different p.d.f.s $f_i$, then this definition corresponds with the definition in equation \eqref{map}.
+
+Now given that \( \mu_i = \log \pi_i \) then \( \pi_i = e^{\mu_i} \) and \( \pdv{\bm\pi}{\bm\mu} = \op{diag}(\bm\pi) \) so long as \( \pi_i \neq 0 \) (\textit{i.e.} \( \bm\pi\in S_k^{\circ} \) the interior of \( S_K \)). Here $\op{diag}(\bm v)$ is the diagonal matrix with entries given by $\bm v$. This implies that 
+\[ \pdv{\bm\mu} =  \pdv{\bm\pi}{\bm\mu}\cdot\pdv{\bm\pi} = \diag(\bm\pi)\cdot\pdv{\bm\pi}. \]
+	In other words \( \nabla_{\bm\mu}\ell_F(e^{\bm\mu}) = \diag(\bm\pi)\cdot\nabla_{\bm\pi}\ell_{F}(\bm\pi) = R_F(\bm\pi)\).
+\end{proof}
+
+Corollary \ref{diffDef} demonstrates a very close relationship between the maps $R_F(\bm\pi):S_K\rightarrow S_K$ and $\ell_F(\bm\pi):\R^K\rightarrow \R$. This is an important part of the proof of theorem \ref{thm:convergence}, which shows algorithm \ref{ratioAlg} converges.  
+
+Also, the beginning of section \ref{sect:simpleEg} discussed the homogeneity of \( L_F \) and \( R_F \).  Corollary \ref{diffDef}, sheds light on the relationship of these two functions. Namely, the homogeneity of \( L_F \) induces this same property in \( R_F \), as \( R_F \) is essentially the gradient of \(\log(L_F(\bm\pi)) \).  
+
+Note here that the function \( \ell_F(\bm\pi) = \dfrac{1}{N} \ln(L_F(\bm\pi))\) is not homogeneous, but satisfies the equation
+\begin{equation}\label{eqn:ellScaling}
+\ell_F(\gl\bm\pi) = \ell_F(\bm\pi)+\ln(\gl).
+\end{equation}
+This means that over \( \R^K_{+}\! \), \( \ell_F \) has no maximum. However, it will still have a maximum on \( S_K \) as the simplex is compact. A similar statement about homogeneity is also true for the columns of \( F \). If \( G =(\gl_n F_n) \) then \( \elpi{G} = \elpi{F}+\frac 1N\sum_n \log(\gl_n) \). As \( \sum_n \log(\gl_n) \) has no dependence on \( \bm\pi \), this does not change the critical points of \( \elpi F \).
+
+%\Ryan{Insert note about the homogeneity of \( L \), \( R \), i.e. \( R \) is the log gradient of \( L \)}
+
+To show that algorithm \ref{ratioAlg} converges, first note that for fixed \( F \), $-\ell(\bm\pi)$ is a convex function on $\R^K$.  This is obvious as $\ell(\bm\pi)$ is the sum of logs of linear functions, though \( -\ell(\bm\pi) \) may be not strictly convex. Convexity is important here as if \( -\ell(\bm\pi) \) is strictly convex, then as inferred by corollary \ref{cor:RgradK2}, iteration of \( R(\bm\pi) \) converges to a unique fixed point as shown in theorem \ref{thm:convergence}. Lemma \ref{hess} explains when $-\ell(\bm\pi)$ is \textit{strictly} convex on \( S_K \).
+
+%\Ryan{Why should anyone care that \( -\ell \) is convex?}
+
+\begin{lemm}\label{hess}
+If $F=(f_{ij})$ has full rank, then $-\ell(\bm\pi)$ is strictly convex.
+\end{lemm}		
+
+\begin{proof}
+To begin, let $F_i$ be the $i$-th column of $F$.  In this notation $(F')_j$ would be the $j$-th row of $F$. $F'_i$ is the transpose of the $i$-th column.  To condense notation, we note that \(\ds \sum_{k=1}^{K}\pi_k\cdot f_{kj}=\langle F_j,\bm\pi\rangle\)
+With this notation, we calculate the Hessian of $\ell(\bm\pi)$.
+\begin{align}
+\frac{\partial^2\ell}{\partial\pi_j\partial\pi_i}&=\frac{\partial}{\partial\pi_j}\frac 1N\sum_{n=1}^{N}\frac{f_{in}}{\sum_{k=1}^{K}\pi_k\cdot f_{kn}}\\
+&=-\frac 1N\sum_{n=1}^{N}\frac{f_{in} f_{jn}}{\langle F_n,\bm\pi\rangle^2}
+\end{align}
+We note here that \(\ds \sum_{n=1}^{N}f_{in}f_{jn} =\langle (F')_i,(F')_j\rangle\) is the inner product of the $i$-th and $j$-th rows of $F$. Let $\ds G(\bm\pi)=\left[\frac{F_1}{\langle F_1,\bm\pi\rangle},\ldots,\frac{F_N}{\langle F_N,\bm\pi\rangle}\right] $. Then we have
+\begin{equation}
+\frac{\partial^2\ell}{\partial\pi_j\partial\pi_i}=-\frac 1N \langle(G(\bm\pi)')_i,(G(\bm\pi)')_j\rangle
+\end{equation}
+
+
+so if $\nabla^2\ell(\bm\pi)$ is the Hessian of $\ell(\bm\pi)$, we have
+\begin{equation}\label{hessDef}
+\nabla^2\ell(\bm\pi)=-\frac 1N G(\bm\pi)\cdot G(\bm\pi)'
+\end{equation}
+
+Since $G(\bm\pi)\cdot G(\bm\pi)'$ is positive definite iff $G(\bm\pi)'$ has linearly independent columns, we have the theorem.
+\end{proof}
+
+Lemma \ref{hess} provides conditions under which \( \elpi{F} \) has a unique maximum on \( S_K \).  Note here that \(\elpi{F} \) will achieve a maximum on \( S_K \) as it cannot have an asymptote unless \( \bm\pi = \bm 0 \) or there is some column \( F_n \) of \( F \) such that \( F_n=\bm 0 \).  This is ruled out by hypotheses, so \( \elpi{F} \)  is continuous, and will have a unique maximum on \( S_K \).  While the hypothesis that \( f_{ij}>0\;\forall i\leq K,\,j\leq N \) may be changed slightly to require \( \<F_n,\bm\pi\>>0\;\forall n\leq N\;\bm\pi\in S_K \); in practice the original hypothesis is easier to ensure.
+
+%\Ryan{What if \( F_i^n = 0\) when \( \hat{\pi_i} >0 \) AND \( \pi_i = 0 \) when \( F_i^n >0 \)? Note that this does not happen when \( \bm\pi\in\op{Int} {S_K} \)}
+%Lemma \ref{hess}, gives sufficient conditions for \( \ell_F(\bm\pi) \) to have a unique maximum on \( S_K \). 
+In light of corollary \ref{diffDef}, the function \( g(\bm\pi) = \bm\pi-R_F(\bm\pi) \) has a zero precisely when \( \ell_F(\bm\pi) \) has a maximum on \( S_K \).  
+This fact also seems to imply that iteration of \Rpi{F}  has a unique fixed point when \( \ell_F(\bm\pi) \) has a unique maximum on \( S_K \).  Theorem \ref{unique} addresses this idea, but the whole picture is slightly more complicated.
+
+
+
+%TODO re-write this proof in more parts. Perhaps a lemma or two?
+
+%\Ryan{Re-write the following as 3 different lemmas/theorems. See written notes}
+
+\begin{thm}\label{unique}
+If $F$ has full rank, and \( \hat{\bm \pi} \in \op{Int}S_K\) maximizes \( \elpi{F} \) then the only fixed point for iteration of \Rpi F on the interior of \( S_K \) is \( \hat{\bm\pi} \).
+%\( \bm\pi_0, \hat{\bm \pi} \) are in the interior of $S_K$, and \( \hat{\bm \pi} \) maximizes \( \elpi{F} \) on \( S_K \), then iteration of $R_F(\bm\pi_0)$ converges to \( \hat{\bm\pi} \).
+\end{thm}
+%\Ryan{This is essentially corollary 1.2.1 of \cite{nesterov2013introductory}, cite it. }
+%\Ryan{The interior statement needs to be an Hypothesis. All facets are invariant subsets. sufficient to prove as is. (e.g. i can say there are unique fixed points on each of the interiors of the Facets)
+%Also talk about stability (in topological sense) of equilibria. On the facets they are unstable, though they are stable in the subspace topology.}
+
+\begin{proof}
+Because the theorem  discusses maximizing \( \elpi{F} \) subject to the linear constraint \( \<\bm\pi,\mathbbm 1_K\> = 1 \), this theorem is strongly tied to corollary 1.2.1 of Nesterov \cite[chapter 1, p. 18]{nesterov2013introductory}.  The proof proceeds similarly.
+
+Let $\mathbbm{1}_K=(1,1,\ldots,1)\in \R^K$ be the vector of all ones.  If $F$ has full rank, and $\hat{\bm\pi}=\argmax_{\bm\pi\in S_K}\ell(\bm\pi)$, we claim that $\hat{\bm\pi}=R(\hat{\bm\pi})$.
+%TODO rewrite this proof!
+ Note here that if $\nabla\ell(\bm\pi)=\mathbbm{1}_K$ for some $\bm\pi \in S_K$, corollary \ref{diffDef} gives that $\bm\pi$ satisfies $R(\bm\pi)=\bm\pi$.  Thus it is sufficient to show that \( \nabla\ell_F(\hat{\bm\pi}) = \mathbbm{1}_K \)\\
+Now, for any $\bm\pi\in S_K$ we have
+\begin{align}
+\left(\frac{\partial\ell}{\partial\pi_i}\right)_{\bm\pi\in S_K}&=\left(\frac{\partial\ell}{\partial\pi_i}\right)_{\pi_K=1-\sum_{j<K}\pi_j} \nonumber\\
+&=\frac{\partial\ell}{\partial\pi_i}+\frac{\partial\ell}{\partial\pi_K}\frac{\partial\pi_K}{\partial\pi_i}=\frac{\partial\ell}{\partial\pi_i}-\frac{\partial\ell}{\partial\pi_K} \label{eqn:RestrictPartial}
+\end{align}
+
+Thus if $\ds \left(\nabla\ell(\hat{\bm\pi})\right)_{\bm\pi\in S_K}=0$, we have $\frac{\partial\ell}{\partial\pi_i}=\frac{\partial\ell}{\partial\pi_K}$ $\forall i< K$. In other words $\nabla\ell(\hat{\bm\pi})=\gl\mathbbm{1}_K$ for some $\gl\geq 0$. Since $f_{ij}\geq 0$ $\forall j$, we have
+\begin{equation}\label{eqn:PartialEll}
+\ds \frac{\partial\ell}{\partial\pi_i}=\frac 1N\sum_{j=1}^{N}\frac{f_{ij}}{\sum_{k=1}^{K}\pi_k f_{kj}}\geq 0. 
+\end{equation}
+We have equality here iff $f_{ij}=0$ $\forall j$, but this cannot happen if $F$ has full rank. Therefore $\gl = \pdv{\ell}{\pi_i} > 0$.
+
+Then by corollary \ref{diffDef} we get
+\begin{equation}\label{eqn:RpiInnerProd}
+1=\langle R(\bm\pi),\mathbbm{1}_K\rangle=\langle \nabla\ell(\bm\pi),\bm\pi\rangle\;\qquad\forall \bm\pi\in S_K
+\end{equation}
+but $\langle \nabla\ell(\hat{\bm\pi}),\hat{\bm\pi}\rangle=\gl\langle \mathbbm{1}_K,\hat{\bm\pi}\rangle=\gl$. Thus $\gl=1$ and $R(\hat{\bm\pi})=\hat{\bm\pi}$.
+
+Since $F$ has full rank by assumption, $\ell(\bm\pi)$ is strictly convex, and therefore it has a unique maximizing point $\hat{\bm\pi}\in S_K$.  As discussed above, this maximizer is a fixed point of the map $R(\bm\pi)$. Since all fixed points of \Rpi F on the interior of \( S_K \) must also be critical points of \( \elpi F \), there can be only one fixed point of \Rpi F on \( \op{Int}S_K \).
+
+%\Ryan{All this shows is that only restricted maxima of \( \elpi F \) are fixed points.  It doesn't discuss orbits or anything else! Why won't iteration of \Rpi F have periodic points? Because a lyapunov function exists.}
+%\Ryan{Note that because \( -\ell_{F}(\bm\pi) \) is strictly convex, this prevents \( \hat{\bm\pi} \) from being a saddle point.}
+\end{proof}
+
+\begin{rk}\label{boundary}%\Ryan{make definitions that enlighten this idea. There are fixed points and fixed points that maximize likelihood.}
+	
+	It is important to note here that \Rpi{F} behaves very differently on \( \partial S_K \) than it does on the interior. In fact, if $\pi_{i_m}=0$ for some set of indicies $I=\{i_1,\ldots,i_m\},\, m<K$, then those indicies will stay zero on every iteration of the map \Rpi{F}. On the other hand, if \( \bm\pi\in\op{Int}S_K \) then \( r_i(\bm\pi)>0 \) for \( 1\leq i\leq K \) (given the hypothesis \( f_{ij}>0 \)). Thus if \( \bm\pi\in\op{Int}S_K \) then \( R_F(\bm\pi)\in\op{Int}S_K \). Conversely, when \( \bm\pi\in\partial S_K \), \( R_F(\bm\pi)\in\partial S_K \). This implies that \( S_K \) has a partition by sets which are positively invariant under iteration by \( R_F \), and motivates the following definition.
+	
+	\begin{defn}[Facet]
+		A subset \( U\subset S_K \) will be called a \textit{facet} of \( S_K \) if there is a distinct set of indices \( I_U = \{i_1,\ldots,i_m\} \), such that \(\forall \bm u\in U \), \( u_j=0  \) if \( j\in I_U \) and \( u_j >0 \) if \( j\notin I_U \).  For each increasing set of indices \( I=\{i_1<i_2<\ldots<i_m\}\; m<K \), there will be a unique facet \( U\subset S_K \) such that \( I_U=I \). Denote this facet by \( S_K^I. \)  If \( I=\varnothing \), define \( S_K^{I} = \op{Int}(S_K) \). Because there are \( 2^K \) ways to choose such an index set \( I \), there are \( 2^K \) facets of \( S_K \).
+	\end{defn}
+	
+	Because facets of \( S_K \) are positively invariant, there will not necessarily be a single fixed point for iterating \Rpi F, but potentially one fixed point for each of the \( 2^K \) %is it \(K2^{K-1}+1\)?
+	facets of \( S_K \).  Because \( \partial S_K = \bigcup_{I\neq\varnothing} S_K^I\), at most one of the fixed points will be in \( \op{Int}(S_K) \). Occasionally, some of the fixed points may coincide, but this will be addressed in remarks after theorem \ref{thm:convergence}. Thus \( R_F \) has many fixed points, but only one fixed point will maximize \( \ell_{F} \).  
+	\begin{defn}[Critical Fixed Point,Maximizing Fixed Point]
+		Call \( \bm\pi_0\in S_K \) a \textit{critical fixed point} of \( (\ell_F,R_F) \) if \( \bm\pi_0=R_F(\bm\pi_0) \) and \( \bm\pi_0 \) is a critical point of \( \ell_F \) \textit{i.e.} \( \left.\nabla \ell_{F}(\bm\pi_0)\right|_{S_K} = 0\). Call \( \bm\pi_0 \) a \textit{maximizing fixed point}, if in addition to being a critical fixed point, \( \max_{\bm\pi\in S_K}\elpi F = \ell_{F}(\bm\pi_0). \)  
+	\end{defn}
+	
+	Facets each behave differently under iteration by \( R_F \), therefore it is useful to have notation that allows discussion of each facet to proceed independently of the other facets.  This is provided in part by the following definitions.
+	\begin{defn}[Deletion map]
+		For a fixed \( k \) and for each \( 1\leq i\leq k \) define the \( i \)-th \textit{deletion map} \(\phi_{i}^{k}:\R^k\rightarrow \R^{k-1}\) by 
+		\[ \phi_{i}^{k}(x_1,x_2,\ldots,x_k) = (x_1,\ldots,\hat{x}_i,\ldots,x_k), \] 
+		where the notation \( \hat{x}_i \) denotes deletion of the \( i \)-th coordinate.
+	\end{defn}
+
+	\begin{defn}[Insertion map]
+		For a fixed \( k \) and for each \( 1\leq i\leq k \) define the \( i \)-th \textit{insertion map} \(\psi_i^{k-1}:\R^{k-1}\rightarrow\R^k\) by
+		\[ \psi_i^{k-1}(x_1,x_2,\ldots,x_{k-1}) = (x_1,\ldots,x_{i-1},0,x_i,\ldots,x_{k-1}). \]
+		So \(\psi_i^{k-1}\) inserts zero into the \( i \)-th coordinate. Note that the image of the \(i\)-th deletion map is the plane perpendicular to the \(i\)-th standard basis vector \( \bm e_i \) \textit{i.e.} \( \op{Im}(\psi_i^{k-1}) = \{x\in\R^k|x_i = 0\} \)
+	\end{defn}
+	
+	The insertion and deletion maps satisfy the following relations
+	\begin{align}
+	\phi_{i}^{k}\circ\psi_i^{k-1} &= \op{id}_{\R^{k-1}} \label{eqn:insDel1}\\
+	\psi_{j}^{k-1}\circ\phi_{j}^{k}&= P_{\op{Im}(\psi_{j}^{k-1})}\label{eqn:insDel2}
+	\end{align}
+	where \( \op{id}_{\R^{k-1}} \) is the identity map on \( \R^{k-1} \), and \( P_{\op{Im}(\psi_{j}^{k-1})} \) is projection onto the image of \( \psi_j^{k-1} \). The notations id and \( P_{\psi} \) will be used where the use is clear in context.
+	
+	The insertion and deletion maps relate to the facets via composition of the maps. In particular, let \(I=\{i_1<i_2<\ldots<i_m\}\) be the index set for a facet \( S_K^{I}\subset S_K \). Then define
+	\[ \Psi_I = \psi_{i_1}^{K-1}\circ\psi_{i_2}^{K-2}\circ\ldots\circ\psi_{i_m}^{K-m}, \]
+	and 
+	\[ \Phi_I = \phi_{i_m}^{K-m+1}\circ\phi_{i_{m-1}}^{K-m}\circ\ldots\circ\phi_{i_1}^{K}. \]
+	It is worth noting that both \( \Psi_I \) and \( \Phi_I \) are linear maps, and may be therefore represented by matrices \( A_{\Psi} \) and \( B_{\Phi} \). For example the columns of \( B_{\Phi} \) are the \( K-m \) standard basis vectors \( \{e_j|j\notin I\} \).
+	
+	Given the definitions and relations \eqref{eqn:insDel1} and \eqref{eqn:insDel2}, it follows that \( \Phi_I(S_K^{I}) = S_{K-m} \), \( S_K^{I} = \Psi_I(S_{K-m}) \), and that \( \Phi_I,\;\Psi_I \) restricted to \( S_K^I \) act as homeomorphisms between \( S_K^{I} \) and \( S_{K-m} \).  Given this identification, it is easy to see that \( A_{\Psi} = B_{\Phi}^{\intercal} \)  The insertion and deletion maps are inspired by the face and degeneracy maps of classical simplicial complexes. For further reference, see the reviews \cite{friedman2012survey,nlab:simplex,nlab:simplex_category}.
+	
+\end{rk}
+
+Theorem \ref{unique} gives uniqueness of a maximizing fixed point \( \hat{\bm \pi} \) when \( \hat{\bm \pi} \in \op{Int}S_K\). Since \( \elpi{F} \) is guaranteed to have a maximum on \( S_K \), the only other situation that requires consideration is the case where \( \hat{\bm \pi}\in\partial S_K \).  Fortunately, both equations \ref{eqn:PartialEll} and \ref{eqn:RpiInnerProd} still apply on the facets of \( S_K \). Thus theorem \ref{unique} still applies through the following lemma.
+
+%\Ryan{theorem \ref{unique} and lemma \ref{lemm:faceDegenerate} do show that there are only finitely many fixed points of DR}
+
+\begin{lemm}\label{lemm:faceDegenerate}
+Suppose \( \hat{\bm \pi}\in S_K^I\subsetneq\partial S_K \) is a fixed point of \( \R_F(\bm\pi). \) Then \( \hat{\bm\pi} \) is a maximizing fixed point for  \( R_F \) and \( \ell_{F} \) restricted to \( S_K^I \).  Further, by regarding \( \nabla\ell_{F}(\hat{\bm\pi}) \) as a vector in \( \R^K \), the gradient at \( \hat{\bm\pi} \) satisfies \( \Phi_I(\nabla \ell_{F}(\hat{\bm\pi}))=\mathbbm 1_{K-m} \).
+\end{lemm}
+
+\begin{proof}
+	Let \( m = |I| \) be the cardinality of \( I \).
+	Equipped with the maps \( \Phi_I \) and \( \Psi_I \), consider first the case \( m = 1 \)  for purposes of illustration. So suppose without loss of generality \( \hat{\bm \pi} \) has \( \hat{\pi}_1 = 0\) \textit{i.e.} \( I = \{1\} \).  Then let \( F^{\phi_1} := [\phi_1^{K}(F_1),\ldots,\phi_1^{K}(F_N)] \). Now note that saying \( \hat{\bm\pi} \) maximizes \( \elpi F \) is equivalent to the statement \(\elpi{F^{\phi_1}}\) is maximized on \( S_{K-1} \) by \( \phi_1^{K}(\hat{\bm \pi}) \). This is true because for \( \bm\pi\in S_K^I, \) \( \sum_i f_{ij}\pi_i = \sum_{i\notin I} f_{ij}\pi_i\)
+		
+	Now if \(M>1,\) a similar construction gives the first result. Namely, given the index set \( I \), let \( F^{\Phi} \defined [\Phi_I(F_1),\ldots,\Phi_I(F_N)] \). Then the maps \( \ell_{F^{\Phi}}\circ \Phi_I \) and \(\ell_{F}\) are equal on \( S_K^I \). Similarly, the maps \(\ell_{F^{\Phi}}\) and \(\ell_{F}\circ\Psi_I\) are equal on \( S_{K-m} \).  In particular, \(\ell_{F^{\Phi}}\) is maximized at \(\Phi_I(\hat{\bm \pi})\).
+	
+	Since \( \hat{\bm \pi}\in S_K^I \), the point \( \Phi_I(\hat{\bm \pi})\in\op{Int}(S_{K-m}) \), so theorem \ref{unique} applies and so \( \nabla \ell_{F^{\Phi}}(\Phi_I(\hat{\bm \pi})) = \mathbbm 1_{K-m}. \)  Since \(\ell_{F^{\Phi}} = \ell_{F}\circ\Psi_I\), applying lemma \ref{gradChain} gives
+	\[ \nabla \ell_{F^{\Phi}}(\bm\nu)  = D^{\ast}\Psi_I[\nabla \ell_F(\Psi_I(\bm\nu))]\]
+	for \( \bm\nu\in \op{Int}(S_{K-m})\).  Since \( \Psi_I \) is linear, \( D\Psi_I= \Psi_I \) which can be identified with the matrix \( A_{\Psi} \). So 
+	\[ D^{\ast}\Psi_I = A_{\Psi}^{\intercal} = B_{\Phi}, \] 
+	and so
+	\[ D^{\ast}\Psi_I[\nabla \ell_F(\Psi_I(\bm\nu))] = \Phi_I(\nabla \ell_F(\Psi_I(\bm\nu))). \]
+	Since \( \Psi_I(\Phi_I(\hat{\bm \pi})) =  \hat{\bm \pi}\), combining the above equations gives the lemma.
+\end{proof}
+
+\begin{rk}\label{rk:boundaryGradient}
+	If \( \hat{\pi}_{i_j} =0 \) for \( j=1,\ldots,m<K \) then it is very likely that for \( \bm\pi\in S_K^I \)
+	\[\pdv{\elpi{F}}{\pi_{i_j}} \neq \pdv{\elpi[\Phi_I^{K}(\bm\pi)]{F^{\Phi}}}{\pi_{i_j}}\;\;j=1,\ldots,m.\] 
+	In fact, unless \( \hat{\bm\pi} \) gives the exact maximum of \( \elpi F \) on the affine plane \(A_K \supset S_K \), then \( \pdv{\ell_F}{\pi_{i_m}} \neq  0\) for all \( m \). More precisely the gradient \( \nabla \ell_F \) will point `out' of \( S_K \)  in the sense that \( \argmax_{A_K} \elpi{F} \) will have negative barycentric coordinates. 
+	
+	This idea can be expressed geometrically.  If \( \bm n \) is the normal vector to the facet \( S_K^I \) containing \( \hat{\bm \pi} \), then \( \langle\bm n,\nabla\elpi{F}\rangle >0 \). This happens precisely when \(\elpi{F} \) has no maximum on the interior of \( S_K \). 
+\end{rk}
+
+Together theorem \ref{unique} and lemma \ref{lemm:faceDegenerate} show that any fixed point of \( R_F \) on the simplex \( S_K \) will be a critical point of the constrained optimization problem given by equations \eqref{lageq} and \eqref{lageq2}.  When \( \ell_{F} \) is strictly convex, these points must be isolated.
+As a final lemma before showing that \DR described in algorithm \ref{ratioAlg} converges, \cite{rychlikLyapunov} gives the following powerful result.
+
+\begin{lemm}\label{lemm:ellLyapR}
+	The function \( -\elpi{F}:\R^K_{+}\rightarrow\R \) is a Lyapunov function for \Rpi F on \( S_K \). Further, \( \elpi[R_F(\bm\pi)]{F} -\elpi F = 0 \) iff \( R_F(\bm\pi) = \bm\pi \), i.e. \( \bm\pi \) is a fixed point of \( R_F \).
+\end{lemm}
+
+\begin{proof}
+	Before showing this, it is important to note that this proof does not require \( F \) to have full rank. Thus it holds for all \( K\times N \) matrices \( F \) with strictly positive entries.
+	
+	The proof is given by the following calculations. First, define \( \dot{\ell}_F(\bm\pi) = \ell_{F}(R_F(\bm\pi))-\elpi{F} \). Then
+	\begin{align}
+	\dot{\ell}_F(\bm\pi) = \ell_{F}(R_F(\bm\pi))-\elpi{F} &= \frac{1}{N}\mathlarger{\mathlarger{\sum}_{n=1}^{N}} \log\left\{\sum_{i=1}^{K}\pi_if_{in}\pdv{\ell}{\pi_i}\right\} - \log\left\{\sum_{k=1}^{K}\pi_kf_{kn}\right\} \label{eqn:lyapstart}\\
+	&=\frac{1}{N}\mathlarger{\mathlarger{\sum}_{n=1}^{N}}\log\left\{\frac{\sum_{i=1}^{K}\pi_if_{in}\pdv{\ell}{\pi_i}}{\sum_{k=1}^{K}\pi_kf_{kn}}\right\} \label{eqn:lyapconcaveLHS}\\
+	&\geq\mathlarger{\sum}_{n=1}^{N}\sum_{i=1}^{K}\frac 1N \frac{\pi_if_{in}} {\sum_{k=1}^{K}\pi_kf_{kn}} \log\left(\pdv{\ell}{\pi_i}\right).\label{eqn:lyapconcaveRHS}
+	\end{align}
+	Where equation \eqref{eqn:lyapconcaveLHS} is greater than \eqref{eqn:lyapconcaveRHS} because \( \elpi{F} \) is concave, and 
+	\[ \sum_{i}\frac{\pi_if_{in}}{\sum_{k}\pi_kf_{kn}} =1. \]
+	
+	Swapping the order of the sums in \eqref{eqn:lyapconcaveRHS}, and recalling that \( r_i(\bm\pi) = \pi_i\eval{\pdv{\ell}{\pi_i}}_{\bm\pi}\) gives
+	\begin{align}
+	\mathlarger{\sum}_{i=1}^{K}\sum_{n=1}^{N}\frac 1N \frac{\pi_if_{in}} {\sum_{k=1}^{K}\pi_kf_{kn}} \log\left(\pdv{\ell}{\pi_i}\right)&= \sum_{i=1}^{K}r_i(\bm\pi)\log\left(\frac{r_i(\bm\pi)}{\pi_i}\right). \label{eqn:lyapconv2kldiv}
+	\end{align}
+	Recall that \( \sum_i r_i(\bm\pi) =\sum_k\pi_k=1\), so they both can be considered discrete probability distributions. Thus Gibbs' inequality \cite[\S 2.6]{MacKay2002} gives
+	\begin{equation}\label{eqn:lyapconvfinal}
+	\sum_{i=1}^{K}r_i(\bm\pi)\log\left(\frac{r_i(\bm\pi)}{\pi_i}\right)\geq 0. 
+	\end{equation}
+	Combining equations \eqref{eqn:lyapstart} through \eqref{eqn:lyapconvfinal} gives the first result. The final inequality \eqref{eqn:lyapconvfinal} is an equality iff \( \pi_i = r_i(\bm\pi) \) for all \( 1\leq i\leq K \), which proves the last part of the lemma.
+\end{proof}
+This lemma can best be summarized by the following quote from MacKay \cite[\S 2.6]{MacKay2002}:``Gibbs’ inequality is probably the most important inequality in this book.''
+
+Describing a Lyapunov function for a given dynamical system is difficult endeavor, but provides powerful results.  For example, lemma \ref{lemm:ellLyapR} is sufficient to show that the only limit points of \( \bm\pi\in S_K \) are fixed points of \( R_F \).  In fact, combining lemmas \ref{lemm:faceDegenerate}, \ref{lemm:ellLyapR}, and theorem \ref{unique} gives that the set \( E = \{\bm\pi|\dot{\ell}_F(\bm\pi) = 0\} \) consists entirely of fixed points of \( R_F \).  The following theorem uses this fact to prove convergence.
+
+\begin{thm}\label{thm:convergence}
+	If \( F \) has full rank, and \( \bm\pi_0\in \op{Int}S_K\) then iteration of \( R_F(\bm\pi_0) \) converges to \( \hat{\bm\pi}, \) the unique maximizing fixed point of \( \elpi{F} \) on \( S_K.\)
+	
+\end{thm}
+
+\begin{proof}
+		%It is worth noting here that as in corollary \ref{cor:RgradK2}, \Rpi{F} is the gradient for \( \elpi{F} \) under the coordinates \( \mu_i = \log(\pi_i) \).  This fact underlies the proofs of theorem \ref{unique} and lemmas \ref{lemm:faceDegenerate}, \ref{lemm:ellLyapR}.
+	let \( \bm\pi_0\in\op{Int}(S_K)  \)
+	Existence and uniqueness comes entirely from the fact that \( -\elpi{F} \) is strictly convex and acts as a Lyapunov function for \Rpi{F}. To show this precisely, theorem 3.1 in chapter 4 of LaSalle \cite{lasalle1976dynsys} must be applied. To apply this theorem it is sufficient that the orbit \( R_F^n(\bm\pi_0) \) stay in \(\op{Int}(S_K)\). Since this is true, then it follows that \( \Omega(\pi_0) = H\cap \ell_{F}^{-1}(c) \) for some \( c\in \R \).	Here \( \Omega(\bm\pi_0) \) is the limit point set of \( \bm\pi_0 \) as described in definition \ref{defn:limitpoints}, and \( H \) is the set as described in theorem \ref{thm:invariance}.\Ryan{describe the set, cite the theorem}
+	
+	The set \( E=H \) consists of only fixed points of \( R_{F}(\bm\pi) \) by lemma \ref{lemm:ellLyapR}. Because F has full rank, these points must be isolated. Let \( a=\elpi[\hat{\bm \pi}]{F} \), then the claim is that \( \Omega(\bm\pi_0) =E\cap\ell_{F}^{-1}(a)= \{\hat{\bm\pi}\}. \) To see this consider two cases, \( \hat{\bm \pi}\in \op{Int}(S_K) \) and \( \hat{\bm \pi}\in \partial S_K \). 
+	
+    For both cases it is helpful to consider the set \(\omega(\bm\pi_0) = \{\bm\pi|\elpi{F}\geq\ell_{F}(\bm\pi_0)\}\)\Ryan{notation, check that this doesn't conflict with LaSalle}. Clearly, this set is positively invariant, convex, and contains \( \hat{\bm \pi}. \)  Moreover, the orbit \( R_F^n(\bm\pi_0) \subset \omega(\bm\pi_0)\cap \op{Int}(S_K)\). If \( \hat{\bm \pi}\in \op{Int}(S_K) \), then because \( \hat{\bm\pi} \)  is the only fixed point in \( \omega(\bm\pi_0)\cap \op{Int}(S_K) \)\Ryan{prove this claim!}, it must be the case that \( \Omega(\bm\pi_0) = \{\hat{\bm\pi}\} \).
+    
+    Now if \( \hat{\bm \pi}\in \partial S_K \), fix some \( n\in\N \) and consider the set \( R_F^n(\omega(\bm\pi_0)). \) This set contains \( \hat{\bm \pi} \), \( \{R_F^m(\bm\pi_0)|m\geq n\} \) and \( R_F^n(\omega(\bm\pi_0))\cap\op{Int}(S_K)\neq\varnothing \). Thus there is some relatively open set \( U_n \)\Ryan{of what?} containing both \( \Omega(\bm\pi_0) \) and \( \{\hat{\bm\pi}\} \). Since this is true for all \( n\in\N \), the set \( \bigcap_{n\in\N}U_n = \Omega(\bm\pi_0)=\{\hat{\bm\pi}\} \)	
+\end{proof}
+
+As a brief remark, corollary 4.2.1 of Michel et. al. \cite{michel2015stability} gives asymptotic stability of \( \{\hat{\bm \pi}\} \) for any orbit \( R_F^n(\bm\pi_0) \) starting at some \( \bm\pi_0\in\op{Int}(S_K) \). This will provide strong implications for the derivative \( DR \) in chapter \ref{respLayer}, section \ref{sect:dRdPiANDdRdF}.
+
+Applying theorem \ref{thm:convergence} to each face of \( S_K \) shows that each facet \( S_K^I = \Psi_I(S_{K-|I|}) \) is a region of attraction for some point \( \hat{\bm \pi}_I \in S_K^I\).  For some full rank parameter matrices \( F \) it is the case that one or more of these \( \hat{\bm \pi}_I \) coincide.  This happens precisely when \( \hat{\bm\pi}\in \partial S_K \). This sort of behavior is more common when \( F \) is not full rank, as shown by example \ref{eg:linDep}.
+
+\begin{eg}\label{eg:linDep}
+	%time \Ryan{Add pictures of a specific example!(also make video?)}
+	As an example of what can happen when $F$ does not have full rank, let \(K=2\), and \(\bm{F}=(f_{i,j})\) be a \(K\times N\) matrix with positive entries and full rank. (Here \(N \gg K\)).  Define \Rpi F as the responsibility map on  the simplex \( S_2 \). Also let \(\hat{\bm{\pi}}=(\hat{\pi}_1,\hat{\pi}_2)^\intercal\) be the fixed point of \Rpi F.
+	
+	Then for positive $\gl\in\R$ and a fixed $a\in(0,.5)$, let 	
+	\[\bm A_{\gl}=\begin{pmatrix}
+	1 & 0\\
+	0 & 1\\
+	\gl a & \gl(1-a)\\
+	\end{pmatrix}\]
+	and $\bm G_{\gl}=\bm A_{\gl}\bm F$.
+	
+	Then \Rpi{G_\gl}\( :S_3\rightarrow S_3 \) exhibits a bifurcation at $\gl=1$.
+	
+	For $\gl<1$ there is a heteroclinic orbit (in $S_3$) going from $(0,c,1-c)^{\intercal}$ to $(\hat{\pi}_1,\hat{\pi}_2,0)^\intercal$, where $c=\hat{\pi}_2-\frac{a}{1-a}\hat{\pi}_1$ (note, this is if $\hat{\pi}_1<\hat{\pi}_2$, otherwise the roles of $\hat{\pi}_1,\hat{\pi}_2$ reverse!)
+	
+	For $\gl>1$, the direction of the heteroclinic orbit reverses.
+	
+	At $\gl=1$, the entire line in $S_3$ between $(0,c,1-c)^{\intercal}$ and $(\hat{\pi}_1,\hat{\pi}_2,0)^\intercal$ consists of fixed points of \Rpi{G_{\gl}}.
+	
+\end{eg}
+
+As a partial generalization of example \ref{eg:linDep}, we have the following theorem.
+\begin{thm}\label{thm:linDep}
+If $F$ does not have full rank, then the set of fixed points for the map $R(\bm\pi)$ is the intersection of a linear subspace of $\R^K$ with $S_K$.
+\end{thm}
+%\Ryan{Need to edit this for clarity}  It remains to be shown that if $F$ does not have full rank, then the set of fixed points for $R(\bm\pi)$ is the intersection of a linear subspace of $\R^K$ with the interior of $S_K$.
+\begin{proof}%TODO fill this in!
+%OUTLINE:
+%$\dim(\op{null}(F)) > 0$, 
+%What happens when $\op{null}(F) \bigcap S_K \neq \emptyset$?
+%
+%Via Marek:
+%The essence of the argument is: 
+%For a convex function the set of minima is convex.
+%For the function you have, the level sets are algebraic sets because the function is a logarithm of a polynomial.
+%	there is only one minimum value as we are looking 
+%If an algebraic variety contains an open subset of a linear variety then it contains that linear variety.
+%A convex subset has topological dimension k iff contains a simplex of dimension k (Caratheodory's Theorem).
+In light of theorem \ref{unique} and corollary \ref{diffDef}, it is enough to show the set of maximal points for \( \elpi{F} \) satisfies the conclusion.
+
+Since $F$ is not full rank, it is possible that $\ell_F(\bm\pi)$ is not strictly convex on \( S_K \).  Let $\mathcal{M}\subseteq S_K$ be the set of minimizers for $\ell(\bm\pi)$, and let $m$ be the minimum value achieved by $\ell(\bm\pi)$ on $\mathcal{M}$.  Without loss of generality we may suppose that $\elpi F$ is not strictly convex, so that $\mathcal{M}$ is not a single point. In particular, \( \mathcal{M} \) will be relatively open in \( S_K \). This will mean that $\mathcal{M}$ will be compact and contain at most \( K-1 \) linearly independent vectors.
+
+The level set $\mathcal{C}_m \defined \left\{\bm\pi\in\R^K|\elpi F=m\right\}$ is an algebraic subset of $\R^{K}$ cut out by the equation $L(\bm\pi)=\exp(Nm)$.  Now by Bezout's theorem, we know that for a linear subvariety $\mathcal{L}$ of $\R^{K}$, either $\mathcal{C}_m\bigcap\mathcal{L}$ is finite, or $\mathcal{L}\subset\mathcal{C}_m$.  Since $\mathcal{M}\subset\mathcal{C}_m$, we know that if $\mathcal{L}\subset\R^K$ is an affine linear subvariety that includes $\mathcal{M}$ as a relatively open subset, then $\mathcal{L}\subset\mathcal{C}_m$.
+
+%convince self that: If an algebraic variety contains a relatively open subset of a linear variety then it contains that linear variety... true in zariski, is it also tru in euclidean topo? Yes! Bezout!
+
+Now $\mathcal{M}$ is a convex set, as $\elpi F$ is a convex function.  In particular, $\mathcal{M}$ is contained in some linear subset $M\subset\R^K$.  As $\mathcal{M}$  must be relatively open in \( M \), $C_m$ must contain all of $M$. Since \( \mathcal{M} \) is precisely those elements of \( M \) which reside in \( S_K \), $\mathcal{M}=S_K\bigcap M$.
+\end{proof}
+
+Note that in the proof of theorem \ref{thm:linDep}, $\mathcal{M}$ is a proper subset of $S_K$ which has dimension less than or equal to $K-1$. If the dimension of $\mathcal{M}$ is exactly \( K-1 \), this precludes \Rpi F from doing anything interesting, as then $\mathcal{M} = S_K$.  The only example of a parameter matrix which will do some thing like this is the matrix \( c\cdot\mathbbm{1}_{K\times N} \), where \( c \) is any real constant and \( \mathbbm{1}_{K\times N} \) is the matrix of all ones.
+%\Ryan{If all of the simplex is fixed, consider the vertices independently, and then any interior point.}
+

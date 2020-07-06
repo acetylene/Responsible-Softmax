@@ -1,0 +1,178 @@
+\label{sect:dRdPiANDdRdF}
+This section focuses on derivatives of the function \Rpi F. Because the goal will be to calculate the ``gradient'' \( \pdv{L}{F} \),this section first requires better exposition of hot the function \( R_F \) changes as \( F \) changes. To this end, define the space $M_{K,N}$ as the subset of full rank $K\times N$ matrices with positive entries.  Then with $S_K$ defined as in \ref{simplexDef}, let $\mathcal{M}=M_{K,N}\times S_K$. Define a map
+\begin{equation}\label{manifoldResp}
+R:\mathcal{M}\rightarrow S_K:R(F,\bm\pi) = R_F(\bm\pi).
+\end{equation}
+
+Under this notation consider $DR$, the Frech\'et of $R$.  For a given point $(F,\bm\pi)\in \mathcal{M}$, the map $DR(F,\bm\pi)$ is a linear map between $T_{(F,\bm\pi)}\mathcal{M}$ the tangent space to $\mathcal{M}$ at $(F,\bm\pi)$ and $T_{R(F,\bm\pi)}S_K$.  This section refers to this operator as Frech\'et derivative and uses the notation $DR(F,\bm\pi)$ or just $DR$ when the point \( \bm\pi \) is given in context.
+
+Because $\mathcal{M}$ is a product manifold, $DR$ is the sum of two linear operators
+\begin{equation*}
+DR(F,\bm\pi)[H,h] = D_FR(F,\bm\pi)[H] + D_{\bm\pi}R(F,\bm\pi)[h]  \\
+\end{equation*}
+for \( H\in TM_{K,N},\; h\in TS_K\). In this case, define the maps $D_FR[H]:=DR[H,0]$ and $D_{\bm\pi}R[h]:=DR[0,h]$ as the derivative of $R$ holding $\bm\pi$ or $F$ constant respectively.
+
+To explicitly calculate \( D_FR \) an \( D_{\bm\pi}R \), let $P:\mathcal{M}\rightarrow \R^{N}$ be given by $P(F,\bm\pi)=\bm\pi^{\intercal}F$.  Note that $P$ is bilinear. Let $\mathbb{\log}$ represent the component wise natural log, and define 
+\[\ell:\mathcal{M}\rightarrow \R:\ell(F,\bm\pi)=\frac{1}{N}\mathbbm{1}_N\cdot\mathbb{\log}\circ P(F,\bm\pi).\]
+Then for fixed $F$, $\ell(F,\bm\pi)=\ell_F(\bm\pi)$ where $\ell_F(\bm\pi)$ is the log likelihood as defined in chapter \ref{Algorithm}.  This new definition will allow a closer look at the derivatives of $R_F(\bm\pi)$, and examine the behavior of the level sets described by $R_F(\bm\pi)-\bm\pi=0$ for changing $F$.
+
+As before, define $D_F\ell$ and $D_{\bm\pi}\ell$ as the portions of $D\ell$ that act on $TM_{K,N}$ and $TS_K$ respectively.  Further, by using the standard inner product on $S_K$, and the Frobenius inner product $\langle U,V\rangle=\op{tr}(U^{\intercal}V)$ on $M_{K,N}$ define $\nabla_F\ell$ and $\nabla_{\bm\pi}\ell$ by
+\[D_F\ell(G)[H]=\op{tr}(H^{\intercal}\nabla_F\ell(G))\]
+and
+\begin{equation}\label{gradEll}
+D_{\bm\pi}(\bm \pi)[\bm h]=\bm h^{\intercal}\nabla_{\bm\pi}\ell(\bm\pi)
+\end{equation}
+Under this notation, 
+\begin{equation}\label{rGradDef}
+R(\bm\pi,F)=\op{diag}(\bm\pi)\cdot\nabla_{\bm\pi}\ell(\bm\pi,F)
+\end{equation}
+
+\subsection{Calculating \( DR \) on \( S_K \) }
+%\Ryan{Should I add the \( \tilde{\ell} = \ell\circ\exp \) discussion? is it actually informative? (?`probably ?)}
+
+%%We can see this by calculating $D_{\bm\pi}\ell$ and using the standard inner product on $\R^{K}$.  In this case we see that for $\bm h\in \R^{K}$
+%%\[[D_{\bm\pi}\ell]_{\bm\pi}\bm h=\bm h^{\intercal}\nabla_{\bm\pi}\ell(\bm\pi,F)\]
+%%Taking $\bm h=\bm e_i$ for $\bm e_i$ $1\leq i\leq K$ the standard basis for $\R^{K}$ in equation \ref{gradEll} gives us equation \ref{rGradDef}.  
+%
+%Recall that by embedding $S_K$ into $\R^{K}$ in a different manner, the map $R(\bm\pi,F)$ is defined as the gradient of $\ell(\bm\pi,F)$ with respect to these coordinates.  Namely if \( \pi_i \) are the coordinates of \( S_K \) given by the standard coordinates of \( \R^K \), define a new coordinate system  by $\mu_i=\ln(\pi_i)$. Then $\pi_i=e^{\mu_i}$ is the inverse function and equation \ref{rGradDef} is given by the change of coordinates.  %This is particularly useful to prove symmetry when we calculate the gradient of $R(\bm\pi, F)$ in the $\bm\pi$ direction.
+%
+%%If we let $x:S_K\rightarrow \R^K$ be given by $x(p)=\log(p)$. That is, if the standard coordinates for $p$ are $p^i$, then $x(p^{i})=\log(p^{i})$. 
+%To see this exactly, let $\tilde{\ell}(\bm\mu,F):=\ell(e^{\bm\mu},F)$. Then by definition 
+%\[\eval{\nabla_{\bm \mu}\tilde{\ell}(\bm\mu,F)}_{\bm\mu=\bm\nu}= \frac{1}{N}\left(\sum_{n=1}^{N}\frac{e^{\nu_i}F_{in}}{\sum\limits_{k=1}^{K}e^{\nu_k}F_{kn}}\right)_{i=1}^{K}=R(e^{\bm\nu},F)\]
+%so then if $\bm\pi=e^{\bm\nu}$
+%\[R(\bm\pi,F)=\eval{\bm\pi\odot\nabla_{\bm\pi}\ell(\bm\pi,F)}_{\bm\pi=\bm\pi}\]
+%where $\bm u\odot \bm v$ represents the Hadamard product of $\bm u$ and $\bm v$.
+
+%\Ryan{Add brief discussion showing that \ref{eqn:dRdPi} is equal to \(\nabla_{\bm\mu}^2\ell(\exp(\bm\mu)) \cdot \op{diag}(\frac{1}{\bm\pi}) \). Hence when \( F \) is full rank and no \( \pi_i =0 \), \( DR \) is positive semi definite. Semi definiteness is guaranteed because \( \sum_i \pdv{r_i}{\pi_j} =\sum_j \pdv{r_i}{\pi_j}= 0\), meaning \( \mathbbm 1_K \) is in the nullspace of \( DR \). This is not a problem so long as this is the only element of the nullspace! (should be able to show this.)}
+
+
+Now calculate the partial derivatives of $R$ to better understand $DR$ focusing first on \( D_{\bm\pi}R \).  Note that equation \eqref{eqn:PartialsRPi} uses the standard coordinate system for \( \R^{K} \) and so does not use the full strength of the Frech\'et derivative.  However, using a coordinate system clarifies computation of the Frech\'et derivative \( D_{\bm\pi}R \) in this case.
+
+Corollary \ref{diffDef} gives
+\[R(F,\bm\pi)=\left(\frac{\partial\ell}{\partial\pi_i}\cdot\pi_i\right)_{1\leq i\leq K}.\]
+if \( r_j = \pdv{\ell}{\pi_j}\cdot pi_j \), 
+\begin{align}
+	\dfrac{\partial r_j}{\partial \pi_i}&=\frac{\partial}{\partial \pi_i}\left(\frac{\partial\ell}{\partial\pi_j}\cdot\pi_j\right) \nonumber\\
+										&=\frac{\partial^2\ell}{\partial \pi_i\partial\pi_j}\pi_j+\frac{\partial\ell}{\partial\pi_j} \frac{\partial\pi_i}{\partial\pi_j} \nonumber\\
+										&=\frac{\partial^2\ell}{\partial \pi_i\partial\pi_j}\pi_j+\delta_{ij}\frac{\partial\ell}{\partial\pi_j} \label{eqn:PartialsRPi}
+\end{align}
+where $\delta_{ij}$ is the Kronecker delta function.
+
+From equation \eqref{eqn:PartialsRPi} it follows that 
+\begin{equation}\label{eqn:dRdPi}
+D_{\bm\pi}R(\bm\pi)= \op{diag}(\bm\pi)\cdot \nabla^2\ell(\bm\pi)+\op{diag}(\nabla\ell(\bm\pi)).
+\end{equation}
+In equation \eqref{eqn:PartialsRPi}, it is assumed that the matrix \( F \) is held constant.
+
+By theorem \ref{thm:convergence} for each $F\in M_{K,N}$ there is a unique fixed point $\hat{\bm \pi}_F$ such that 
+\begin{equation}\label{pisubF}
+R(F,\hat{\bm \pi}_F)=\hat{\bm \pi}_F.
+\end{equation}
+Since the matrix $F$ is clear in the previous equation, it is omitted except when emphasis of the dependence on $F$ is required. Because this fixed point may be obtained via iteration of \( R_F \), it would be expected that \( D_{\bm\pi}R_F \) be a linear contraction mapping. For \( \bm\pi \in\op{Int}(S_K) \) sufficiently close to \( \hat{\bm \pi}_F \), this is true. As a consequence, equation \eqref{eqn:dRdPi} may be used to show that the point \( \hat{\bm \pi}_F \) depends continuously differentiably (\( C^1 \)) on \( F \). Proving this becomes easier lemma \ref{lemm:locInvert} which comes from \cite{rychlikLyapunov}.
+
+\begin{lemm}[Local Contraction at critical fixed points]\label{lemm:locContract}
+	Let \( T:M\subset\R^m\rightarrow M \) be a continuously differentiable mapping that describes a discrete (semi-)dynamical system. Let \( V:M\rightarrow\R \) be a twice differentiable function that acts as a strict Lyapunov function for the system described by \( T \). Further suppose that \( \bm x\in M \) is a critical fixed point of \( (T,V) \) and \( \nabla^2V(\bm x) \) is positive definite.  Then in some neighborhood \( U\subset M \) of \( \bm x \), the linear map \( DT(\bm x):TM\rightarrow TM \) is a contraction mapping, \textit{i.e.} all the eigenvalues of \( DT(\bm x) \) have norm less than one.
+\end{lemm}
+
+\begin{proof}
+	First, without loss of generality, it may be assumed that \( \bm x =\bm 0 \), and \( V(x)=0 \). Then because \( V \) is twice continuously differentiable, it has a second order Taylor approximation near  \( \bm 0 \),
+	\begin{equation}\label{eqn:lyapTaylor}
+	 V(\bm m) \approx V(\bm 0)+DV(\bm 0)[\bm m] +\frac 12 D^2V(\bm 0)[\bm m, \bm m].
+	\end{equation}
+	However, by assumption \( V(\bm 0) = DV(\bm 0) = 0, \) so \( V(\bm m) \approx \frac 12 D^2V(\bm 0)[\bm m, \bm m] \).
+	
+	Now since \( V \) is a strict Lyapunov equation for \( T \), \( \dot{V}(\bm m) := V(\bm m) - V(T(\bm m))> 0 \) unless \( T(\bm m)= \bm m \). Then if \( H := \nabla^2 V(\bm 0) \), and \( S:= DT(\bm 0) \) it follows that \( \nabla^2\dot{V}(0) = H-S^{\ast}HS \) where \( (\cdot)^{\ast} \) represents the usual conjugate transpose.  
+	
+	Now let \( \bm y \) be any eigenvector for \( S \), \( S\cdot\bm y =\gl \bm y \). Then
+	\begin{align}
+	0&<\bm y^{\ast}\cdot H\cdot\bm y -\bm y^{\ast}\cdot S^{\ast}\cdot H\cdot S\cdot \bm y\\
+	 &= \bm y^{\ast}\cdot H\cdot\bm y - |\gl|^2\bm y^{\ast}\cdot H\cdot\bm y\\
+	 &= (1-|\gl|^2) \bm y^{\ast}\cdot H\cdot\bm y. \label{eqn:evcalc}
+	\end{align} 
+	Since \( H \) is positive definite by assumption, it follows from \eqref{eqn:evcalc} that \( 1-|\gl|^2>0. \) and \( |\gl|^2<1 \). Since \(\bm y \) was an arbitrary eigenvector of \( DT(\bm 0) \), this holds for all eigenvalues of \( DT(\bm m) \), with \( \bm m \) near \( \bm 0 \) where equation \eqref{eqn:lyapTaylor} holds.
+	
+\end{proof}
+
+\begin{cor}\label{lemm:locInvert}
+	Let \( V_K\defined\{\bm x\in\R^K|\<\bm x,\mathbbm 1_K\>=0\} \), then define \( g:M_{K,N}\times V_K\rightarrow V_K \) by \( g(F,\bm h) = R(F,\hat{\bm \pi}_F+\bm h)-(\hat{\bm \pi}_F+\bm h). \) Then for any given \( F_0\in M_{K,N} \), \( g(F_0,\bm 0) =\bm 0 \) is the only fixed point of \( g(F_0,\cdotp) \). Further, if \( \hat{\bm \pi}_F\in\op{Int}(S_K) \), then the linear mapping given by \( D_{\bm h}g(\bm 0) \) is invertible on some set \( U\subset S_K \) containing \( \hat{\bm \pi}_F \).
+\end{cor}
+%\Ryan{The hessian of \( \ell \) acts as a quadratic form for the linear mapping determined by \( DR \), hence \( DR \) is a contraction mapping! See notes from Marek, some of these observations may still be important, but a general theorem may be proved in an appendix (or some other location). maybe cite a theorem?}
+\begin{proof}
+	First note that \( g(F,\bm 0) = \bm 0 \) is equivalent to the statement that \( R(F,\hat{\bm \pi}_F)=\hat{\bm \pi}_F \). Thus by theorem \ref{thm:convergence}, for any given \( F_0 \), \( \bm 0 \) must be the only fixed point of \( g(F_0,\cdot) \).
+	
+	Now consider the derivative \( D_{\bm h}g(\bm 0) = DR(\hat{\bm \pi}) -I_K \).  This is invertible iff no eigenvalue of \( DR(\hat{\bm \pi}) \) has norm 1.  But applying lemma \ref{lemm:locContract} to \( (R_F,-\ell_F) \) at \( \hat{\bm \pi} \) shows that \( DR_F(\hat{\bm \pi}) \) is a local contraction, and so it has no eigenvalues of norm greater than one.
+\end{proof}	
+% Old proof, superseded by contraction lemma	
+%	Now consider the derivative \( D_{\bm h}g(\bm 0) \).  Since a small change in \( \bm h \) is equivalent to a small deviation away from \( \hat{\bm \pi}_F \), it must be the case that \( D_{\bm h}g(\bm 0)[\bm u] = D_{\bm\pi}R(\hat{\bm \pi}_F)[\bm u] - I\cdot\bm u \) \textit{i.e.} \( D_{\bm h}g(0) = D_{\bm\pi}R(\hat{\bm \pi}_F)-I, \) where \( I \) is the \( K\times K \) identity matrix.
+%	
+%	Now consider equation \eqref{eqn:PartialsRPi}. Let \( P(\bm\pi) = \diag(\bm\pi) \), \( H(\bm\pi) =  \nabla^2\ell(\bm\pi)\), and \( G(\bm\pi) = \diag(\nabla\ell(\bm\pi)) \). Then \eqref{eqn:PartialsRPi} may be rewritten \( D_{\bm\pi}R = P\cdot H+G \), where the dependence upon \( \bm\pi \) is suppressed. Now by theorem \ref{unique}, if \( \hat{\bm\pi}_F \in\op{Int}(S_K) \), then \( G(\hat{\bm \pi}_F)=I \). Therefore 
+%	\[ D_{\bm\pi}R(\hat{\bm \pi}_F)-I = P(\hat{\bm \pi}_F)\cdot H(\hat{\bm \pi}_F) +I-I = P(\hat{\bm \pi}_F)\cdot H(\hat{\bm \pi}_F).\]
+%	Thus invertibility of \( D_{\bm h}g(\bm 0) \) is equivalent to invertibility of \( P\cdot H \).
+%	
+%	To see that \( P\cdot H \) is invertible, note that \( \ell_{F_0}(\bm\pi) \) is concave, so \( H \) is negative definite. In particular, it is symmetric and all of its eigenvalues are real and negative, so \( H \) is invertible. Similarly, \( \det(P)=\prod_i \hat{\pi}_F^i\neq 0 \), so \( P\cdot H \)  must be invertible.
+
+
+Now apply the implicit function theorem \cite[theorem 3.2.4]{krantz2012implicit}. Given an \( F_0\in M_{K\times N} \) such that \( \hat{\bm \pi}_{F_0}\in\op{Int}(S_K) \), there is an open neighborhood \( U\in M_{K\times N} \) of \( F_0 \) such that \( \hat{\bm \pi}_F \) is a continuously differentiable function of \( F \) for all \( F\in U \).  In this situation, write
+\[D\hat{\bm\pi}_F=D_{\bm\pi}R\cdot D\hat{\bm\pi}_F+D_FR\]
+which gives 
+\begin{equation}\label{dPiDF}
+D\hat{\bm\pi}_F=\left(I-D_{\bm\pi}R\right)^{-1}\cdot D_{F}R
+\end{equation}
+where \( I_K \) is the \( K\times K \) identity matrix. Note that at \( \hat{\bm \pi}_F,\;  I-D_{\bm\pi}R = -P\cdot H\), which will be a positive definite matrix. Because \( R_F(\bm\pi) \) is actually smooth on \( S_K \), with a little extra work it is possible to show that \( \hat{\bm \pi}_F \) varies smoothly with \( F \).  Fortunately, having a continuous derivative is sufficient. Taken together, the previous comments prove theorem \ref{thm:c1piF}
+
+\begin{thm}\label{thm:c1piF}
+	If \( F_0 \in M_{K\times N} \) has \( R(F_0,\hat{\bm \pi}) = \hat{\bm \pi} \) for some \( \hat{\bm \pi}\in\op{Int}(S_K), \) then there is some neighborhood \( U\in M_{K\times N} \) such that \( \hat{\bm \pi} = \hat{\bm \pi}(F_0) \) is a continuously differentiable function of \( F\in U \)  and
+	\[D\hat{\bm\pi}(F)=\left(I-D_{\bm\pi}R(\hat{\bm \pi}(F))\right)^{-1}\cdot D_{F}R(F)\]
+	as in equation \eqref{dPiDF}.
+\end{thm}
+%\Ryan{add citation to kantorovic}
+
+%\Ryan{equation \ref{dPiDF} needs citations to give differentiability of fixed pt wrt parameters. See remarks in notes 13/5/11 be especially careful with boundary!}
+%\Ryan{See \cite{nesterov2013introductory} lemma 1.2.2 for a theorem that allows use of Kantorovic on \( R \) and \( DR \). Maybe place this proof at the end of section \ref{respMLE} and then cite here.}
+
+The process described in algorithm \ref{RSbackward} has equation \ref{dPiDF} as a limiting behavior.  For example, if \( \bm\pi_0\approx \hat{\bm\pi} \), then for all \( c\geq 1 \), \( \bm\pi_c\approx\bm\pi_C \) and 
+\[  \pdv{\bm\pi_C}{F} = \pdv{R}{F} + \eval{\pdv{R}{\bm\pi}}_{\bm\pi_{C-1}}\cdot\pdv{\bm\pi_{C-1}}{F}\approx \pdv{R}{F} + \eval{\pdv{R}{\bm\pi}}_{\bm\pi_{C}}\cdot\pdv{\bm\pi_{C}}{F}. \]
+This leads to the same conclusion as \ref{dPiDF}. 
+%fix below with marek comments! (5/13/2020)
+On the other hand, \( \pdv{\pi_0}{F} = 0\), so \( \pdv{\bm\pi_1}{F} = \pdv{R}{F}\) and then
+\[\pdv{\bm\pi_2}{F}\approx \pdv{R}{F}+\eval{\pdv{R}{\bm\pi}}_{\bm\pi_1}\cdot\pdv{R}{F},\]
+but this is just indicative of the fact that \(I+A\approx (I-A)^{-1}\) when \(\norm{A}<1\), \textit{i.e.} \( \sum_{j=0}^{\oo} A^j \) is the Nuemann series for the operator \( (I-A)^{-1} \).
+
+\subsection{Calculating \( DR \) on Parameter Matrices}
+%\Ryan{Per Marek, remove difference equation! the rest should be good.}
+%\Ryan{Also, begin talking about tensors here. The final calculation needs to have some form of the \( \op{vec} \) function in it to be really talking about matrices.}
+
+Next, the focus turns to calculating \( D_FR \). As before, it is illustrative to consider partial derivatives. As in equation \eqref{eqn:PartialsRPi}, $r_j = \pdv{\ell}{\pi_j}\cdot\pi_j$ represents the $j$-th coordinate function of $R(F,\bm\pi)$.
+\begin{align}
+\dfrac{\partial r_j}{\partial f_{rs}}&=\frac{\partial}{\partial f_{rs}}\left(\frac{\partial\ell}{\partial\pi_j}\pi_j\right)\nonumber \\
+									 &=\frac{\pi_j}{N}\frac{\partial}{\partial f_{rs}}\left(\sum\limits_{n=1}^N \frac{f_{jn}}{\sum\limits_{k=1}^{K}f_{kn}\pi_k}\right)\nonumber \\
+									 &=\frac{\pi_j}{N}\sum_{n=1}^{N}\delta_{ns}\left(\frac{\delta_{jr}}{\sum\limits_{k=1}^{K}f_{kn}\pi_k}-\frac{f_{js}\pi_r}{\left(\sum\limits_{k=1}^{K}f_{kn}\pi_k\right)^2}\right) \nonumber \\
+									 &=\frac{\pi_j}{N}\left(\frac{\delta_{jr}}{\sum\limits_{k=1}^{K}f_{ks}\pi_k}-\frac{f_{js}\pi_r}{\left(\sum\limits_{k=1}^{K}f_{ks}\pi_k\right)^2}\right).\label{partialRF}
+\end{align}
+Unlike calculation of \( \pdv{r_j}{\pi_i} \), equation \eqref{partialRF} does note readily translate to an easy formula for \( D_FR \).  This is because \( F \) is a matrix, and the derivative of a vector valued function with respect to a matrix is a Tensor.  This situation may be handled through careful use of the column stacking function \( \op{vec}(F) \) and the commutative diagram \eqref{eqn:vecfrobcommute}.
+  
+The benefit of this is that the calculation of the partials in \ref{partialRF} is also the calculation of the Jacobian of $r_j$.  Put more precisely, if the Fr\'{e}chet derivative of \( r_j \) is represented by $Dr_j$, and the Jacobian is represented by $\dfrac{\partial r_j}{\partial F} = \nabla r_j(F)$, then
+\begin{equation}\label{eqn:drjdF}
+Dr_j(F)[H]=\op{tr}\left(\nabla r_j(F)\cdot H^{\intercal}\right)%\dfrac{\partial r_j}{\partial F}
+\end{equation}
+where $\op{tr}(\cdot)$ represents the trace map.
+
+Now by the relationship described in the commutative diagram \eqref{eqn:vecfrobcommute},
+\begin{equation}\label{eqn:vecdrjdF}
+\op{tr}\left(\nabla r_j(F)\cdot H^{\intercal}\right) = \<\op{vec}(\nabla r_j(F)),\op{vec}(H)\>
+\end{equation}
+Let \( A(F) \) be the \( K\times KN \) matrix given by 
+\begin{equation}\label{eqn:DRmatrix}
+A(F) = \begin{pmatrix}
+\op{vec}(\nabla r_1(F))^{\intercal}\\
+\op{vec}(\nabla r_2(F))^{\intercal}\\
+\vdots\\
+\op{vec}(\nabla r_K(F))^{\intercal}
+\end{pmatrix}.
+\end{equation}
+Then the column vector given by \( A(F)\cdot\op{vec}(H) = (\<\op{vec}(\nabla r_j(F)),\op{vec}(H)\>)_{1\leq j\leq K}^{intercal} \) is clearly obtained by \( Dr_j(F) \) acting on \( H \) for \( j=1,\ldots,K \).
+Thus
+\begin{equation}\label{eqn:dRdFformula}
+D_FR(F)[H]=A(F)\cdot\op{vec}(H),
+\end{equation}
+which gives a precise form for the term $\displaystyle D_FR$ in equation \ref{dPiDF}.

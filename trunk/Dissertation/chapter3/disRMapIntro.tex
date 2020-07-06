@@ -1,0 +1,42 @@
+ %TODO discussion below relevant?
+Exact solutions to the Lagrangian example \ref{lageq} can be difficult and costly numerically.  The general case of the Lagrangian requires solving a system of $K+1$ polynomials in $K$ variables of degree at most $N$, with $K\cdot N$ parameters.  If, for example, one uses a Gr\"obner basis to solve such a problem, it can take doubly exponential time in $K$ and $N$.  In most cases a quicker approach is preferred. \\
+
+Consider instead an iterative approach by looking at the rational maps
+\begin{align*}
+r_i(\bm\pi)=\frac 1N\sum_n \frac{\pi_i f_i(x_n)}{\sum_{k}\pi_{k}f_{k}(x_n)}\;\; i=1,\ldots,K
+\end{align*}
+and defining a map 
+\begin{equation}\label{map}
+R:S_K\rightarrow S_K: R(\pi_1,\pi_2,\ldots,\pi_K)=(r_1(\bm\pi),r_2(\bm\pi),\ldots,r_K(\bm\pi)).
+\end{equation}
+An estimate of the parameters \( \bm\pi^{\ast} \) may be obtained by calculating the fixed points of the discrete semi-dynamical system given by iteration of \( R \). This paper refers to such an approach as \textit{dynamic responsibility}. While \( R \) is differentiable on \( S_K \) this dissertation does not explore whether \( R \) is 1-1 or onto. The map $R(\bm\pi)$ is homogeneous of degree zero as will be discussed in further detail later.
+
+Note that this approach relies on the parameters $f_k(x_n)$, which represent the entries of a $K\times N$ matrix $F$. The matrix $F$ acts as a set of parameters for the map $R(\bm\pi)$. Writing the map as $R_F(\bm\pi)$ will emphasize this relationship when necessary. An implementation of this map is in the file \url{simplex_map.m}
+\Ryan{put reference to appendix instead!}
+
+Dynamic responsibility (DR) describes an alternative algorithm (see algorithm \ref{ratioAlg}) to the Lagrange multipliers method shown above.  It is based on the idea of iterating the map $R(\bm\pi)$. This is likely to be a good idea because $R(\bm\pi)$ is partially derived from Bayes' rule, which means each iteration could be thought of as updating the probabilities defined by $\bm\pi\in S_K$.  
+
+\begin{table}
+
+\begin{algorithm}[H]
+\caption{Dynamic Responsibility Algorithm}\label{ratioAlg}
+\begin{algorithmic}
+\Require $F$ a $K\times N$ matrix
+\Require $\bm\pi_0$, $\ge$
+\Procedure{Iteration}{$F,\bm\pi_0,\ge$}\Comment{$\ge$ serves as a stopping tolerance}
+	\State $n \gets 1$
+	\State $\bm\pi_n \gets R(\bm\pi_0)$
+	\State $orbit \gets {\bm\pi_0,\bm\pi_1}$
+	\While{$|\bm\pi_n-\bm\pi_{n-1}|>\ge|\bm\pi_n|$}
+		\State $\bm\pi_{n+1} \gets R(\bm\pi_n)$
+		\State $orbit \gets {\bm\pi_0,\ldots,\bm\pi_{n+1}}$
+		\State $n\gets n+1$
+	\EndWhile
+	\State \textbf{return} $orbit$ \Comment{at this point $\bm\pi_{n-1}$ is approximately $\hat{\bm\pi}$}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+\caption{The main algorithm: Iteration of the\Rpi F map.}
+\end{table}
+
+While it is not known \textit{a priori} that algorithm \ref{ratioAlg} is correct, the main theorem of this chapter, theorem \ref{thm:convergence}, shows that dynamic responsibility converges to a unique solution under reasonable conditions.  Section \ref{respMLE} discusses the correct hypotheses under which the fixed point $\hat{\bm\pi}$ satisfying $R(\hat{\bm\pi})=\hat{\bm\pi}$ is a maximum likelihood estimator.  A version of this algorithm is implemented in appendix A. \Ryan{(CHANGE LATER, Add appendix)} file \url{..\\MATLAB\\stablepoint.m}.

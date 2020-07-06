@@ -1,0 +1,64 @@
+%FOR Defense Slide media embedding (doesn't work with .swf apps!)
+
+
+		\begin{center}
+		\only<1>{
+			\includemedia[label = Kmeans3,
+						  width = .9\linewidth,
+						  keepaspectratio,
+%						  activate=onclick,
+						  flashvars={
+						  	modestbranding=1 % no YT logo in control bar
+						  	&autohide=1 % controlbar autohide
+						  	&showinfo=0 % no title and other info before start
+						  	&rel=0 % no related videos after end
+						  },
+%						  passcontext,
+						  noplaybutton,
+			]
+			{\includegraphics[width=0.9\linewidth]{../kmeansMATLAB/Kmeans3}}
+			{https://youtu.be/cLyJy0MOChc}
+%			\mediabutton[
+%			mediacommand=Kmeans3:playPause,
+%			overface=\color{blue}{\fbox{\strut Play/Pause}},
+%			downface=\color{red}{\fbox{\strut Play/Pause}}
+%			]{\fbox{\strut Play/Pause}}
+		}
+		\only<2>{
+		\includemedia[label = Kmeans5,
+					  width = .9\linewidth,
+			    	  keepaspectratio,
+			    	  flashvars={
+			    	  	modestbranding=1 % no YT logo in control bar
+			    	  	&autohide=1 % controlbar autohide
+			    	  	&showinfo=0 % no title and other info before start
+			    	  	&rel=0 % no related videos after end
+			    	  },
+%					  activate = pageopen,
+%					  passcontext,
+					  noplaybutton,
+			]
+			{\includegraphics[width=0.9\linewidth]{../kmeansMATLAB/Kmeans5}}
+			{https://youtu.be/lu_YEm-iZbA}
+%			\mediabutton[
+%			mediacommand=Kmeans5:playPause,
+%			overface=\color{blue}{\fbox{\strut Play/Pause}},
+%			downface=\color{red}{\fbox{\strut Play/Pause}}
+%			]{\fbox{\strut Play/Pause}}
+		}
+	
+		\end{center}
+% code below didn't work to embed the .mp4 file. Maybe i need to attach it?
+%  addresource = KmeansGMM3_crop.mp4,
+%  flashvars = {source=KmeansGMM3_crop.mp4
+%  &autoPlay=true
+%  &autoRewind=false},
+%  activate = pageopen,
+%  transparent,
+%  
+
+% addresource = KmeansGMM5_crop.mp4,
+% flashvars = {source=KmeansGMM5_crop.mp4 
+%	&autoPlay=true
+%	&autoRewind=false},
+% 

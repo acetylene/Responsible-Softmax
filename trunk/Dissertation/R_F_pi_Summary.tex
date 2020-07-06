@@ -1,0 +1,77 @@
+\documentclass[12pt,letterpaper]{amsbook}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\topmargin}{-0.5in}        %%%  This sets all the spacing stuff to use the page more
+\setlength{\oddsidemargin}{-0.3in}    %%%  efficiently than the normal "article" setup would.
+\setlength{\evensidemargin}{-0.3in}   %%%  It's OK to play with these some.
+\setlength{\textheight}{9.5in}     %%%
+\setlength{\textwidth}{7.2in}     %%%
+\setlength{\headsep}{.2in}          %%%
+\setlength{\headheight}{0.2in}       %%%
+\setlength{\footskip}{.1in}         %%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\iffinal\finalfalse
+\newif\ifdraft
+	\iffinal
+		\draftfalse
+	\else
+		\drafttrue
+\fi
+
+\input{include_commands}
+\title{What do I know about the responsibility map \Rpi F?}
+\begin{document}
+\maketitle
+\chapter{Definitions and Basics}
+	Let \( F = F^i_n \) be a \( K\times N \) (\( K\ll N \)) matrix with non-negative entries. Then define 
+	\begin{equation}\label{eqn:ellDef}
+		\elpi F := \frac{1}{N}\sum_{n=1}^{N} \log(\sum_{k=1}^{K} \pi_kF^k_n).
+	\end{equation}
+	Note that when considered as a function \( \ell_F:\R^K\rightarrow \R \), \( \elpi F \) is undefined at \( \bm\pi = \bm 0 \). This is also true for any \( \bm\pi \) where any of the sums \( \sum_k \pi_k F_n^k
+	\leq 0 \). This can be partially remediated by requiring \( \sum_i F^i_n >0\;\forall n \), but the problem persists in this situation.  To fully fix these problems, \( \elpi F \) must be considered as a map \( \ell_F:U\subset\R^K\rightarrow\R \) for some carefully chosen subspace \( U\subset \R \).
+	
+	To better understand the function \( \elpi F \), define \( \mu_i = \log(\pi_i) \) for \( \pi_i>0 \) and \( \mu_i = -\oo \) when \( \pi_i = 0 \). This defines a change of coordinates \( \phi_i:\mu_i\mapsto \pi_i = e^{\mu_i} \) with \( e^{-\oo}:=0 \). While more work will be needed to make this precise, the correct idea is present. Thus \( \tilde{\ell}_F(\bm\mu) := \elpi[e^{\bm\mu}]{F} \) is defined for all \( \bm\mu\in\R^K \).  Note that \( \bm\phi:\R^K\rightarrow\R^K \) given by \( \bm\phi(\bm\mu) = \left(\phi_i(\mu_i)\right)_i \) has image \( \bm\phi(\R^K) = \R^K_{>0} \), the strictly positive orthant of \( \R^K \). Also, \( \bm\phi \) is a smooth diffeomorphism onto its image.
+	
+	Define \( A_K := \left\{\bm x\in\R^K|\<\bm x,\mathbbm 1_K\> = 1\right\}\) with \( \mathbbm 1_K  = (1,1,\ldots,1)\) the vector of all ones. Let \( S_K := A_K\bigcap \R^{K}_{\geq 0} \) be the subset of \( A_K \) consisting of non-negative coordinates. In other words, \( S_K \) is the standard probability simplex.  One benefit of defining \( A_K,\;S_K \) this way is that the barycentric coordinates for \( S_K \) as a simplex naturally extend to \( A_K \), and coincide with the standard euclidean coordinates for both of these sets as subspaces of \( \R^K \).  
+	
+	Since this paper partially seeks to classify behavior of  \( \elpi{F} \) on \( S_K \), discussion of the relationship between the coordinate map \( \bm\phi \)  and the compact set \( S_K \) naturally arises.  Even though \( S_K \) is compact as described above, \( \bm\phi^{-1}(S_K) \) is not compact.  Though compactification of this set is possible, most of what is needed for this discussion can be done without compactification of \( \R^K \).
+	
+	In general, the behavior of the set \( \bm\phi^{-1}(S_K) = \left\{\bm\mu\in\R^K|\sum_i e^{\mu_i} = 1\right\} \) is difficult to describe. One important distinction arises when \( S_K \) is considered as a manifold with boundary \( \partial S_K \).  In set notation,
+	\begin{equation}\label{eqn:invImgBoundary}
+	\bm\phi^{-1}(\partial S_K) = \left\{\bm\mu\in \{\R\cup \{-\oo\}\}^K | \mu_i=-\oo \text{ for at least one } i\right\}.
+	\end{equation}
+	Under the inverse image of \( \bm\phi \) the boundary gets mapped to a `degenerate set' in that for every point \( \bm\pi^{\ast}\in\partial S_K \), the set \( \bm\phi^{-1}(\bm\pi^{\ast}) \) consists entirely of points \( \bm\mu \) that belong in \( \{\R\cup \{-\oo\}\}^K \), i.e. some coordinates of \( \bm\mu \) lie at \( -\oo. \)
+	
+	To make equation \eqref{eqn:invImgBoundary} more precise, consider the following argument. Since all the points in \( \partial S_K \) are limit points of \( S_K \), if \( \bm\pi^{\ast}\in\partial S_K, \) there is a series of points \( \bm\pi^n \) such that \( \bm\pi^n\rightarrow\bm\pi^{\ast} \) as \( n\rightarrow\oo \).  Here without loss of generality, it may be assumed that \( \bm\pi^n\in\op{Int}S_K\;\forall n \).  Points \( \bm\pi^{\ast}\in\partial S_K \) are classified by \( \pi^{\ast}_{i_m} = 0 \) for some set of indices \( \{i_1,\ldots,i_M\},\;M<K \). Thus sequences \( \bm\pi^n\rightarrow\bm\pi^{\ast} \) always have \( \pi^{n}_{i_m}\rightarrow 0 \) as \( n\rightarrow\oo. \) 
+	
+	For any point \( \bm\pi^{\ast}\in\partial S_K \) define such sequences as \textit{boundary sequence(s)} for \( \bm\pi^{\ast} \). Boundary points may then be defined as equivalence classes of boundary sequences. Equivalence of two boundary sequences \( \bm\pi^n,\;\bm\pi^m \) in this sense is given by \( \bm\pi^n\sim\bm\pi^m \) if \( |\pi^n_i -\pi^m_i|\rightarrow 0 \) as \( n,m\rightarrow\oo \) for all \( i=1,\ldots,K. \)
+	
+	Under inverse image of the map \( \bm\phi \), boundary sequences in \( S_K \) translate to sequences \( \bm\mu^{n}\subset\R^K\) such that \( \mu^n_{i_m} \rightarrow -\oo\) as \( n\rightarrow\oo \) for some set of indices \( i_m,\;m=1,\ldots,M<K \). Thus the preimage \( \bm\phi^{-1}(\bm\pi^{\ast}) \) for \( \bm\pi^{\ast}\in \partial S_K \) is more precisely defined as the equivalence class of preimage of boundary sequences for \( \bm\pi^{\ast}\! \), where two sequences \( \bm\mu^n\!,\;\bm\mu^m \) are equivalent if \( \bm\pi^n:=\bm\phi(\bm\mu^n),\;\bm\pi^m:=\bm\phi(\bm\mu^m)\) are equivalent boundary sequences in \( S_K \).
+	
+	Another required definition is that of \textit{face} and \textit{degeneracy} maps on simplicies. Broadly speaking, degeneracy maps act like projections of facets of \( S_K \) onto lower dimensional simplices \( S_{M},\;M<K \). On the other hand, face maps embed lower dimensional simplicies \( S_{M},\;M<K \) into facets of higher dimensional simplicies \( S_K \). For a general overview, the interested reader may refer to nLab \Ryan{citation, \url{https://ncatlab.org/nlab/show/simplex\#BarycentricCoordinates}}. 
+	
+	For the purposes of this paper, define the face map as follows.  Given \(\bm\pi = (\pi_1, \ldots, \pi_{K-1}) \in S_{K-1}\)  and \( 1\leq i\leq K \), the $i$th face inclusion is the subspace inclusion
+	\begin{equation}\label{eqn:faceMapDefn}
+	\gd_i:S_{K-1}\hookrightarrow S_K:(\pi_1, \ldots, \pi_{K-1})\mapsto (\pi_1, \ldots,\pi_{i-1},0,\pi_i,\ldots, \pi_{K-1}).
+	\end{equation}
+	The map \( \gd_i \) is induced by a similar inclusion map \( \R^{K-1}\hookrightarrow\R^K \), which is exactly the same on coordinates.  
+	
+	For a set of indices \( I=\{i_1<i_2<\ldots<i_M\}\) with \(M<K\) the definition of \( \gd_i \) may be extended to a collection of inclusions \( \Delta_I:S_{K-M} \hookrightarrow S_K \) given by \( \Delta_I = \gd_{i_M}^{K}\circ\gd_{i_{M-1}}^{K-1}\circ\ldots\circ\gd_1^{K-M+1} \), where \( \gd_i^{k} \) represents the $i$th facemap \( \gd_i^k:S_{k-1}\hookrightarrow S_k \).  It is important to note here that \( \Im{\gd_i}\subsetneq\partial S_K \) and that this also holds for the maps \( \Delta_{i_1<i_2< \ldots <i_M } \). In fact, it is the case that \(\partial S_K = \bigcup_{i=1}^{K}\Im{\gd_i}\) and if \( i<j \), \( \Im{\gd_i}\cap\Im{\gd_j} = \Im{\Delta_{i<j}} \).
+		
+	With the face maps thus defined, consider the degeneracy map.\( \Psi \)
+\[  \left[ \mu=2 , \pi_{1}={{\left(2\,f_{2,1}-f_{1,1}\right)\,f
+		_{2,2}-f_{1,2}\,f_{2,1}}\over{\left(2\,f_{2,1}-2\,f_{1,1}\right)\,f
+		_{2,2}-2\,f_{1,2}\,f_{2,1}+2\,f_{1,1}\,f_{1,2}}} , \pi_{2}=-{{f_{1,1
+		}\,f_{2,2}+f_{1,2}\,f_{2,1}-2\,f_{1,1}\,f_{1,2}}\over{\left(2\,f_{2,
+			1}-2\,f_{1,1}\right)\,f_{2,2}-2\,f_{1,2}\,f_{2,1}+2\,f_{1,1}\,f_{1,2
+}}} \right]  \]
+
+\[ \left[ \mu=2 , \pi_{1}={{\left(2\,f_{2}(x_{1})-f_{1}(x_{1})
+		\right)\,f_{2}(x_{2})-f_{2}(x_{1})\,f_{1}(x_{2})}\over{\left(2\,f_{2
+		}(x_{1})-2\,f_{1}(x_{1})\right)\,f_{2}(x_{2})+\left(2\,f_{1}(x_{1})-
+		2\,f_{2}(x_{1})\right)\,f_{1}(x_{2})}} , \pi_{2}=-{{f_{1}(x_{1})\,f
+		_{2}(x_{2})+\left(f_{2}(x_{1})-2\,f_{1}(x_{1})\right)\,f_{1}(x_{2})
+	}\over{\left(2\,f_{2}(x_{1})-2\,f_{1}(x_{1})\right)\,f_{2}(x_{2})+
+		\left(2\,f_{1}(x_{1})-2\,f_{2}(x_{1})\right)\,f_{1}(x_{2})}}
+\right]  \]
+\end{document}

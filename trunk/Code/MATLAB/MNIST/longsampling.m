@@ -1,0 +1,55 @@
+blcFun=@(block) reshape(block.data,1,numel(block.data));
+prefix=pwd;
+mnistImgs="train-images.idx3-ubyte";
+mnistLbls="train-labels.idx1-ubyte";
+imFile=strcat(prefix,"\",mnistImgs);
+lblFile=strcat(prefix,"\",mnistLbls);
+[Images,Labels]=processMNISTdata(imFile,lblFile);
+images2d=reshape(Images,60000,28,28);
+imshow(images2d(1,:,:),'InitialMagnification','fit')
+imshow(squeeze(images2d(1,:,:)),'InitialMagnification','fit')
+imshow(squeeze(images2d(1,:,:))./255,'InitialMagnification','fit')
+img1=squeeze(images2d(1,:,:))./255;
+longimg=blockproc(img1,[2 1],blcFun,'BorderSize',[0 1],'PadPartialBlocks',true,'PadMethod','symmetric','TrimBorder',false);
+longimg.*255
+longimg=blockproc(img1,[1 1],blcFun,'BorderSize',[1 1],'PadPartialBlocks',true,'PadMethod','symmetric','TrimBorder',false);
+252/28
+longimg2=reshape(longimg,28,9,28);
+longsample=zeros(784,9);
+for i=1:28
+longsample(28*(i-1)+1:28*(i),:)=squeeze(longimg2(:,:,i));
+end
+longsample
+sig=cov(longsample);
+sig
+[~,p]=chol(sig)
+diag(sig)
+diag(sig)./.0977
+[U,S,V]=svd(longsample);
+[U,S,V]=svd(longsample-mean(longsample));
+S
+S(1:9,:)
+V
+v-v'
+V-V'
+V*V'
+abs(V*V')
+round(V*V',0)
+round(V*V',0)-eye(9)
+US
+U*S
+U*S-longsample*V
+(U*S)-(longsample*V)
+U*S
+(longsample*V)
+centLongsamp=longsample-mean(longsample);
+U*S-centLongsamp*V
+[U,S,V]=svd(centLongsamp);
+U*S-centLongsamp*V
+centLongsamp*V-U*S
+plotmatrix(V)
+figure
+plotmatrix((U*S)')
+plotmatrix((U*S))
+coeffs=U*S;
+plotmatrix(coeffs(:,1:5))

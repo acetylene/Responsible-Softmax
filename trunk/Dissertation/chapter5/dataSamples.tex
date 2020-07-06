@@ -1,0 +1,20 @@
+\label{sect:dataSelection}
+
+As has been mentioned two types of data sets, synthetic and natural, are used for numerical experiments in this dissertation. The purpose of using different data is to highlight strengths and weaknesses of distinct models. Only reasonably simple data sets were chosen, to act as proof of concept. This also allows faster exploration of \RS behavior. The generated data sets were various forms of GMMs, and the natural data set used is the MNIST data set of LeCun et.al. \cite{lecun1998gradient}.
+
+As the \RS layer drew inspiration from the soft \( K \)-means and EM algorithms \cite{MacKay2002}, a natural choice for synthetic data is pseudorandom data drawn from a Gaussian mixture model. The first data sets used in this vein were one dimensional mixtures and informed the selection of later mixture models. The final data used was a 2 dimensional Gaussian mixture with \( K=5 \) clusters and anisotropic covariance matrices which varied among clusters.  
+
+In all cases, the means of the clusters were separated widely, though two of the clusters were chosen to be minority classes.  Since a \RS layer is designed to find a MLE for class weights, it is uniquely suited to direct training with imbalanced data. For this reason many tests were performed with varying mixture components. A sample from the final GMM on which the majority of experiments were run is shown in figure \ref{fig:sampleGMM_K5}.  Details to reproduce this data set are included in appendix \Ryan{make appendix!}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.85\linewidth]{chapter5/sample2}
+	\caption[A sample GMM data set used for training and testing]{This figure represents data samples from the most common GMM used to train, test and compare different types of neural nets. The minority classes are the ones with smaller variance. Data is generated for train and tests sets on an `as needed' basis.}
+	\label{fig:sampleGMM_K5}
+\end{figure}
+
+The EM and soft \( K \)-means algorithms are designed unsupervised learning and therefore have some heuristics on the data built in. This naturally provides some rigidity in data analysis and exploration which can provide a sense of interpretation to the results. Standard neural networks are more flexible in the data they can model, but tend to lack interpretability. Because the \RS layer uses neural networks and supervised learning to make predictions, there is more flexibility in the type of data it can process, but the use of \DR provides a sens of interpretability.  The choice of GMM data and MNIST data to test \RS reflects this tradeoff between flexibility and interpretability.
+
+Many data sets and methods were used before the experiments reported in this dissertation were run.  These trial data sets informed selection of the final data sets.  Most of the exploratory trials are not reported here, but the final choice of data sets is highly reflective of this process.  For example, when re-sampling the MNIST data set to introduce imbalance in training and test data, I chose Benford's law for class frequencies to illustrate that \RS has a reasonable effect on highly imbalanced data sets.  Sections \ref{sect:GMMresults} and \ref{sect:MNISTresults} mention these choices where appropriate. The result sections also suggest some other data sets to explore in the future.
+
+\FloatBarrier
