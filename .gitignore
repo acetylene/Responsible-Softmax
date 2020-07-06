@@ -13,3 +13,7 @@
 *.html
 #MNIST files
 *.idx?-ubyte
+#folders to ignore
+*kmeans_MacKay/
+*kmeansoft/
+*shallow-DANN*/
