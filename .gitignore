@@ -10,3 +10,6 @@
 *.avi
 *.gz
 *.tar
+*.html
+#MNIST files
+*.idx?-ubyte
