@@ -32,3 +32,6 @@
 *kmeansoft/
 *shallow-DANN*/
 trunk/Dissertation/formatting/
+#Exceptions
+!trunk/Dissertation/Dissertation_RDC.pdf
+!trunk/DefenseSlides/Slides/defenseSlides.pdf
