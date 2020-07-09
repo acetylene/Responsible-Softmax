@@ -14,12 +14,18 @@
 \usetikzlibrary{automata, positioning}
 \tikzset{every state/.style={minimum size=0pt}}
 
+\usepackage{appendix}
 \usepackage{placeins}
 \usepackage{float}
 \usepackage{hyperref}
 
 %\usepackage[lofdepth,lotdepth]{subfig}
+% Packages to have pseudocode must be included after hyperref!!!
 
+\usepackage{setspace}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{chngcntr}
 
 
 \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
@@ -144,7 +150,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  \newcommand*{\Rpi}[2][\bm\pi]{ \(R_{#2}({#1})\)} 
  \newcommand*{\elpi}[2][\bm\pi]{\ell_{#2}({#1})}
- \newcommand*{\RS}{responsibility softmax }
+ \newcommand*{\RS}{responsible softmax }
  \newcommand*{\DR}{dynamic responsibility }
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -302,12 +308,6 @@
  \renewcommand{\arraystretch}{0.65}
  
 %-----------------------------------------------------------
-% Packages to have pseudocode must be included after hyperref!!!
-
-\usepackage{setspace}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usepackage{chngcntr}
 
 % set equation numbering to include section and subsection numbers
 \numberwithin{equation}{chapter}
