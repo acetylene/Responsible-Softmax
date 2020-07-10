@@ -12,7 +12,7 @@ classdef tolCheckerEuc < matlab.unittest.constraints.Tolerance
         function obj = tolCheckerEuc(val, varargin)
             %VAL gets assigned to the value of the tolerance checker if it
             %is a positive numeric scalar.
-            %   TODO Add possible distance function?
+            %   TODO Add customization of distance function
             p = inputParser;
             diagDefault = false;
             addRequired(p,'val',@tolCheckerEuc.checknum);

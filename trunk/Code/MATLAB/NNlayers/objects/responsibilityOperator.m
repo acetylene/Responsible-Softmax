@@ -1,7 +1,6 @@
 classdef responsibilityOperator < handle
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
-    
+   %RESPONSIBILITY OPERATOR is an obect that stores and updates class
+   %likelihoods using Dynamic responsibility.
     properties
         dim;
         pi_0;
@@ -11,7 +10,9 @@ classdef responsibilityOperator < handle
     methods
         function obj = responsibilityOperator(dimension, tolerance, varargin)
             %RESPONSIBIILTYOPERATOR Construct an instance of this class
-            %   Detailed explanation goes here
+            %   PI_0, DIM, and TOLCHECKER must be set. PI_0 must be a DIM
+            %   by 1 vector, and the entries of PI_0 must sum to 1.
+            %   TOLCHECKER is used to determine convergence.
             p = inputParser;
             addRequired(p,'dimension',...
                 @responsibilityOperator.validScalarPosInt);
@@ -61,7 +62,8 @@ classdef responsibilityOperator < handle
         function resp = iteratedResp(obj, F, p, n)
             %ITERATEDRESP Takes parameters F, and starting point P. It
             %returns RESP which is the first n points in the iteration of
-            %the responsibility map.
+            %the responsibility map. i.e. first n elements of the orbit of
+            %PI_0
             resp = zeros(obj.dim,n);
             resp(:,1) = p;
             for i=2:n+1

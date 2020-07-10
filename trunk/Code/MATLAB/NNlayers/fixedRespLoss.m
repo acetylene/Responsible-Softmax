@@ -8,7 +8,7 @@ classdef fixedRespLoss < nnet.layer.ClassificationLayer
     end
     methods
         function layer = fixedRespLoss(numClasses, err, varargin)
-            % (Optional) Create a myClassificationLayer
+            % (Optional) Create a fixedRespLoss Layer
             p = inputParser;
             C = numClasses;
             validScalarPosNum =@(x) isnumeric(x) && isscalar(x) && (x > 0);
@@ -36,12 +36,12 @@ classdef fixedRespLoss < nnet.layer.ClassificationLayer
             % training targets T
             %
             % Inputs:
-            % layer - Output layer
-            % Y – Predictions made by network
-            % T – Training targets
+            % layer  Output layer
+            % Y  Predictions made by network
+            % T  Training targets
             %
             % Output:
-            % loss - Loss between Y and T
+            % loss  Loss between Y and T
             assert(all(Y(:)>=0,'all'),"Y must be positive")
             errTol = eps(class(Y));
             
@@ -56,14 +56,14 @@ classdef fixedRespLoss < nnet.layer.ClassificationLayer
             loss = -sum(sum(T.*log(Z)))/N;
         end
         
-        %% must implement backward because of  PO!
+        %% must implement backward when using full dynamic responsibility
         function dLdY = backwardLoss(layer, Y, T)
             % Backward propagate the derivative of the loss function
             %
             % Inputs:
-            % layer - Output layer
-            % Y – Predictions made by network
-            % T – Training targets
+            % layer  Output layer
+            % Y  Predictions made by network
+            % T  Training targets
             %
             % Output:
             % dLdY - Derivative of the loss with respect to the predictions Y

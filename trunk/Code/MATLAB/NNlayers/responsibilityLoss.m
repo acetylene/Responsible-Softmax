@@ -2,14 +2,15 @@ classdef responsibilityLoss < nnet.layer.ClassificationLayer
     
     properties
         % (Optional) Layer properties
-        piOper;%try a hard coded pihat! This would mean not changing pihat!
+        %A hard coded pi_0 version of this layer is in fixedRespLoss.m
+        piOper;
         K;
         err;
         numIter;
     end
     methods
         function layer = responsibilityLoss(numClasses, err, varargin)
-            % (Optional) Create a myClassificationLayer
+            % (Optional) Create a responsibilityLoss Layer
             p = inputParser;
             validScalarPosNum =@(x) isnumeric(x) && isscalar(x) && (x > 0);
             validScalarPosInt =@(x) (int32(x)==x) && validScalarPosNum(x);
@@ -41,9 +42,9 @@ classdef responsibilityLoss < nnet.layer.ClassificationLayer
             % training targets T
             %
             % Inputs:
-            % layer - Output layer
-            % Y – Predictions made by network
-            % T – Training targets
+            % layer Output layer
+            % Y Predictions made by network
+            % T Training targets
             %
             % Output:
             % loss - Loss between Y and T
@@ -79,15 +80,17 @@ classdef responsibilityLoss < nnet.layer.ClassificationLayer
             end
         end
         
-        %         %% must implement backward because of  PO!, tried not using it
+        %         %% must implement backward because of DR! Tried not using it
         %         with only finite iterations 15 Nov 2019. WORKED!
+        %         Now uses AD and a finite number of iterations to 
+        %         compute backward.
         %         function dLdY = backwardLoss(layer, Y, T)
         %             % Backward propagate the derivative of the loss function
         %             %
         %             % Inputs:
-        %             % layer - Output layer
-        %             % Y – Predictions made by network
-        %             % T – Training targets
+        %             % layer  Output layer
+        %             % Y Predictions made by network
+        %             % T Training targets
         %             %
         %             % Output:
         %             % dLdY - Derivative of the loss with respect to the predictions Y
@@ -187,6 +190,5 @@ classdef responsibilityLoss < nnet.layer.ClassificationLayer
             V = (eye(K) - dRdPi)^-1;
             dFpiHat = derivRFvecAdj(F,piHat,(V)'*dpiHat);%%
         end
-        %% TODO: write a few more functions to keep dpiHatAdj contained
-    end
+      end
 end

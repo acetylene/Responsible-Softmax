@@ -37,19 +37,31 @@ The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) cal
 	../../../Code/MATLAB/error_samples.m
 }
 
-\lstinputlisting[language = matlab, frame = single, 
-numbers = left, title = GMMData.m]{
+\lstinputlisting[title = GMMData.m]{
 	../../../Code/MATLAB/GMMData.m
 }
 
+\chapter{Responsible Softmax Code}\label{app:RScode}
+\section{Responsible Softmax Layer}\label{code:RSlayer}
+%alternate input range 39,50-52,55-
 
-\chapter{Responsible Softmax Code}
-\begin{verbatim}
-responsibilityLoss.m 
-responsibilityOperator.m
-tolCheckerEuc.m
-fixedRespLoss.m
-\end{verbatim}
+\lstinputlisting[title = responsibilityLoss.m, linerange = {1-81,122-192} ]{
+	../../../Code/MATLAB/NNlayers/responsibilityLoss.m 
+}
+
+\lstinputlisting[title = responsibilityOperator.m ]{
+	../../../Code/MATLAB/NNlayers/objects/responsibilityOperator.m 
+}
+
+\lstinputlisting[title = tolCheckerEuc.m ]{
+	../../../Code/MATLAB/NNlayers/objects/tolCheckerEuc.m 
+}
+
+\section{Fixed Responsible Softmax layer}\label{code:fixedRSLayer}
+\lstinputlisting[title = fixedRespLoss.m ]{
+	../../../Code/MATLAB/NNlayers/fixedRespLoss.m
+}
+
 
 \chapter{Code for Examples on GMM Data}
 \begin{verbatim}
