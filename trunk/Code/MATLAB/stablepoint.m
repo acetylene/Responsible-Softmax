@@ -1,7 +1,6 @@
-function [stable_dist, orbit] = stablepoint(f_dist, p_dist, err,...
-                                            method, orbitON)
-%STABLEPOINT  Implements iteration of simplex_map to convergence.
-% Different computation methods are available.
+function [ stable_dist , orbit] = stablepoint( f_dist, p_dist, err, method,orbitON)
+%STABLEPOINT Currently a cheap and easy way to determine if SIMPLEX_MAP
+%converges to a stable point
 %   F_DIST Is a K by N matrix representing the values of the K
 %      distributions over the N sample points. The parameters that
 %      determine the SIMPLEX_MAP
@@ -19,7 +18,7 @@ function [stable_dist, orbit] = stablepoint(f_dist, p_dist, err,...
 stop=2*10^(-err);
 p=p_dist;
 if orbitON
-    orbit=zeros(size(f_dist,1),10^(ceil(err/2)));
+    orbit=zeros(size(f_dist,1),10^(ceil(err/2)));%does sparse cause a speedup, or just a reduction in space used?
 end
 
 if strcmp(method,'newton')
@@ -27,9 +26,9 @@ if strcmp(method,'newton')
 else
     i=1;
     new=simplex_map(f_dist,p,method);
-    %Current implemetation uses absolute toleranve. Relative tolerance may
-    %be considered at a future date.
-    while (sum(abs(p-new))> stop)
+    while (sum(abs(p-new))> stop)%do something a bit different here?
+        %Consider adding a break if it is taking too long to converge!
+        %p=simplex_map(f_dist,new);
         if orbitON
             orbit(:,i)=p;
         end
@@ -37,6 +36,7 @@ else
         p=new;
         new=simplex_map(f_dist,p,method);
     end
+    %am I losing info from how I exit the while loop?
     stable_dist=new;
 end
 default = [p_dist,stable_dist];

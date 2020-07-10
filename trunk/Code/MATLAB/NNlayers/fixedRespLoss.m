@@ -2,7 +2,7 @@ classdef fixedRespLoss < nnet.layer.ClassificationLayer
     
     properties
         % (Optional) Layer properties
-        pi_0;
+        pi_0;%try a hard coded pihat! This would mean not changing pihat!
         K;
         err;
     end
