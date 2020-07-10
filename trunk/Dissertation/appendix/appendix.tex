@@ -3,107 +3,50 @@
 \chapter{Dynamic Responsibility Code}\label{app:DRcode}
 \section{Implementation of Responsibility Map}\label{code:map}
 Below gives an implementation of the responsibility map from equation \eqref{map} in MATLAB \cite{MATLAB:2020a}. All code in the appendices is written for MATLAB, more information may be found at the personal website \url{https://www.math.arizona.edu/~rcoatney}.
-\begin{verbatim}
-simplex_map.m
 
-function [ new_p ] = simplex_map(  f_dist, old_p, method )
-%SIMPLEX_MAP Take in the K by N paramaters f_dist and K by 1 input old_p to create new_p.
-% new_p will be a K by 1 vector.
-%
-% The purpose of this map is to apply a nonlinear function defined by the
-% parameters F_DIST, and apply it to the inpust OLD_P.  This function is
-% useful in the study of K-means clustering.
-%  F_DIST is an N by K matrix of values taken from K probability
-%   distributions on N samples.  The only requirement on F_DIST is that the
-%   entries are positive.
-%  OLD_P is a 1 by K vector such that the sum of the entries is equal to 1.
-%  NEW_P is a 1 by K vector such that the sum of the entries is equal to 1.
+\lstinputlisting[language = matlab, frame = single, 
+			     numbers = left, title = simplex\_map.m,
+			     lastline = 32]{
+			     	../Code/MATLAB/simplex_map.m
+		     	}
 
-
-[K, N]=size(f_dist);
-assert(length(old_p)==K);
-
-if strcmp(method,'ratio')
-prods=bsxfun(@times,f_dist,old_p);
-sums=sum(prods,1);
-%assert(length(sums)==N);
-
-ratios=bsxfun(@rdivide,prods,sums);
-new_p=sum(ratios, 2)/N;
-elseif strcmp(method,'diff')
-
-%Watch out for underflow!
-denoms=1/N*(1./(f_dist'*old_p));
-
-dl=f_dist*denoms;%good here!2/22
-new_p=dl.*old_p;
-else
-sprintf('You must enter a method of diff or ratio');
-
-end
-
-\end{verbatim}
-
+\newpage
 \section{Implementation of Algorithm \ref{ratioAlg}}\label{code:ratioAlg}
-\begin{verbatim}
-stablepoint.m
+Algorithm \ref{ratioAlg} iterates the responsibility map until convergence.  Here the stopping point is determined by a predetermined absolute tolerance.  This may need to change for large $K$.
+\lstinputlisting[language = matlab, frame = single, 
+				 numbers = left, title = stablepoint.m,
+				 lastline = 51]{
+				 	../Code/MATLAB/stablepoint.m
+			 	}
 
-function [ stable_dist , orbit] = stablepoint( f_dist, p_dist, err, method,orbitON)
-%STABLEPOINT Currently a cheap and easy way to determine if SIMPLEX_MAP
-%converges to a stable point
-%   F_DIST Is a K by N matrix representing the values of the K
-%      distributions over the N sample points. The parameters that
-%      determine the SIMPLEX_MAP
-%   P_DIST Is a K by 1 vector representing initial Mixing probabilities
-%   ERR is an error term deciding when to stop.  Should not be bigger than
-%   about 12 or 14. This is because log10(eps())-4 = 12 for doubles. For
-%   single floating points, this should not be bigger than 4 or 6.
-%
-%   STABLE_DIST is the stable point to which the iteration of SIMPLEX_MAP
-%   converges with the given starting parameters.
-%   ORBIT is the orbit of P_DIST under iterations of SIMPLEX_MAP
+\newpage
+\section{Implementation of Algorithm \ref{newtAlg}}\label{code:newtAlg}
+The code here is only ever called through the file \verb|stablepoint.m| with `newton' as the method option. 
+\lstinputlisting[language = matlab, frame = single, 
+				numbers = left, title = StablepointNewton.m]{
+					../Code/MATLAB/stablepointNewton.m
+				}
 
-stop=2*10^(-err);
-p=p_dist;
-if orbitON
-orbit=zeros(size(f_dist,1),10^(ceil(err/2)));
-end
+The function \verb|lDifferentials| called by \verb|stablepointNewton| calculates the gradient and Hessian of \( \elpi{F} \) with respect to \( \bm\pi \) at the point \verb|newp|.
+\lstinputlisting[language = matlab, frame = single, 
+				 numbers = left, title = lDifferentials.m]{
+				 	../Code/MATLAB/lDifferentials.m
+			 	}
+			
+%\newpage
+\section{Code for Experiments on Convergence}
+The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) calculated from several samples of Gaussian mixture data. It uses the helper function \verb|GMMData.m| to generate Gaussian mixture data via PRNG.
 
-if strcmp(method,'newton')
-[stable_dist,orbit]=stablepointNewton(f_dist,p,err);
-else
-i=1;
-new=simplex_map(f_dist,p,method);
-while (sum(abs(p-new))> stop)%do something a bit different here?
-%Consider adding a break if it is taking too long to converge!
-%p=simplex_map(f_dist,new);
-if orbitON
-orbit(:,i)=p;
-end
-i=i+1;
-p=new;
-new=simplex_map(f_dist,p,method);
-end
+\lstinputlisting[language = matlab, frame = single, 
+numbers = left, title = error\_samples.m]{
+	../Code/MATLAB/error_samples.m
+}
 
-stable_dist=new;
-end
-default = [p_dist,stable_dist];
-if orbitON
-orbit=orbit(:,any(orbit,1));
-if isempty(orbit)
-orbit=default;
-end
-else
-orbit=default;
-end
-end
-\end{verbatim}
+\lstinputlisting[language = matlab, frame = single, 
+numbers = left, title = GMMData.m]{
+	../Code/MATLAB/GMMData.m
+}
 
-\begin{verbatim}
-StablepointNewton.m
-GMMData.m
-error_samples.m
-\end{verbatim}
 
 \chapter{Responsible Softmax Code}
 \begin{verbatim}
@@ -111,11 +54,13 @@ RespLoss.m
 FixedRespLoss.m
 and dependencies
 \end{verbatim}
+
 \chapter{Code for Examples on GMM Data}
 \begin{verbatim}
 GMMoverlap.m 
 Other data sets?
 \end{verbatim}
+
 \chapter{Code for Example on MNIST Data}
 \begin{verbatim}
 MNISTBenford.m

@@ -15,6 +15,19 @@
 \tikzset{every state/.style={minimum size=0pt}}
 
 \usepackage[toc]{appendix}
+\usepackage{fancyvrb}
+\usepackage{listings}
+
+%Settings for the listings package. Setup is currently for MATLAB defaults
+\lstset{% general command to set parameter(s)
+	basicstyle=\tiny, % print whole listing small
+	keywordstyle=\color{blue}\bfseries,
+	% underlined bold black keywords
+	identifierstyle=, % nothing happens
+	commentstyle=\color{green}, % white comments
+	stringstyle=\color{purple}\ttfamily, % typewriter type for strings
+	showstringspaces=false}
+
 \usepackage{placeins}
 \usepackage{float}
 \usepackage{hyperref}
