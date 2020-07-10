@@ -1,7 +1,8 @@
 function [acc,confMat,pcts] = ...
     test_nets(nets, test_data, test_targets)
-%UNTITLED5 Summary of this function goes here
-%   Detailed explanation goes here
+%TEST_NETS uses TEST_DATA to evaluate the performance of neural networks in
+%   NETS via confusion matrices.  TEST_TARGETS are the target
+%   classifications of TEST_DATA.
 S = length(nets);
 targets = full(ind2vec(test_targets'));
 

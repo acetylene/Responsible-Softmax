@@ -1,7 +1,8 @@
 function [train_set,validate_set] = ...
     unbalanced_MNIST(labels,data,subsamplesize,pct,ratios,W,H)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%UNBALANCED_MNIST Creates training and validation sets from the MNIST data
+%  set. The sets produced have samples reweighted according to the convex
+%  mixture given in RATIOS.
 numSamples = length(labels);
 weights = zeros(numSamples,1);
 for i=1:numSamples
