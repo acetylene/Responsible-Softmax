@@ -7,7 +7,7 @@ Below gives an implementation of the responsibility map from equation \eqref{map
 \lstinputlisting[language = matlab, frame = single, 
 			     numbers = left, title = simplex\_map.m,
 			     lastline = 32]{
-			     	../Code/MATLAB/simplex_map.m
+			     	../../../Code/MATLAB/simplex_map.m
 		     	}
 
 \newpage
@@ -16,7 +16,7 @@ Algorithm \ref{ratioAlg} iterates the responsibility map until convergence.  Her
 \lstinputlisting[language = matlab, frame = single, 
 				 numbers = left, title = stablepoint.m,
 				 lastline = 51]{
-				 	../Code/MATLAB/stablepoint.m
+				 	../../../Code/MATLAB/stablepoint.m
 			 	}
 
 \newpage
@@ -24,13 +24,13 @@ Algorithm \ref{ratioAlg} iterates the responsibility map until convergence.  Her
 The code here is only ever called through the file \verb|stablepoint.m| with `newton' as the method option. 
 \lstinputlisting[language = matlab, frame = single, 
 				numbers = left, title = StablepointNewton.m]{
-					../Code/MATLAB/stablepointNewton.m
+					../../../Code/MATLAB/stablepointNewton.m
 				}
 
 The function \verb|lDifferentials| called by \verb|stablepointNewton| calculates the gradient and Hessian of \( \elpi{F} \) with respect to \( \bm\pi \) at the point \verb|newp|.
 \lstinputlisting[language = matlab, frame = single, 
 				 numbers = left, title = lDifferentials.m]{
-				 	../Code/MATLAB/lDifferentials.m
+				 	../../../Code/MATLAB/lDifferentials.m
 			 	}
 			
 %\newpage
@@ -39,20 +39,21 @@ The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) cal
 
 \lstinputlisting[language = matlab, frame = single, 
 numbers = left, title = error\_samples.m]{
-	../Code/MATLAB/error_samples.m
+	../../../Code/MATLAB/error_samples.m
 }
 
 \lstinputlisting[language = matlab, frame = single, 
 numbers = left, title = GMMData.m]{
-	../Code/MATLAB/GMMData.m
+	../../../Code/MATLAB/GMMData.m
 }
 
 
 \chapter{Responsible Softmax Code}
 \begin{verbatim}
-RespLoss.m 
-FixedRespLoss.m
-and dependencies
+responsibilityLoss.m 
+responsibilityOperator.m
+tolCheckerEuc.m
+fixedRespLoss.m
 \end{verbatim}
 
 \chapter{Code for Examples on GMM Data}
