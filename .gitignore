@@ -1,6 +1,7 @@
 # Large MATLAB files to ignore
 *.fig
 *.mat
+*.asv
 # other large files to ignore
 *.png
 *.eps
@@ -35,3 +36,4 @@ trunk/Dissertation/formatting/
 #Exceptions
 !trunk/Dissertation/Dissertation_RDC.pdf
 !trunk/DefenseSlides/Slides/defenseSlides.pdf
+#!trunk/Code/MATLAB/MNIST/MNISTdata.mat #needs GitLFS!
