@@ -11,8 +11,7 @@ R:S_K\rightarrow S_K: R(\pi_1,\pi_2,\ldots,\pi_K)=(r_1(\bm\pi),r_2(\bm\pi),\ldot
 \end{equation}
 An estimate of the parameters \( \bm\pi^{\ast} \) may be obtained by calculating the fixed points of the discrete semi-dynamical system given by iteration of \( R \). This paper refers to such an approach as \textit{dynamic responsibility}. While \( R \) is differentiable on \( S_K \) this dissertation does not explore whether \( R \) is 1-1 or onto. The map $R(\bm\pi)$ is homogeneous of degree zero as will be discussed in further detail later.
 
-Note that this approach relies on the parameters $f_k(x_n)$, which represent the entries of a $K\times N$ matrix $F$. The matrix $F$ acts as a set of parameters for the map $R(\bm\pi)$. Writing the map as $R_F(\bm\pi)$ will emphasize this relationship when necessary. An implementation of this map is in the file \url{simplex_map.m}
-\Ryan{put reference to appendix instead!}
+Note that this approach relies on the parameters $f_k(x_n)$, which represent the entries of a $K\times N$ matrix $F$. The matrix $F$ acts as a set of parameters for the map $R(\bm\pi)$. Writing the map as $R_F(\bm\pi)$ will emphasize this relationship when necessary. An implementation of this map can be found in appendix \ref{app:DRcode}, section \ref{code:map}.
 
 Dynamic responsibility (DR) describes an alternative algorithm (see algorithm \ref{ratioAlg}) to the Lagrange multipliers method shown above.  It is based on the idea of iterating the map $R(\bm\pi)$. This is likely to be a good idea because $R(\bm\pi)$ is partially derived from Bayes' rule, which means each iteration could be thought of as updating the probabilities defined by $\bm\pi\in S_K$.  
 
@@ -39,4 +38,4 @@ Dynamic responsibility (DR) describes an alternative algorithm (see algorithm \r
 \caption{The main algorithm: Iteration of the\Rpi F map.}
 \end{table}
 
-While it is not known \textit{a priori} that algorithm \ref{ratioAlg} is correct, the main theorem of this chapter, theorem \ref{thm:convergence}, shows that dynamic responsibility converges to a unique solution under reasonable conditions.  Section \ref{respMLE} discusses the correct hypotheses under which the fixed point $\hat{\bm\pi}$ satisfying $R(\hat{\bm\pi})=\hat{\bm\pi}$ is a maximum likelihood estimator.  A version of this algorithm is implemented in appendix A. \Ryan{(CHANGE LATER, Add appendix)} file \url{..\\MATLAB\\stablepoint.m}.
+While it is not known \textit{a priori} that algorithm \ref{ratioAlg} is correct, the main theorem of this chapter, theorem \ref{thm:convergence}, shows that dynamic responsibility converges to a unique solution under reasonable conditions.  Section \ref{respMLE} discusses the correct hypotheses under which the fixed point $\hat{\bm\pi}$ satisfying $R(\hat{\bm\pi})=\hat{\bm\pi}$ is a maximum likelihood estimator.  A version of this algorithm is implemented in appendix \ref{app:DRcode}, section \ref{code:ratioAlg}.
