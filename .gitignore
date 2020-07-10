@@ -36,4 +36,4 @@ trunk/Dissertation/formatting/
 #Exceptions
 !trunk/Dissertation/Dissertation_RDC.pdf
 !trunk/DefenseSlides/Slides/defenseSlides.pdf
-#!trunk/Code/MATLAB/MNIST/MNISTdata.mat #needs GitLFS!
+!trunk/Code/MATLAB/MNIST/MNISTdata.mat #needs GitLFS!
