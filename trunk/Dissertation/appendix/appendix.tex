@@ -4,8 +4,7 @@
 \section{Implementation of Responsibility Map}\label{code:map}
 Below gives an implementation of the responsibility map from equation \eqref{map} in MATLAB \cite{MATLAB:2020a}. All code in the appendices is written for MATLAB, more information may be found at the personal website \url{https://www.math.arizona.edu/~rcoatney}.
 
-\lstinputlisting[language = matlab, frame = single, 
-			     numbers = left, title = simplex\_map.m,
+\lstinputlisting[title = simplex\_map.m,
 			     lastline = 32]{
 			     	../../../Code/MATLAB/simplex_map.m
 		     	}
@@ -13,8 +12,7 @@ Below gives an implementation of the responsibility map from equation \eqref{map
 \newpage
 \section{Implementation of Algorithm \ref{ratioAlg}}\label{code:ratioAlg}
 Algorithm \ref{ratioAlg} iterates the responsibility map until convergence.  Here the stopping point is determined by a predetermined absolute tolerance.  This may need to change for large $K$.
-\lstinputlisting[language = matlab, frame = single, 
-				 numbers = left, title = stablepoint.m,
+\lstinputlisting[title = stablepoint.m,
 				 lastline = 51]{
 				 	../../../Code/MATLAB/stablepoint.m
 			 	}
@@ -22,14 +20,12 @@ Algorithm \ref{ratioAlg} iterates the responsibility map until convergence.  Her
 \newpage
 \section{Implementation of Algorithm \ref{newtAlg}}\label{code:newtAlg}
 The code here is only ever called through the file \verb|stablepoint.m| with `newton' as the method option. 
-\lstinputlisting[language = matlab, frame = single, 
-				numbers = left, title = StablepointNewton.m]{
+\lstinputlisting[title = stablepointNewton.m]{
 					../../../Code/MATLAB/stablepointNewton.m
 				}
 
 The function \verb|lDifferentials| called by \verb|stablepointNewton| calculates the gradient and Hessian of \( \elpi{F} \) with respect to \( \bm\pi \) at the point \verb|newp|.
-\lstinputlisting[language = matlab, frame = single, 
-				 numbers = left, title = lDifferentials.m]{
+\lstinputlisting[title = lDifferentials.m]{
 				 	../../../Code/MATLAB/lDifferentials.m
 			 	}
 			
@@ -37,8 +33,7 @@ The function \verb|lDifferentials| called by \verb|stablepointNewton| calculates
 \section{Code for Experiments on Convergence}
 The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) calculated from several samples of Gaussian mixture data. It uses the helper function \verb|GMMData.m| to generate Gaussian mixture data via PRNG.
 
-\lstinputlisting[language = matlab, frame = single, 
-numbers = left, title = error\_samples.m]{
+\lstinputlisting[title = error\_samples.m]{
 	../../../Code/MATLAB/error_samples.m
 }
 

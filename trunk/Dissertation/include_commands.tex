@@ -10,23 +10,38 @@
 \usepackage{textcomp}
 \usepackage{physics}
 \usepackage{array}
-\usepackage{tikz}
+\usepackage{tikz,pgfplots}
 \usetikzlibrary{automata, positioning}
 \tikzset{every state/.style={minimum size=0pt}}
+%\usepgfplotslibrary{external} 
+%\tikzexternalize
 
 \usepackage[toc]{appendix}
 \usepackage{fancyvrb}
 \usepackage{listings}
 
 %Settings for the listings package. Setup is currently for MATLAB defaults
+\definecolor{dkGrey}{gray}{.2}
 \lstset{% general command to set parameter(s)
-	basicstyle=\tiny, % print whole listing small
-	keywordstyle=\color{blue}\bfseries,
-	% underlined bold black keywords
-	identifierstyle=, % nothing happens
-	commentstyle=\color{green}, % white comments
-	stringstyle=\color{purple}\ttfamily, % typewriter type for strings
-	showstringspaces=false}
+	basicstyle          = \scriptsize\singlespace\ttfamily, % print whole listing small
+	language			= matlab,
+	numbers             = left,
+	numberstyle         = \tiny,
+	stepnumber          = 1,
+	keywordstyle        =\color{blue}\bfseries,
+	identifierstyle     =\color{dkGrey}, 
+	commentstyle        =\color{green}, 
+	stringstyle         =\color{purple},
+	showspaces          = false,
+	showstringspaces    = false,
+	showtabs            = false,
+	frame               = single,
+	tabsize             = 2,
+%	captionpos          = b,
+	breaklines          = true,
+	breakatwhitespace   = false,
+%	fancyvrb            = true,
+	}
 
 \usepackage{placeins}
 \usepackage{float}

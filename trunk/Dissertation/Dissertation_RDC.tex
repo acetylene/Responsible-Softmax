@@ -49,8 +49,11 @@
 \tikzset{>=latex'}
 %\usepackage{subfiles}
 
+%\makeatletter
+%\providecommand*{\input@path}{}
+%\g@addto@macro\input@path{{../}{../../}}% append
+%\makeatother
 
-\def\biblio{\bibliographystyle{amsalpha}\bibliography{../../dissertationBib}}
 \begin{document}
 
 \def\biblio{}
