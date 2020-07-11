@@ -5,7 +5,7 @@ Using the computation graph for $Y$ from figure \ref{fig:layerDependencies} allo
 
 At each step, lemma \ref{gradChain} is used implicity, where each calculation is given by passing back gradient information received from previous calculations steps, as is typical with backpropagation. Also, both \( \bm\pi_C \) and \( F \) are used in multiple computation steps.  The correct thing to do in this case is add the gradients from each computation to get the final gradients \( \pdv{L}{\bm\pi_C} \) and \( \pdv{L}{F} \). In the cases where the gradient calculate is only a summand of the total gradient it will be noted with an additional subscript, \textit{e.g.} \( \left(\pdv{L}{F}\right)_{\!\mathpzc{N}} =  D_F^{\ast}\mathpzc{N}[\pdv{L}{\mathpzc N}]\).
 
-\Ryan{?`Maybe summarize the calculations in a table, and then put the actual computations in an appendix? It might even be worthwhile to draw this as a layer diagram, because then it will be familiar.}
+%\Ryan{?`Maybe summarize the calculations in a table, and then put the actual computations in an appendix? It might even be worthwhile to draw this as a layer diagram, because then it will be familiar.} % this is a better idea for a paper!
 
 The following two lemmas facilitate the first calculation.
 \begin{lemm}[Adjoint of Hadamard product]\label{lemm:hadProdAdj}

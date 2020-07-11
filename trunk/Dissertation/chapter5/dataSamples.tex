@@ -4,7 +4,7 @@ As has been mentioned two types of data sets, synthetic and natural, are used fo
 
 As the \RS layer drew inspiration from the soft \( K \)-means and EM algorithms \cite{MacKay2002}, a natural choice for synthetic data is pseudorandom data drawn from a Gaussian mixture model. The first data sets used in this vein were one dimensional mixtures and informed the selection of later mixture models. The final data used was a 2 dimensional Gaussian mixture with \( K=5 \) clusters and anisotropic covariance matrices which varied among clusters.  
 
-In all cases, the means of the clusters were separated widely, though two of the clusters were chosen to be minority classes.  Since a \RS layer is designed to find a MLE for class weights, it is uniquely suited to direct training with imbalanced data. For this reason many tests were performed with varying mixture components. A sample from the final GMM on which the majority of experiments were run is shown in figure \ref{fig:sampleGMM_K5}.  Details to reproduce this data set are included in appendix \Ryan{make appendix!}
+In all cases, the means of the clusters were separated widely, though two of the clusters were chosen to be minority classes.  Since a \RS layer is designed to find a MLE for class weights, it is uniquely suited to direct training with imbalanced data. For this reason many tests were performed with varying mixture components. A sample from the final GMM on which the majority of experiments were run is shown in figure \ref{fig:sampleGMM_K5}.  Details and code to reproduce this data set are included in appendix \ref{app:GMMexample}.
 
 \begin{figure}[h]
 	\centering

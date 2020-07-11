@@ -2,7 +2,7 @@
 
 Theorem \ref{unique} proves that looking for the fixed points of \Rpi F when $F$ has full rank is equivalent to finding a maximum likelihood estimator. This means that maximization algorithms work in such cases to find the fixed point of \Rpi{F} on the interior of $S_K$.  More importantly, with a little bit of work results from \citep{WaldMLE, pollard1981, pollard1982} adapt to give many of the same properties for this algorithm as we would for the MLE.  In particular, these things prove consistency of the fixed point $\hat{\bm\pi}$ as an estimator for the point $\bm\pi^\ast=\{\pi_k^\ast\}_{k=1}^{K}$ which describes the mixing proportions of a mixture model.
 
-Algorithm \ref{newtAlg} uses Newton's method to maximize $\ell(\bm\pi)$ on $S_K$. This algorithm requires using Hessian of $\ell(\bm\pi)$, but this is calculated in equation \ref{hessDef} of theorem \ref{hess}.
+Algorithm \ref{newtAlg} uses Newton's method to maximize $\ell(\bm\pi)$ on $S_K$. This algorithm requires using Hessian of $\ell(\bm\pi)$, but this is calculated in the proof of lemma \ref{hess}, equation \eqref{hessDef}.
 
 \begin{table}[h]
 \begin{algorithm}[H]
@@ -24,7 +24,7 @@ Algorithm \ref{newtAlg} uses Newton's method to maximize $\ell(\bm\pi)$ on $S_K$
 \end{algorithm}
 \caption{A Newton Method version of the Main Algorithm}
 \end{table}
-The column vector $\mathbbm{1}_K$ as used in this algorithm is defined in the proof to theorem \ref{unique}.  A version of this algorithm is found in the \Ryan{(CHANGE LATER, add appendix)}file \url{..\\MATLAB\\stablepointNewton.m}.
+The column vector $\mathbbm{1}_K$ as used in this algorithm is defined in the proof to theorem \ref{unique}.  A version of this algorithm is found in appendix \ref{code:newtAlg}, file \verb|stablepointNewton.m|.
 
 Using the block matrix in this algorithm ensures that $\bm\pi+\Delta\bm\pi$ stays in $S_K$.  This is equivalent to the geometric idea that $\Delta\bm\pi$ be restricted to the tangent plane of $S_K$.  In light of theorem \ref{unique}, it is also worth noting that this algorithm gives $\Delta\bm\pi=0$ precisely when $\nabla\ell(\bm\pi)=\mathbbm{1}_K$.
 
@@ -55,7 +55,7 @@ I now turn to examining the behavior of $\hat{\bm\pi}$ as an estimator of $\bm\p
 \label{exprConsist}
 \end{table}
 
-Table \ref{exprConsist} summarizes some numerical experiments done with the scripts \Ryan{(CHANGE LATER, add appendix)}\url{..\\MATLAB\\GMMData.m} and \url{..\\MATLAB\\error_samples.m}. The version of  algorithm \ref{ratioAlg} in the file \url{..\\MATLAB\\stablepoint.m} was used. For each $N$, 10000 trials were generated and the difference 
+Table \ref{exprConsist} summarizes some numerical experiments done with the scripts  \verb|GMMData.m| and \verb|error_samples.m| in appendix \ref{code:ExpConv}. The version of  algorithm \ref{ratioAlg} in the file \verb|stablepoint.m| was used. For each $N$, 10000 trials were generated and the difference 
 \[\Delta\bm\pi=\bm\pi^\ast-\hat{\bm\pi}\]
 was recorded for each trial.  
 

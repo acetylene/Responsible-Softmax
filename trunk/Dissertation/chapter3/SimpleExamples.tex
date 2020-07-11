@@ -11,7 +11,7 @@ G=
 \end{equation} 
 then a quick calculation shows that \( R_F(\pi_1,\pi_2) = R_G(\pi_1,\pi_2)\).  In other words, \( R_F \) is homogeneous of degree zero in the columns of \( F \).  However this is not the case for \( L_F \), for it is the case that \( L_G(\pi_1,\pi_2) = \left(\prod_{i=1}^{N}\gl_i\right)L_F(\pi_1,\pi_2) \), \textit{i.e.} \( L_F \) is homogeneous of degree 1 in each column of \( F \).  These facts also imply that \( L_{\gl F} = \gl^{N}L_F \) and \( R_{\gl F} = R_F \).
 
-I will use the observation of homogeneity to generalize some of my calculations.  For example, calculations might assume that \( a_i + b_i = 1\;\forall i=1\ldots N \) by dividing each column of an original matrix by it's sum. This ability will be important in chapter \ref{respLayer}. Many of the following examples use projective coordinates for the columns, \textit{e.g.} \( a_i = 1\;\forall i=1\ldots N\).  A more practical way to do this with a matrix of real data would be to divide each column by one of its entries.  This is what the given examples do; exactly one entry in each column will have the value 1.
+I will use the observation of homogeneity to generalize some of my calculations.  For example, calculations might assume that \( a_i + b_i = 1\;\forall i=1\ldots N \) by dividing each column of an original matrix by its sum. This ability will be important in chapter \ref{respLayer}. Many of the following examples use projective coordinates for the columns, \textit{e.g.} \( a_i = 1\;\forall i=1\ldots N\).  A more practical way to do this with a matrix of real data would be to divide each column by any of its entries, for example dividing each column by the maximum entry.  This is what the given examples do; exactly one entry in each column will have the value 1.
 
 \subsection{An Example for a simple family of matrices \( F_\ga \)}
 
@@ -118,11 +118,11 @@ We may generate samples \( \{X_1,X_2,\ldots,X_N\} \) of the random variable \(\b
 		
 		\begin{figure}
 			\centering
-			\subcaptionbox{Here \( N=50 \). Ratios of the samples of the clusters are in the title. \label{fig:gmmExampleK2sub1}}[.4\linewidth]{
+			\subcaptionbox{Here \( N=50 \). Ratios of the samples of the clusters are \( \pi_1^\ast =0.8 \) and \( \pi_2^\ast =0.2 \). \label{fig:gmmExampleK2sub1}}[.4\linewidth]{
 				\input{chapter3/K_2_N_50_1paramGMM}
 			}
 			%	\qquad
-			\subcaptionbox{Here \( N=500 \). Ratios of the samples of the clusters are in the title. \label{fig:gmmExampleK2sub2}}[.4\linewidth]{
+			\subcaptionbox{Here \( N=500 \). Ratios of the samples of the clusters are \( \pi_1^\ast =0.8 \) and \( \pi_2^\ast =0.2 \). \label{fig:gmmExampleK2sub2}}[.4\linewidth]{
 				\input{chapter3/K_2_N_500_1paramGMM}
 			}
 			\caption[Fixed Point Estimates of GMM Mixing Probabilities]{These graphs display coordinates of the fixed point \( \hat{\bm \pi}_\ga \) for varying \( F_\ga \). The rows of \( F_\ga \) are given by evaluating equations \ref{eg:GMMeqnf1} and \ref{eg:GMMeqnf2} on a sample \( \bm X \) of varying sizes.  The parameter \( \ga \) represents a guess for \( \mu_2 \).  The graphs shown here are for sample sizes \( N = 50 \) and \( N=500 \).} \label{fig:gmmExampleK2}

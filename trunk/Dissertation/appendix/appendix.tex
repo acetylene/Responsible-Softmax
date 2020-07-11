@@ -30,7 +30,7 @@ The function \verb|lDifferentials| called by \verb|stablepointNewton| calculates
 			 	}
 			
 %\newpage
-\section{Code for Experiments on Convergence}
+\section{Code for Experiments on Convergence}\label{code:ExpConv}
 The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) calculated from several samples of Gaussian mixture data. It uses the helper function \verb|GMMData.m| to generate Gaussian mixture data via PRNG.
 
 \lstinputlisting[title = error\_samples.m]{
@@ -58,7 +58,7 @@ The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) cal
 	../../../Code/MATLAB/NNlayers/objects/tolCheckerEuc.m 
 }
 
-\section{Fixed Responsible Softmax layer}\label{code:fixedRSLayer}
+\section{Fixed Responsibility Softmax layer}\label{code:fixedRSLayer}
 \lstinputlisting[title = fixedRespLoss.m ]{
 	../../../Code/MATLAB/NNlayers/fixedRespLoss.m
 }

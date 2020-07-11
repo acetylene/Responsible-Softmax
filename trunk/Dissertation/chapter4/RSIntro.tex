@@ -1,7 +1,7 @@
 Given the method from chapter \ref{Algorithm} for determining an approximation to \( \bm\pi \) given \( f_k(\bm x,\bm\gt_k) \), this chapter focuses on a method for determination of the distributions \( f_k \). A major drawback of the fixed point iteration method is that it requires the ability to evaluate $f_k(\bm x^{(n)},\bm\gt_k)$ for all $n,k$.  If these functions cannot be evaluated, it becomes a barrier to creating a reliable model.  Algorithms such as the EM algorithm or the closely related variational auto-encoder \cite{kingma2013auto,van2017neural} solve this by making the assumption that the functions $f_k$ have a specific form, usually Gaussian. This has the drawback that the model can be inflexible. Data that is not linearly separable such as the classic bulls-eye, or paired moons data sets, require difficult adjustments to the mentioned algorithms.
 
 On the other hand, there are techniques such as bayesian nonparametric models and
-heirarchical mixtures of experts that are more flexible in their restrictions.  These
+hierarchical mixtures of experts that are more flexible in their restrictions.  These
 models offer greater power, but at the expense of greater computational complexity.  In
 both cases overfitting becomes a worry, in the sense that there are not always guarantees that 
 the variance of the given model will be computationally bounded away from zero.
