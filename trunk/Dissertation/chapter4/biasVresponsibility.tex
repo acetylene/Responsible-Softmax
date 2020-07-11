@@ -43,13 +43,13 @@ which leads to the definition
 \begin{equation}\label{Ydef}
 y_k^{(n)}=\dfrac{\pi_k f_k(x^{(n)})}{\sum_{i=1}^{K}\pi_i f_i(x^{(n)})}.
 \end{equation}
+Note here that this definition does not yet include a \DR approximation of \( \bm\pi^{\ast} \). Rather this is showing that for mixture models, Bayesian inference can provide guidance on network output.  Also, if \( \pi_i = \frac 1K\) for all $i$, then equation \eqref{Ydef} is equivalent to the standard softmax output in common use.
 
 %When we are trying to find the $\bm\pi$, then this doesn't hold, as now they would be
 %continuous parameters. But if $\bm\pi$ is fixed, then we may do as above! Alternate!
 \subsection{Choice of Loss Function}
 A good goal  in a situation like this is to minimize the difference between $Y$ 
-and $T$. Since both $Y$ and $T$ are distributions, multiple candidates for loss functions work well
-have $Y$ approximate $T$. The method used here is that of cross entropy loss, though other common ones are mean squared error \cite{Bishop1995} and connectionist temporal classification loss \cite{Graves06ctc}.  
+and $T$. Since both $Y$ and $T$ are distributions, multiple candidates for loss functions work well to have $Y$ approximate $T$. The method used here is that of cross entropy loss, though other common ones are mean squared error \cite{Bishop1995} and connectionist temporal classification loss \cite{Graves06ctc}.  
 
 Conflating the ideas of a probability distribution and its underlying measure, define cross-entropy of two probability distributions $p(x)$ and $q(x)$ on the same underlying probability space 
 $\mathcal{X}$ by the quantity 
@@ -85,7 +85,7 @@ comes from Neal and Hinton \cite{NealHintonEM1999}.  It is the case, as Neal and
 of cross entropy acts as a Lyapunov function for the EM algorithm. In other words, each
 step, either expectation or maximization, of the EM algorithm reduces the cross entropy 
 between a target and predicted distribution.  They further use this fact to show that any 
-improvement in either step reduces the overall effectiveness of the algorithm. This idea returns in section \ref{sect:LayerDesc}.
+improvement in either step reduces the loss. This idea returns in section \ref{sect:LayerDesc}.
 
 \subsection{Method for determining \( F \)}
 As theorem \ref{thm:convergence} shows, if the matrix \( F \) given by \((F)_k^n=f_k(\bm x^{(n)},\bm\gt_k)\) has linearly independent rows, iteration of \( R_F(\bm\pi) \) converges to a unique fixed point \( \hat{\bm \pi} \) on the interior of \( S_K \). Note here that for theorem \ref{thm:convergence} to work, the functions \( f_k(\bm x^{(n)},\bm\gt_k) \) must be positive. As the functions seek to approximate pdfs, this should not pose a problem.  

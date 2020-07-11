@@ -16,16 +16,19 @@ All the charts and tables in this section are for MNIST nets trained on data res
 	\label{fig:benfordconfusionstikz}
 \end{figure}
 
-\Ryan{formatting!!!}
+%\Ryan{formatting!!!}
 \begin{table}[ht]
 	\renewcommand{\arraystretch}{1.4}
 	\centering
-	\begin{tabular}{l|l|l|l|l|}
-		\cline{2-5}
-		& \textbf{MNIST Net 1} & \textbf{MNIST Net 2} & \textbf{MNIST Net 3} & \textbf{MNIST Net 4} \\ \hline
-		\multicolumn{1}{|l|}{\textbf{Sum of off diagonals}} & 4.043 ± .612         & 3.783 ± .600         & 3.788 ± .579         & 3.546 ± .600         \\ \hline
-	\end{tabular}
-	\caption[Accuracy of MNIST training with imbalanced data]{Relative percent sums of off diagonal entries of the confusion matrices for MNIST. This is equivalent to 1 minus accuracy of the net. Reported intervals are standard error 95\% intervals}
+\begin{tabular}{l|l|}
+	\cline{2-2}
+	& \textbf{Sum of off diagonals} \\ \hline
+	\multicolumn{1}{|l|}{\textbf{MNIST Net 1}} & 4.043 ± .612                  \\ \hline
+	\multicolumn{1}{|l|}{\textbf{MNIST Net 2}} & 3.783 ± .600                  \\ \hline
+	\multicolumn{1}{|l|}{\textbf{MNIST Net 3}} & 3.788 ± .579                  \\ \hline
+	\multicolumn{1}{|l|}{\textbf{MNIST Net 4}} & 3.546 ± .600                  \\ \hline
+\end{tabular}
+	\caption[Accuracy of MNIST training with imbalanced data]{Relative percent sums of off diagonal entries of the confusion matrices for MNIST. This is equivalent to 100 minus accuracy of the net as a percentage. Reported intervals are standard error 95\% intervals}
 \end{table}
 
 \begin{table}[ht]

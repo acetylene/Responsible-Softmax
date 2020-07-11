@@ -24,7 +24,7 @@ The method of breaking a single computation into several computations can become
 
 Automatic differentiation pertains to the current discussion not only because of its relation to figure \ref{fig:layerDependencies}, but also as an implementation discussion. Many software platforms include AD as a part of their machine learning and neural net implementations. As of release 2019b, this is also true of MATLAB software.  An implementation of the \RS layer in MATLAB code  that uses AD can be found in appendix \ref{app:RScode}.  While this makes coding easier, it is possible for automatic differentiation to be slower than well implemented vectorized code to compute gradients.  For this, in addition to academic reasons, it is a good idea to calculate \( \pdv{Y}{F} \) directly.
 
-Table \ref{table:vertexDesc} summarizes the intermediate vertices from the computation graph \ref{fig:layerDependencies}.  The gradient of most intermediate functions will be calculated in section \ref{subsect:dLdYcalc}, but first section \ref{sect:dRdPiANDdRdF} will cover derivatives of \( R_F^C \).
+Table \ref{table:vertexDesc} summarizes the intermediate vertices from the computation graph in figure \ref{fig:layerDependencies}.  The gradient of most intermediate functions will be calculated in section \ref{subsect:dLdYcalc}, but first section \ref{sect:dRdPiANDdRdF} will cover derivatives of \( R_F^C \).
 
 \begin{table}[h]
 	\centering

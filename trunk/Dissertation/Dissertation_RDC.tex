@@ -11,8 +11,12 @@
 \director{Marek Rychlik}
 \department{Department of Mathematics}
 \date{2020}
+\copyrightholder{Ryan Coatney 2020}
 \def\layersep{2.5cm}
 
+\input{include_commands}
+
+%Commands to properly prepare the initial pages
 \makeatletter
 \newif\iffinal
 \@ifclasswith{ua-thesis}{final}{\finaltrue}{\finalfalse}
@@ -25,7 +29,14 @@
 	\drafttrue
 \fi
 
-
+\iffinal
+	\makeatletter
+		\renewcommand{\@SetApprovalForm}{
+			\includepdf{approvalPage}
+		 	\newpage
+	 	}
+ 	\makeatother
+\fi
 
 
 \ifdraft
@@ -44,7 +55,7 @@
 \linespread{1.5} %1.5 or 1.6 is normal, but using this causes funny spacing near theorems and proofs.
 \fi 
 
-\input{include_commands}
+
 \usetikzlibrary{cd,shapes,arrows}
 \tikzset{>=latex'}
 %\usepackage{subfiles}
@@ -55,13 +66,7 @@
 %\makeatother
 
 \begin{document}
-
-\def\biblio{}
-
-
-%\iffinal
-  \input{frontMatter}
-%\fi
+\input{frontMatter}
 
 \begin{abstract}
 	\input{abstract}
