@@ -28,12 +28,13 @@ To empirically estimate the convergence rate of dynamic responsibility, perform 
 	\end{enumerate}
 \end{experiment}
 
-Experiment \ref{exper:conv} was performed several times in MATLAB with \( K=5 \) and \( N \) sampled among the integers in \( [10^3,5\cdot10^5] \).  Results showed that \( \log(a_n) \) is linear in \( n \), with slope close to \( -\gs_F^{-1} \), where \( \gs_F = \max \op{svd}(F) \) is the largest singular value \( F \). This holds for each randomly generated \( F \).  Figure \ref{fig:convLines} shows how both \( a_n \) and \( \ge_n \) behave for different \( F. \)  Both plots show sections of linear behavior for \( \log(a_n) \) and \( \log(\ge_n) \).
+Experiment \ref{exper:conv} was performed several times in MATLAB with \( K=5 \) and \( N \) sampled among the integers in \( [10^3,5\cdot10^5] \).  Results showed that \( \log(a_n) \) is linear in \( n \), with slope close to \( -\gs_F^{-1} \), where \( \gs_F = \max \op{svd}(F) \) is the largest singular value \( F \). This holds for each randomly generated \( F \).  Figure \ref{fig:convLines} shows how both \( a_n \) and \( \ge_n \) behave for different \( F. \)  Both plots show sections of linear behavior for \( \log(a_n) \) and \( \log(\ge_n) \). Code for these runs can be found in appendix \ref{code:ExpConv}, in the file \verb|convRates.m|.
 \begin{figure}[h]
 	\centering
-	\includegraphics{chapter5/svdslopediffVsamplesize}
+%	\includegraphics{chapter5/svdslopediffVsamplesize}
+	\input{chapter5/svdSlopeDistvSampleSize}
 	
-	\caption[Plot of differences \( \gs_F^{-1}-|b_F| \) for various \( F \) ]{Linear regression was performed on the curves in figure \ref{fig:convLines} to get equations of the form \( \log(a_n) = b_{F}n +c_{F} \) for various \( F \).  Then the max singular value \( \gs_F \) for the same \( F \) was computed.  The scatter plot above shows the residues \( \gs_F^{-1}-|b_F| \) plotted against \( N \), the number of columns of \( F \).
+	\caption[Plot of distances \( d(\gs_F^{-1},|b_F|) \) for various \( F \) ]{Linear regression was performed on the curves in figure \ref{fig:convLines} to get equations of the form \( \log(a_n) = b_{F}n +c_{F} \) for various \( F \).  Then the max singular value \( \gs_F \) for the same \( F \) was computed.  The scatter plot above shows the distances \( d(\gs_F^{-1},|b_F|) \) plotted against \( N \), the number of columns of \( F \) for two different distances.
 	
 %	The $x$-axis reprents the sample size \( N_n \) of the $n$-th run, and the $y$-axis the difference between the slopes from figure \ref{fig:convLines}a. The red and blue 
 	 }\label{fig:residuesVsamplesize}

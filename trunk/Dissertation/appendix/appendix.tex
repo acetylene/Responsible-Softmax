@@ -31,7 +31,7 @@ The function \verb|lDifferentials| called by \verb|stablepointNewton| calculates
 			
 %\newpage
 \section{Code for Experiments on Convergence}\label{code:ExpConv}
-The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) calculated from several samples of Gaussian mixture data. It uses the helper function \verb|GMMData.m| to generate Gaussian mixture data via PRNG.
+The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) calculated from several samples of Gaussian mixture data. It uses the helper function gfg\verb|GMMData.m| to generate Gaussian mixture data via PRNG.
 
 \lstinputlisting[title = error\_samples.m]{
 	../../../Code/MATLAB/error_samples.m
@@ -40,6 +40,10 @@ The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) cal
 \newpage
 \lstinputlisting[title = GMMData.m]{
 	../../../Code/MATLAB/GMMData.m
+}
+\newpage
+\lstinputlisting[title = convRates.m]{
+	../../../Code/MATLAB/convRate/convRates.m
 }
 
 \chapter{Responsible Softmax Code}\label{app:RScode}

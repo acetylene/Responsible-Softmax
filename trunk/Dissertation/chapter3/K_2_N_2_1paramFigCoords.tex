@@ -27,6 +27,7 @@ axis x line*=bottom,
 axis y line*=left,
 legend style={at={(1,0.6)}, anchor=west, legend cell align=left, align=left, draw=white!15!black}
 ]
+
 \addplot [color=mycolor1]
   table[row sep=crcr]{%
 0	1.70688796671164e-13\\
@@ -831,7 +832,7 @@ legend style={at={(1,0.6)}, anchor=west, legend cell align=left, align=left, dra
 7.99	0.928469241757729\\
 8	0.928571428555755\\
 };
-\addlegendentry{$\hat{\pi}_1$}
+\addlegendentry{$\hat{\pi}_1$};
 
 \addplot [color=mycolor2, dashed]
   table[row sep=crcr]{%
@@ -1637,7 +1638,7 @@ legend style={at={(1,0.6)}, anchor=west, legend cell align=left, align=left, dra
 7.99	0.0715307582422713\\
 8	0.0714285714442449\\
 };
-\addlegendentry{$\hat{\pi}_2$}
+\addlegendentry{$\hat{\pi}_2$};
 
 \end{axis}
 \end{tikzpicture}%
