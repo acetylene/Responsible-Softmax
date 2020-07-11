@@ -1,16 +1,16 @@
 %!TEX root = chapter1.tex
 \label{softmax}
 
-The softmax function is a map \(\gs:\R^D \rightarrow S_D\). As a reminder,
+The softmax function is a map \(\gs:\R^D \rightarrow S_D\). As a reminder, the probability simplex
  \(S_D = \{x\in\R^D|\sum_i x_i = 1, \; x_i\geq 0 \; \forall i\}\). The softmax function is given by
  \begin{equation}\label{eqn:softmaxDef}
- \gs_i(\bm x) = \frac{e^{x_i}}{\sum_j e^{x_j}}.
+ \gs_i(\bm x) = \frac{e^{x_i}}{\sum_{j=1}^{D} e^{x_j}}.
  \end{equation}
  In the case that \(D=2\), the softmax function is simply the sigmoidal 
  activation function. In this sense, the softmax function may be considered as
  a multivariate extension of the logistic regression model.
 
- The softmax is so named because it approximates a smooth version of the 
+ The softmax function is so named because it smoothly approximates the 
  \(\argmax\) function.   Given a vector \(\bm x\in \R^{D}\), we may 
  represent the \(\argmax\) function in the following manner.
  \begin{equation*}
@@ -21,10 +21,7 @@ The softmax function is a map \(\gs:\R^D \rightarrow S_D\). As a reminder,
 	 \end{cases}
  \end{equation*}
  In this form, it is clear that \(\argmax:\R^D\rightarrow \{0,1\}^{D}\) is 
- a locally constant function.  In this form, we may also see that softmax 
- smoothly approximates argmax, in the following sense.  If for a given 
- \(\bm x\) some coordinate \(x_i\) satisfies \(x_i\gg x_j\;\forall j\neq i\), 
- then \(\gs(\bm x) \approx \argmax(\bm x)\).
+ a locally constant function.  We also see that softmax smoothly approximates argmax, in the following sense.  If for a given  \(\bm x\) some coordinate \(x_i\) satisfies \(x_i\gg x_j\;\forall j\neq i\),  then \(\gs_i(\bm x) \approx 1\) and \( \gs_j(\bm x)\approx 0 \) for all \( j\neq i \).
 
  However, if for some \(i,j\), \(x_i=x_j\gg x_k\;\forall\, k\neq i,j\), then 
  \(\gs(\bm x) \approx \frac 12 \argmax(\bm x)\).  In a similar way, 
@@ -34,13 +31,13 @@ The softmax function is a map \(\gs:\R^D \rightarrow S_D\). As a reminder,
 
  The advantage of this comparison is that some of the properties of the 
  softmax function become immediately apparent.  First, softmax is projective, 
- so for any \(\gl \in\R\), \(\gs(\gl\bm x) = \gs(x)\). Second, if we define 
+ so for any \(\gl \in\R\), \(\gs(\gl\bm x) = \gs(\bm x)\). Second, if we define 
  \(\bm c = c\cdot \bm 1_d = (c,c,\ldots,c)^{\intercal}\) then 
  \(\gs(\bm x+\bm c)=\gs(\bm x)\), which is a type of translation invariance.
 
  In regard to both of these properties, we mention the log-sum-exp trick used 
  frequently in computation of the softmax function. The point is that often in 
- machine learning applications one may be required to use data types, that 
+ machine learning applications one may be required to use data types that 
  will easily cause underflow and overflow errors.  For example, if \(x\) 
  represents a single precision floating point number and \(x<-103\), then 
  \(\op{fl}(\log(\op{fl}(e^x))) = \op{fl}(\log 0) = -\infty\), even though it 
@@ -49,9 +46,9 @@ The softmax function is a map \(\gs:\R^D \rightarrow S_D\). As a reminder,
 
  The log-sum-exp function \(\op{lse}:\R^D\rightarrow\R\) is defined by 
  \[\op{lse}(\bm x) = \log\left(\sum_i e^{x_i}\right).\]
- It is worth noting that \(\nabla\op(\bm x) = \gs(\bm x)\), so that softmax 
- represents the gradient of the log-sum-exp function.  It is a property of the 
- lse function that 
+ It is worth noting that \(\nabla\op{lse}(\bm x) = \gs(\bm x)\), so that softmax 
+ represents the gradient of the log-sum-exp function. A property of the 
+ lse function  is that 
  \[y = \log\left(\sum_{i=1}^{D} e^{x_i}\right) = \log\left(\sum_{i=1}^{D} e^a
  e^{x_i-a}\right) = \log\left(e^a\sum_{i=1}^{D} e^{x_i-a}\right).\]
  If \(a\in\R\)
