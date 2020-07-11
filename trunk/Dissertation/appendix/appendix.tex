@@ -11,7 +11,7 @@ Below gives an implementation of the responsibility map from equation \eqref{map
 
 \newpage
 \section{Implementation of Algorithm \ref{ratioAlg}}\label{code:ratioAlg}
-Algorithm \ref{ratioAlg} iterates the responsibility map until convergence.  Here the stopping point is determined by a predetermined absolute tolerance.  This may need to change for large $K$.
+Algorithm \ref{ratioAlg} iterates the responsibility map until convergence.  Here the stopping point is determined by a given absolute tolerance.  This may need to change for large $K$.
 \lstinputlisting[title = stablepoint.m,
 				 lastline = 51]{
 				 	../../../Code/MATLAB/stablepoint.m
@@ -37,6 +37,7 @@ The script \verb|error_samples| calculates \( \hat{\bm \pi}_F \) for \( F \) cal
 	../../../Code/MATLAB/error_samples.m
 }
 
+\newpage
 \lstinputlisting[title = GMMData.m]{
 	../../../Code/MATLAB/GMMData.m
 }
