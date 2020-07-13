@@ -8,7 +8,7 @@ and the relation of this algorithm to responsibility as discussed in section
 \ref{kmeans}. The discussion below roughly follows discussions available in 
 Bishop and other sources \cite{MML_2019, BishopBook, hastie09esl}.
 
-EM was first described for the general case in a paper by Dempster et. al. \cite{Dempster77EM}.  
+EM was first described for the general case in a paper by Dempster \textit{et al.} \cite{Dempster77EM}.  
 Though the paper mentions that Hartley \cite{hartley1958}, Baum \cite{baum1970} and others \cite{woodbury1970missing,sundberg1974,sundberg1976}
 had already used similar techniques in special circumstances.
 %add reference to pearsonand mixture models?
@@ -61,6 +61,6 @@ Then to use the EM algorithm, set parameters to some initial values: \( \pi_{k}=
 	\item If all of \( \pi_k, \;\bm\mu_k,\;\bm\Sigma_k \) are close enough to their new counterparts, stop.  Otherwise, set \( \pi_k = \pi_k^{new}, \;\bm\mu_k = \bm\mu_{k}^{new}, \;\bm\Sigma_k = \bm\Sigma_k^{new}\), then repeat steps 1 and 2.
 \end{enumerate}
 
-We note that this is a specific implementation of the EM algorithm in the case we suspect that a Gaussian mixture model works well for the underlying data.  Other changes that may be made are choosing different parameterized distributions \( f_k(\bm x) \), or even adapting the algorithm for completely different models. For example the Baum-Welch algorithm \cite{baum1970}, is tailored  specifically to using EM on Hidden Markov Models. More information about generalizations of EM may be found in Hastie et. al. \citep[p.276]{hastie09esl}.
+We note that this is a specific implementation of the EM algorithm in the case we suspect that a Gaussian mixture model works well for the underlying data.  Other changes that may be made are choosing different parameterized distributions \( f_k(\bm x) \), or even adapting the algorithm for completely different models. For example the Baum-Welch algorithm \cite{baum1970}, is tailored  specifically to using EM on Hidden Markov Models. More information about generalizations of EM may be found in Hastie \textit{et al.} \citep[p.276]{hastie09esl}.
 
 Other than ease of explanation, we use the preceding description of EM to illustrate the similarity of EM and \( K \)-means algorithms.  For example, fix \( \bm\Sigma_{k} \) to be isotropic with variance as described in \ref{isoSigma}, then equations \ref{softResp} and \ref{emResp} agree on the definition of responsibility.  %This connection can be explored somewhere else, for now we are just interested in responsibility! \Ryan{Should I mention ELBO bound here?}%nope!

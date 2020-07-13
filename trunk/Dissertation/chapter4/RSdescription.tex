@@ -5,7 +5,7 @@ To discuss responsible softmax (RS), understanding of weighted softmax is requir
 \begin{equation}\label{eqn:weightSoftmax}
 \gs_i(\bm x,\bm\gb) = \dfrac{e^{x_i\gb_i}}{\sum_j e^{x_j\gb_j}}.
 \end{equation}
-Equation \ref{eqn:weightSoftmax} for weighted softmax is very similar to equations \ref{softResp} and \ref{emResp} from chapter \ref{ch:background}. One paper that uses a weighted softmax approach is that of Liu et. al. \cite{liu2016large}. This paper defines \( L \)-softmax, which gives a different weight to each class. 
+Equation \ref{eqn:weightSoftmax} for weighted softmax is very similar to equations \ref{softResp} and \ref{emResp} from chapter \ref{ch:background}. One paper that uses a weighted softmax approach is that of Liu \textit{et al.} \cite{liu2016large}. This paper defines \( L \)-softmax, which gives a different weight to each class. 
 
 Another brief discussion for weighting the softmax loss is implied in Bishop \cite[sect. 6.5]{Bishop1995}.  Bishop frames the discussion there in terms of compensating for different priors.  If \( \tilde{\!\bm\pi} \) is defined by \( \tilde{\!\pi}_i = \#\{t_i^{n}\in T|t_i^{n}=1\}/N \), \textit{i.e.} the proportion of training targets with class \( i \), then compensating for that prior is what this dissertation calls \textit{empirically weighted softmax}.  This name is chosen as the weights are determined empirically from the training targets \( T \).
 
