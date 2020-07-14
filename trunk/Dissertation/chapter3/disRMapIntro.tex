@@ -35,7 +35,7 @@ Dynamic responsibility (DR) describes an alternative algorithm (see algorithm \r
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-\caption{The main algorithm: Iteration of the\Rpi F map. Note that the entire orbit is kept for gradient descent purposes.}
+\caption[Dynamic Responsibility Algorithm]{The main algorithm: Iteration of the\Rpi F map. Note that the entire orbit is kept for gradient descent purposes.}
 \end{table}
 
 While it is not known \textit{a priori} that algorithm \ref{ratioAlg} is correct, the main theorem of this chapter, theorem \ref{thm:convergence}, shows that dynamic responsibility converges to a unique solution under reasonable conditions.  Section \ref{respMLE} discusses the correct hypotheses under which the fixed point $\hat{\bm\pi}$ satisfying $R(\hat{\bm\pi})=\hat{\bm\pi}$ is a maximum likelihood estimator.  A version of this algorithm is implemented in appendix \ref{app:DRcode}, section \ref{code:ratioAlg}.
