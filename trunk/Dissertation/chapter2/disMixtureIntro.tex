@@ -20,7 +20,7 @@ Recalling the discussion in section \ref{classvCluster}, this section will consi
 
 Using Bayes' rule, this section proposes an optimization strategy for recovering the parameters $\{\pi_k^{\ast}\}_{k=1}^{K}$. Given some data $D$, this strategy considers the likelihood that the labels chosen were $\{k_n\}_{n=1}^{N}$, given some prior distribution of the labels as $\{\pi_k\}_{k=1}^{K}$. In other words, the prior is given by $P(k_n=k, \bm \gt_k) = \pi_k$, with or without considering the data. A potentially good uninformative prior would be that $\pi_k=\frac 1K$ for every $k$.
 
-Bayes rule gives:
+Bayes' rule gives:
 \begin{align}\label{Bayes1}
 P(k_n=k|\{x_n\},\{\pi_k\})&=\frac{P(x_n|k_n=k)P(k_n=k)}{\sum_{k'}P(x_n|k_n=k')P(k_n=k')} \nonumber \\
 						  &=\frac{\pi_k f_k(x_n)}{\sum_{k'}\pi_{k'} f_{k'}(x_n)}.

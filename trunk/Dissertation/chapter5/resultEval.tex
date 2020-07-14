@@ -32,7 +32,7 @@ r_i &= \frac{c_{i,i}}{\sum_{j} c_{i,j}}
 \end{align}
 In other words \( p_i \) is the number of data points correctly classified in class \( i \) divided by the number of data points put into class \( i \) by mistake (diagonal entry divided by the column sum). The per class recall \( r_i \) is the number of correctly classified data points divided by the number of data points from class \( i \) incorrectly classified into a different class (diagonal entry divided by the row sum).  There are many other metrics that may be calculated from a confusion matrix, but these are the two used in the results sections.
 
-Idealized classifiers are difficult to identify and frequently even more burdensome on computation.  Fortunately for GMMs, Bayes rule gives an excellent classifier when confidence in parameter values is high. In the case of generated data, the functions \( f_k(\bm x,\bm\gt_k) \) and mixing proportions \( \bm\pi^{\ast} \) are known. Then given data points \( \bm x_n \) of unknown classifications, the classes may be approximated by the maximum \textit{a posteriori} (MAP) estimate
+Idealized classifiers are difficult to identify and frequently even more burdensome on computation.  Fortunately for GMMs, Bayes' rule gives an excellent classifier when confidence in parameter values is high. In the case of generated data, the functions \( f_k(\bm x,\bm\gt_k) \) and mixing proportions \( \bm\pi^{\ast} \) are known. Then given data points \( \bm x_n \) of unknown classifications, the classes may be approximated by the maximum \textit{a posteriori} (MAP) estimate
 \begin{equation}\label{eqn:MAPestimator}
 c_n = \argmax_k \frac{\pi_k^{\ast}f_k(\bm x_n,\bm\gt_k)}{\sum_j \pi_j^{\ast}f_j(\bm x_n,\bm\gt_j)}. 
 \end{equation}

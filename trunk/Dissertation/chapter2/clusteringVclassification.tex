@@ -31,9 +31,9 @@ To be precise, if \( \gs \) is any permutation of \( 1,\ldots, K \), then the es
 \subsection{Classification}
 Classification does not generally share the non-convexity problem associated with clustering.  Instead of trying to estimate parameters for the distribution of the data, clustering attempts to find the best label for a data point from a given set of prescribed labels.  This is often presented as a maximum likelihood problem, in the sense that we are trying to maximize the probability of class labels given the data, \textit{e.g.} find \( k \) such that \( P(\bm x_n|k_n=k,\bm\Theta) \) is maximized.
 
-Classification is often given as a type of supervised learning as discussed in section \ref{supVunsup}.   Often one is interested in the class \( k' \) of a new data point \( \bm x' \) which an algorithm may infer from calculating \( P(\bm x'|k'=k,\bm D) \; \forall k\leq K\).  A maximum likelihood estimate could then compare these probabilities and make a decision on the label. Such a process is also called maximum likelihood classification. Another option would be to use Bayes rule and calculate \( P(k'=k|\bm x',\bm D) \; \forall k\leq K\), and then choose the class with the greatest probability.  This is called a maximum \textit{a posteriori} (MAP) classifier. 
+Classification is often given as a type of supervised learning as discussed in section \ref{supVunsup}.   Often one is interested in the class \( k' \) of a new data point \( \bm x' \) which an algorithm may infer from calculating \( P(\bm x'|k'=k,\bm D) \; \forall k\leq K\).  A maximum likelihood estimate could then compare these probabilities and make a decision on the label. Such a process is also called maximum likelihood classification. Another option would be to use Bayes' rule and calculate \( P(k'=k|\bm x',\bm D) \; \forall k\leq K\), and then choose the class with the greatest probability.  This is called a maximum \textit{a posteriori} (MAP) classifier. 
 
-A connection between clustering and classification appears through some analysis via Bayes rule,
+A connection between clustering and classification appears through some analysis via Bayes' rule,
 \begin{equation}\label{Bayes}
  P(k_n=k|\bm x_n, \bm\Theta) =\dfrac{ P(\bm x_n|k_n=k,\bm\Theta)P(k_n=k, \bm\gt_k) }{P(\bm x_n|\bm\Theta)}
 \end{equation}

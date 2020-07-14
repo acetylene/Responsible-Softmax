@@ -47,7 +47,9 @@
 
 \usepackage{placeins}
 \usepackage{float}
-\usepackage{hyperref}
+\usepackage[linktoc = page,
+			hidelinks
+			]{hyperref}
 
 %\usepackage[lofdepth,lotdepth]{subfig}
 % Packages to have pseudocode must be included after hyperref!!!
@@ -143,7 +145,6 @@
 
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}[chapter]%[section]
-\newtheorem{thm}{Theorem}[chapter]
 
 \theoremstyle{remark}
 \newtheorem{rk}[defn]{Remark}
@@ -154,6 +155,7 @@
 \newtheorem{calc}[defn]{Calculation}
 
 \theoremstyle{plain}
+\newtheorem{thm}{Theorem}[chapter]
 \newtheorem{lemm}[thm]{Lemma}
 \newtheorem{prop}[thm]{Proposition}
 \newtheorem{cor}[thm]{Corollary}
