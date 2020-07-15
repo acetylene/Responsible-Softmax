@@ -14,7 +14,9 @@ The following two lemmas facilitate the first calculation.
 \begin{proof}
 	Because the Hadamard product is a linear operator, it is its own derivative \textit{i.e.} \( Df_A=f_A \). While it can be shown that this operator is self adjoint through careful computation, it will be more powerful to use the vec operator as described in the commutative diagram \eqref{eqn:vecfrobcommute}.
 	
-	Under the diffeomorphism vec, consider the function \( g_A(X) = \op{vec}^{-1}(f(\op{vec}(A),\op{vec}(X))) =\op{vec}^{-1}(\diag(\op{vec}(A)) \cdot\op{vec}(X)) \). In this representation, the Hadamard product with \( A \) is given by multiplication by a diagonal matrix, which is clearly self adjoint as \( \diag(\op{vec}(A))^{\intercal} = \diag(\op{vec}(A))\).  Hence \( g_A(X) \) is self adjoint.  Since \( g_A(X) \) is not only similar, but actually equal to \( f_A \), \(f_A \) must also be self adjoint.
+	Under the diffeomorphism vec, consider the function
+	\[ g_A(X) = \op{vec}^{-1}(f(\op{vec}(A),\op{vec}(X))) =\op{vec}^{-1}(\diag(\op{vec}(A)) \cdot\op{vec}(X)). \] 
+	In this representation, the Hadamard product with \( A \) is given by multiplication by a diagonal matrix, which is clearly self adjoint as \( \diag(\op{vec}(A))^{\intercal} = \diag(\op{vec}(A))\).  Hence \( g_A(X) \) is self adjoint.  Since \( g_A(X) \) is not only similar, but actually equal to \( f_A \), \(f_A \) must also be self adjoint.
 \end{proof}
 
 Lemma \ref{lemm:hadProdAdj} applies directly to Hadamard division \( \oslash \), because for two matrices \( X,Y \) of the same size \( X\oslash Y = X\odot \overbar{Y},\) where \(Y = (y_{ij})_{i,j}\; \overbar{Y} = (y_{ij}^{-1})_{i,j} \). This definition necessarily requires that \( y_{ij}\neq 0 \). This relationship between Hadamard product and division is the key observation in lemma \ref{lemm:hadDivAdj} below.
